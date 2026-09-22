@@ -1,0 +1,7 @@
+{
+  "continuous_simulated_seconds": 240,
+  "automatic_time_resets": 0,
+  "finite_training_limit_steps": 10000,
+  "limit_switch_termination": "OK",
+  "success_after_240s": true
+}

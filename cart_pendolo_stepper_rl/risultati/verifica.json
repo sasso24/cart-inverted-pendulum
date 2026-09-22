@@ -1,0 +1,10 @@
+{
+  "status": "OK",
+  "collision_free_configurations": 1805,
+  "observation_size": 6,
+  "physics_hz": 500.0,
+  "control_hz": 50.0,
+  "metres_per_pulse": 1.25e-05,
+  "pendulum_mass_kg": 0.2,
+  "com_from_pivot_m": 0.36765
+}
