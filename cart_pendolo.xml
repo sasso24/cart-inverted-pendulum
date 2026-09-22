@@ -1,0 +1,112 @@
+<mujoco model="Pendolo reale su cinghia - quote misurate e stime esplicite">
+  <!-- SI: metri, kg, secondi. MISURATI: bracci dal centro perno 0.877 / 0.100 m; diametro asta 0.005 m; diametro esterno raccordo nero 0.022 m (cavo, stampato 3D); corsa fra interventi 0.924 m. -->
+  <!-- STIME da foto, non rilievo metrico: guida 20x40 mm, piastra 100x220x8 mm, interasse cuscinetti 140 mm, albero lungo 260 mm e diametro 12 mm, foro raccordo diametro 12 mm e lunghezza 26 mm, encoder diametro 38 mm. Altezza e telaio indicativi. -->
+  <!-- MASSE PROVVISORIE: asta e albero assunti pieni in acciaio, densita nominale 7850 kg/m3. Parti stampate, cuscinetti, ruote ed encoder: masse equivalenti stimate. Sostituire con pesate/materiali reali. MuJoCo calcola baricentro e inerzia dalle singole geometrie. -->
+  <compiler angle="radian" inertiafromgeom="true" />
+  <option timestep=".002" gravity="0 0 -9.81" integrator="implicitfast">
+    <flag filterparent="disable" />
+  </option>
+  <statistic center="0 0 1.05" extent="1.6" />
+  <visual>
+    <global offwidth="1200" offheight="1000" azimuth="-65" elevation="-15" />
+    <headlight ambient=".5 .5 .5" diffuse=".7 .7 .7" />
+  </visual>
+  <default>
+    <geom contype="1" conaffinity="1" friction=".6 .005 .0001" />
+  </default>
+  <worldbody>
+    <light pos="0 1 3" dir="0 -0.2 -1" />
+    <geom name="pavimento" type="plane" rgba=".17 .2 .23 1" size="3 3 .05" />
+    <!-- Banco e telaio fissi indicativi. Il piano dell asta e davanti al bordo del banco. -->
+    <geom name="banco" type="box" rgba=".8 .8 .76 1" pos="0 -.38 .72" size=".8 .55 .02" />
+    <geom name="guida" type="box" rgba=".045 .05 .055 1" pos="0 0 1.1" size=".56 .01 .02" />
+    <geom name="montante_sinistro" type="box" rgba=".65 .68 .72 1" pos="-0.532 0 .915" size=".01 .01 .175" />
+    <geom name="piede_sinistro" type="box" rgba=".65 .68 .72 1" pos="-0.532 0 .75" size=".01 .15 .01" />
+    <geom name="supporto_puleggia_sinistro" type="box" rgba=".18 .8 .025 1" pos="-0.532 0 1.1" size=".028 .025 .035" contype="0" conaffinity="0" />
+    <geom name="puleggia_sinistro" type="cylinder" rgba=".045 .05 .055 1" fromto="-0.532 -.018 1.1 -0.532 .018 1.1" size=".01528" contype="0" conaffinity="0" />
+    <!-- Arresto equivalente: faccia interna a +/-0.512 m; piastra semilarga 0.050 m: contatto a +/-0.462 m. -->
+    <geom name="fine_sinistro" type="box" rgba=".045 .05 .055 1" pos="-0.522 .055 1.145" size=".01 .012 .008" />
+    <geom name="leva_fine_sinistro" type="box" rgba=".65 .68 .72 1" pos="-0.512 .055 1.148" size=".001 .012 .001" contype="0" conaffinity="0" />
+    <geom name="montante_destro" type="box" rgba=".65 .68 .72 1" pos="0.532 0 .915" size=".01 .01 .175" />
+    <geom name="piede_destro" type="box" rgba=".65 .68 .72 1" pos="0.532 0 .75" size=".01 .15 .01" />
+    <geom name="supporto_puleggia_destro" type="box" rgba=".18 .8 .025 1" pos="0.532 0 1.1" size=".028 .025 .035" contype="0" conaffinity="0" />
+    <geom name="puleggia_destro" type="cylinder" rgba=".045 .05 .055 1" fromto="0.532 -.018 1.1 0.532 .018 1.1" size=".01528" contype="0" conaffinity="0" />
+    <!-- Arresto equivalente: faccia interna a +/-0.512 m; piastra semilarga 0.050 m: contatto a +/-0.462 m. -->
+    <geom name="fine_destro" type="box" rgba=".045 .05 .055 1" pos="0.522 .055 1.145" size=".01 .012 .008" />
+    <geom name="leva_fine_destro" type="box" rgba=".65 .68 .72 1" pos="0.512 .055 1.148" size=".001 .012 .001" contype="0" conaffinity="0" />
+    <geom name="cinghia_superiore" type="box" rgba=".045 .05 .055 1" pos="0 0 1.11528" size=".532 .003 .0007" contype="0" conaffinity="0" />
+    <geom name="cinghia_inferiore" type="box" rgba=".045 .05 .055 1" pos="0 0 1.08472" size=".532 .003 .0007" contype="0" conaffinity="0" />
+    <!-- Pulegge visuali: raggio primitivo ~15.28 mm coerente con 48 denti / passo 2 mm in stepper.py; parametri trasmissione ancora provvisori. -->
+    <!-- Stepper sul lato X negativo: estremita destra nella vista usata dall utente; montaggio dietro la guida, Y negativo. -->
+    <geom name="stepper_visuale" type="box" rgba=".045 .05 .055 1" pos="-.532 -.055 1.1" size=".021 .025 .021" contype="0" conaffinity="0" />
+    <geom name="flangia_stepper" type="box" rgba=".65 .68 .72 1" pos="-.532 -.027 1.1" size=".021 .003 .021" contype="0" conaffinity="0" />
+    <body name="carrello" pos="0 0 1.145">
+      <joint name="scorrimento" type="slide" axis="1 0 0" limited="true" range="-.462 .462" damping=".1" />
+      <!-- Masse traslanti senza rotazione: piastra alleggerita 90 g; supporti 2x25 g; cuscinetti 2x30 g; ruote 4x12 g; encoder/staffa 90 g; fissaggi 25 g. Totale 363 g. -->
+      <geom name="corpo_carrello" type="box" rgba=".8 .025 .035 1" size=".05 .11 .004" mass=".09" />
+      <geom name="staffa_posteriore" type="box" rgba=".8 .025 .035 1" pos="0 -0.07 .014" size=".028 .008 .01" mass=".025" />
+      <geom name="alloggiamento_posteriore" type="cylinder" rgba=".8 .025 .035 1" fromto="0 -0.07800000000000001 .033 0 -0.062000000000000006 .033" size=".024" mass=".03" />
+      <geom name="anello_posteriore" type="cylinder" rgba=".65 .68 .72 1" fromto="0 -0.062000000000000006 .033 0 -0.061000000000000006 .033" size=".018" mass="0" contype="0" conaffinity="0" />
+      <geom name="staffa_anteriore" type="box" rgba=".8 .025 .035 1" pos="0 0.07 .014" size=".028 .008 .01" mass=".025" />
+      <geom name="alloggiamento_anteriore" type="cylinder" rgba=".8 .025 .035 1" fromto="0 0.062000000000000006 .033 0 0.07800000000000001 .033" size=".024" mass=".03" />
+      <geom name="anello_anteriore" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0.07800000000000001 .033 0 0.079 .033" size=".018" mass="0" contype="0" conaffinity="0" />
+      <geom name="ruota_-0.034_-0.022" type="cylinder" rgba=".045 .05 .055 1" fromto="-0.034 -0.026 -.014 -0.034 -0.018 -.014" size=".011" mass=".012" contype="0" conaffinity="0" />
+      <geom name="ruota_-0.034_0.022" type="cylinder" rgba=".045 .05 .055 1" fromto="-0.034 0.018 -.014 -0.034 0.026 -.014" size=".011" mass=".012" contype="0" conaffinity="0" />
+      <geom name="ruota_0.034_-0.022" type="cylinder" rgba=".045 .05 .055 1" fromto="0.034 -0.026 -.014 0.034 -0.018 -.014" size=".011" mass=".012" contype="0" conaffinity="0" />
+      <geom name="ruota_0.034_0.022" type="cylinder" rgba=".045 .05 .055 1" fromto="0.034 0.018 -.014 0.034 0.026 -.014" size=".011" mass=".012" contype="0" conaffinity="0" />
+      <geom name="encoder" type="cylinder" rgba=".045 .05 .055 1" fromto="0 -.145 .033 0 -.103 .033" size=".019" mass=".09" />
+      <geom name="etichetta_encoder" type="cylinder" rgba=".88 .88 .85 1" fromto="0 -.137 .033 0 -.112 .033" size=".0192" mass="0" contype="0" conaffinity="0" />
+      <geom name="fissaggi_carrello" type="box" rgba=".65 .68 .72 1" pos="0 0 .006" size=".012 .018 .002" mass=".025" contype="0" conaffinity="0" />
+      <body name="pendolo" pos="0 .2 .033">
+        <!-- Zero = braccio lungo in alto; keyframe/reset a pi = braccio lungo in basso. Albero e mozzo solidali all asta: contribuiscono all inerzia rotante e alla massa traslante. -->
+        <joint name="rotazione" type="hinge" axis="0 1 0" damping=".01" />
+        <!-- Attriti e smorzamenti preesistenti conservati: richiedono identificazione sperimentale. Solo i contatti interni albero/cuscinetti/giunto encoder sono disabilitati; gli altri ostacoli rimangono collidibili. -->
+        <geom name="perno" type="cylinder" rgba=".65 .68 .72 1" fromto="0 -.26 0 0 0 0" size=".006" density="7850" contype="0" conaffinity="0" />
+        <geom name="giunto_encoder" type="cylinder" rgba=".65 .68 .72 1" fromto="0 -.298 0 0 -.26 0" size=".005" mass=".008" contype="0" conaffinity="0" />
+        <!-- Raccordo nero MISURATO diametro esterno 22 mm; foro assiale stimato 12 mm, lunghezza stimata 26 mm. Massa equivalente con densita effettiva di stampa ipotizzata 650 kg/m3, circa 4.51 g. Corona approssimata con 32 settori; nessun cilindro pieno aggiunto. -->
+        <geom name="mozzo_asta" type="box" rgba=".045 .05 .055 1" pos="0.0085 0 0.0" size=".0025 .013 0.0010781885436251665" euler="0 -0.0 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_1" type="box" rgba=".045 .05 .055 1" pos="0.008336674883427458 0 0.0016582677371370902" size=".0025 .013 0.0010781885436251665" euler="0 -0.19634954084936207 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_2" type="box" rgba=".045 .05 .055 1" pos="0.007852976026345939 0 0.0032528091751032632" size=".0025 .013 0.0010781885436251665" euler="0 -0.39269908169872414 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_3" type="box" rgba=".045 .05 .055 1" pos="0.007067491704571635 0 0.004722346980666619" size=".0025 .013 0.0010781885436251665" euler="0 -0.5890486225480862 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_4" type="box" rgba=".045 .05 .055 1" pos="0.006010407640085655 0 0.0060104076400856535" size=".0025 .013 0.0010781885436251665" euler="0 -0.7853981633974483 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_5" type="box" rgba=".045 .05 .055 1" pos="0.00472234698066662 0 0.007067491704571635" size=".0025 .013 0.0010781885436251665" euler="0 -0.9817477042468103 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_6" type="box" rgba=".045 .05 .055 1" pos="0.0032528091751032637 0 0.007852976026345939" size=".0025 .013 0.0010781885436251665" euler="0 -1.1780972450961724 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_7" type="box" rgba=".045 .05 .055 1" pos="0.001658267737137091 0 0.008336674883427458" size=".0025 .013 0.0010781885436251665" euler="0 -1.3744467859455345 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_8" type="box" rgba=".045 .05 .055 1" pos="5.204748896376251e-19 0 0.0085" size=".0025 .013 0.0010781885436251665" euler="0 -1.5707963267948966 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_9" type="box" rgba=".045 .05 .055 1" pos="-0.0016582677371370898 0 0.008336674883427458" size=".0025 .013 0.0010781885436251665" euler="0 -1.7671458676442586 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_10" type="box" rgba=".045 .05 .055 1" pos="-0.003252809175103263 0 0.007852976026345939" size=".0025 .013 0.0010781885436251665" euler="0 -1.9634954084936207 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_11" type="box" rgba=".045 .05 .055 1" pos="-0.004722346980666617 0 0.007067491704571636" size=".0025 .013 0.0010781885436251665" euler="0 -2.1598449493429825 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_12" type="box" rgba=".045 .05 .055 1" pos="-0.0060104076400856535 0 0.006010407640085655" size=".0025 .013 0.0010781885436251665" euler="0 -2.356194490192345 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_13" type="box" rgba=".045 .05 .055 1" pos="-0.007067491704571636 0 0.004722346980666619" size=".0025 .013 0.0010781885436251665" euler="0 -2.552544031041707 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_14" type="box" rgba=".045 .05 .055 1" pos="-0.007852976026345939 0 0.0032528091751032645" size=".0025 .013 0.0010781885436251665" euler="0 -2.748893571891069 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_15" type="box" rgba=".045 .05 .055 1" pos="-0.008336674883427458 0 0.0016582677371370933" size=".0025 .013 0.0010781885436251665" euler="0 -2.945243112740431 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_16" type="box" rgba=".045 .05 .055 1" pos="-0.0085 0 1.0409497792752502e-18" size=".0025 .013 0.0010781885436251665" euler="0 -3.141592653589793 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_17" type="box" rgba=".045 .05 .055 1" pos="-0.008336674883427458 0 -0.0016582677371370911" size=".0025 .013 0.0010781885436251665" euler="0 -3.3379421944391554 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_18" type="box" rgba=".045 .05 .055 1" pos="-0.007852976026345939 0 -0.0032528091751032624" size=".0025 .013 0.0010781885436251665" euler="0 -3.5342917352885173 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_19" type="box" rgba=".045 .05 .055 1" pos="-0.007067491704571637 0 -0.004722346980666617" size=".0025 .013 0.0010781885436251665" euler="0 -3.730641276137879 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_20" type="box" rgba=".045 .05 .055 1" pos="-0.006010407640085656 0 -0.0060104076400856535" size=".0025 .013 0.0010781885436251665" euler="0 -3.9269908169872414 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_21" type="box" rgba=".045 .05 .055 1" pos="-0.004722346980666619 0 -0.007067491704571635" size=".0025 .013 0.0010781885436251665" euler="0 -4.123340357836604 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_22" type="box" rgba=".045 .05 .055 1" pos="-0.003252809175103268 0 -0.007852976026345935" size=".0025 .013 0.0010781885436251665" euler="0 -4.319689898685965 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_23" type="box" rgba=".045 .05 .055 1" pos="-0.0016582677371370937 0 -0.008336674883427458" size=".0025 .013 0.0010781885436251665" euler="0 -4.516039439535327 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_24" type="box" rgba=".045 .05 .055 1" pos="-1.5614246689128753e-18 0 -0.0085" size=".0025 .013 0.0010781885436251665" euler="0 -4.71238898038469 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_25" type="box" rgba=".045 .05 .055 1" pos="0.0016582677371370907 0 -0.008336674883427458" size=".0025 .013 0.0010781885436251665" euler="0 -4.908738521234052 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_26" type="box" rgba=".045 .05 .055 1" pos="0.0032528091751032654 0 -0.007852976026345937" size=".0025 .013 0.0010781885436251665" euler="0 -5.105088062083414 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_27" type="box" rgba=".045 .05 .055 1" pos="0.004722346980666616 0 -0.007067491704571637" size=".0025 .013 0.0010781885436251665" euler="0 -5.301437602932776 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_28" type="box" rgba=".045 .05 .055 1" pos="0.006010407640085653 0 -0.006010407640085656" size=".0025 .013 0.0010781885436251665" euler="0 -5.497787143782138 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_29" type="box" rgba=".045 .05 .055 1" pos="0.007067491704571635 0 -0.004722346980666619" size=".0025 .013 0.0010781885436251665" euler="0 -5.6941366846315 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_30" type="box" rgba=".045 .05 .055 1" pos="0.007852976026345935 0 -0.0032528091751032684" size=".0025 .013 0.0010781885436251665" euler="0 -5.890486225480862 0" mass="0.00014102805771505424" />
+        <geom name="mozzo_settore_31" type="box" rgba=".045 .05 .055 1" pos="0.008336674883427458 0 -0.0016582677371370941" size=".0025 .013 0.0010781885436251665" euler="0 -6.086835766330224 0" mass="0.00014102805771505424" />
+        <geom name="vite_mozzo" type="cylinder" rgba=".65 .68 .72 1" fromto="0 .013 0 0 .016 0" size=".004" mass=".001" contype="0" conaffinity="0" />
+        <!-- Asta uniforme: stessa densita sui due bracci. Lunghezza totale 0.977 m; massa con ipotesi acciaio pieno circa 0.1506 kg. -->
+        <geom name="asta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 0 0 0 .877" size=".0025" density="7850" />
+        <geom name="asta_opposta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 -.1 0 0 0" size=".0025" density="7850" />
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="forza_carrello" joint="scorrimento" gear="1" ctrllimited="true" ctrlrange="-20 20" />
+  </actuator>
+  <keyframe>
+    <key name="inizio_dal_basso" qpos="0 3.141592653589793" qvel="0 0" />
+  </keyframe>
+</mujoco>
