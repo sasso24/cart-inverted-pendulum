@@ -1,0 +1,29 @@
+{
+  "algorithm": "SAC",
+  "seed": 42,
+  "initial_state": "downward with small random perturbations",
+  "control_hz": 50,
+  "max_episode_seconds": 20,
+  "environment": {
+    "sha256": {
+      "cart_pendolo.xml": "e0bc891954d21b432baadae5a10ba64e34f8b39e4367c2a6577bfc24ec27a5c6",
+      "ambiente.py": "fb144715c879bdd5125e3d215cfb548accb17a32d5cde425a44f8b26eed8ece0",
+      "stepper.py": "e12c030409cba1e16508008a2b578069ae628e1fc742813a181cb18728db1e6b",
+      "stepper.toml": "c171bb723bcf7c04349d08563ba74ea0a53aff6559fe5c6aec4a1a7080b12186"
+    },
+    "stepper": {
+      "frequenza_min_hz": 1000.0,
+      "frequenza_max_hz": 8000.0,
+      "passi_per_giro": 200,
+      "angolo_passo_gradi": 1.8,
+      "microstepping": 8,
+      "passo_cinghia_m": 0.002,
+      "denti_puleggia": 48,
+      "rapporto_trasmissione": 1.0,
+      "zona_morta": 0.0
+    },
+    "observation_size": 5,
+    "action": "signed_normalized_step_frequency",
+    "control_hz": 50
+  }
+}

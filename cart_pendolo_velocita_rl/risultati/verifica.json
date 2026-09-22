@@ -1,0 +1,12 @@
+{
+  "status": "OK",
+  "collision_free_configurations": 1805,
+  "observation_size": 5,
+  "physics_hz": 500.0,
+  "control_hz": 50.0,
+  "max_step_frequency_hz": 50000.0,
+  "metres_per_pulse": 6e-05,
+  "max_cart_velocity_m_s": 3.0,
+  "pendulum_mass_kg": 0.39493385826875904,
+  "manual_moves": "both directions OK"
+}
