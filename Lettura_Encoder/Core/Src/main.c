@@ -33,6 +33,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define STEP_CHANNEL TIM_CHANNEL_1
+#define MIN_FREQUENCY 500.0f
+#define MAX_FREQUENCY 8000.0f
+#define STEPPER_ACCELERATION_HZ_PER_S 10000.0f
 
 // tutte i punti di rif sono da dietro
 #define DIR_FORWARD  GPIO_PIN_SET   //SInistra (da dietro)
@@ -70,6 +73,14 @@ volatile float theta_deg = 180.0f;
 volatile float theta_rad = PI_F;
 
 // Var stepper
+/* Soglia di partenza in Hz, modificabile prima di ogni movimento. */
+float max_starting_frequency = 1000.0f;
+static float stepper_target_frequency = MAX_FREQUENCY;
+static float stepper_counter_clock;
+static float stepper_start_frequency;
+static uint32_t stepper_ramp_start_ms;
+static uint32_t stepper_ramp_last_ms;
+static volatile uint8_t stepper_ramp_active = 0;
 volatile uint32_t step_count = 0;
 volatile uint32_t step_target = 0;
 volatile uint8_t stepper_running = 0;
@@ -151,6 +162,78 @@ void Stepper_Stop(void)
 {
     HAL_TIM_PWM_Stop_IT(&htim3, STEP_CHANNEL);
     stepper_running = 0;
+    stepper_ramp_active = 0;
+}
+
+static float Stepper_ClampFrequency(float frequency)
+{
+    if (!isfinite(frequency) || frequency < MIN_FREQUENCY)
+        return MIN_FREQUENCY;
+    if (frequency > MAX_FREQUENCY)
+        return MAX_FREQUENCY;
+    return frequency;
+}
+
+/* ARR e CCR vengono applicati insieme al prossimo periodo PWM.
+ * Non generare UG durante il moto: troncherebbe il periodo corrente.
+ */
+static void Stepper_ApplyFrequency(float frequency)
+{
+    float period = ceilf(stepper_counter_clock / frequency);
+    if (period > 65536.0f)
+        period = 65536.0f;
+    else if (period < 2.0f)
+        period = 2.0f;
+    uint32_t ticks = (uint32_t)period;
+
+    SET_BIT(htim3.Instance->CR1, TIM_CR1_UDIS);
+    __HAL_TIM_SET_AUTORELOAD(&htim3, ticks - 1U);
+    __HAL_TIM_SET_COMPARE(&htim3, STEP_CHANNEL, ticks / 2U);
+    CLEAR_BIT(htim3.Instance->CR1, TIM_CR1_UDIS);
+}
+
+/* Chiamata a timer fermo per OGNI nuovo movimento, anche dopo uno stop
+ * anticipato. La frequenza obiettivo resta separata da quella della rampa.
+ */
+static void Stepper_PrepareRamp(void)
+{
+    uint32_t timer_clock = HAL_RCC_GetPCLK1Freq();
+    if ((RCC->CFGR & RCC_CFGR_PPRE1) != 0U)
+        timer_clock *= 2U;
+    stepper_counter_clock = (float)timer_clock / (htim3.Instance->PSC + 1U);
+
+    stepper_target_frequency = Stepper_ClampFrequency(stepper_target_frequency);
+    float starting_limit = Stepper_ClampFrequency(max_starting_frequency);
+    stepper_start_frequency = fminf(stepper_target_frequency, starting_limit);
+    stepper_ramp_active = stepper_target_frequency > stepper_start_frequency;
+    Stepper_ApplyFrequency(stepper_start_frequency);
+    htim3.Instance->EGR = TIM_EGR_UG;
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE | TIM_FLAG_CC1);
+    stepper_ramp_start_ms = HAL_GetTick();
+    stepper_ramp_last_ms = stepper_ramp_start_ms;
+}
+
+/* Aggiornamento non bloccante dal callback degli impulsi STEP.
+ * La rampa e' lineare nel tempo e termina esattamente all'obiettivo.
+ */
+static void Stepper_UpdateRamp(void)
+{
+    if (!stepper_ramp_active)
+        return;
+    uint32_t now = HAL_GetTick();
+    if (now == stepper_ramp_last_ms)
+        return;
+    stepper_ramp_last_ms = now;
+    float frequency = stepper_start_frequency
+        + STEPPER_ACCELERATION_HZ_PER_S * 0.001f
+        * (uint32_t)(now - stepper_ramp_start_ms);
+    if (frequency >= stepper_target_frequency)
+    {
+        frequency = stepper_target_frequency;
+        stepper_ramp_active = 0;
+    }
+    Stepper_ApplyFrequency(frequency);
 }
 
 void Stepper_MoveSteps(uint32_t steps)
@@ -168,11 +251,10 @@ void Stepper_MoveSteps(uint32_t steps)
     if (steps == 0U)
         return;
 
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE | TIM_FLAG_CC1);
+    Stepper_PrepareRamp();
     stepper_running = 1;
     if (HAL_TIM_PWM_Start_IT(&htim3, STEP_CHANNEL) != HAL_OK)
-        stepper_running = 0;
+        Stepper_Stop();
 }
 
 void Stepper_Move(GPIO_PinState direction, uint32_t steps)
@@ -192,12 +274,12 @@ void Stepper_Move(GPIO_PinState direction, uint32_t steps)
     }
 }
 
-/* velocity: impulsi STEP al secondo; valori non positivi/non finiti fermano
- * il motore. Le frequenze positive sono limitate al range di TIM3.
+/* velocity: impulsi STEP al secondo, limitati a MIN/MAX_FREQUENCY.
+ * Valori non positivi/non finiti fermano il motore. Ogni chiamata riparte
+ * al massimo da max_starting_frequency e accelera fino a velocity.
  */
 void Stepper_set_velocity(GPIO_PinState direction, float velocity)
 {
-    /* Ferma anche un eventuale movimento avviato con interrupt. */
     Stepper_Stop();
     step_count = 0;
     step_target = 0; /* Zero identifica il movimento continuo. */
@@ -206,24 +288,7 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
     if (!isfinite(velocity) || velocity <= 0.0f)
         return;
 
-    /* TIM3 su APB1: con divisore APB1 > 1, il clock timer e' raddoppiato.
-     * Con la configurazione corrente: 84 MHz / (83 + 1) = 1 MHz.
-     */
-    uint32_t timer_clock = HAL_RCC_GetPCLK1Freq();
-    if ((RCC->CFGR & RCC_CFGR_PPRE1) != 0U)
-        timer_clock *= 2U;
-
-    float counter_clock = (float)timer_clock / (htim3.Instance->PSC + 1U);
-    float period = counter_clock / velocity;
-
-    /* TIM3 ha ARR a 16 bit; servono almeno due tick per alto e basso. */
-    if (period > 65536.0f)
-        period = 65536.0f;
-    else if (period < 2.0f)
-        period = 2.0f;
-
-    uint32_t ticks = (uint32_t)(period + 0.5f);
-
+    stepper_target_frequency = Stepper_ClampFrequency(velocity);
     Stepper_SetDirection(direction);
     HAL_Delay(1);
     if (direction == DIR_FORWARD && FinecorsaSinistro_Premuto())
@@ -232,17 +297,10 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
         return;
     }
 
-    __HAL_TIM_SET_AUTORELOAD(&htim3, ticks - 1U);
-    __HAL_TIM_SET_COMPARE(&htim3, STEP_CHANNEL, ticks / 2U);
-
-    /* Carica subito ARR e CCR precaricati, prima di riavviare il PWM. */
-    htim3.Instance->EGR = TIM_EGR_UG;
-    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE | TIM_FLAG_CC1);
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-
+    Stepper_PrepareRamp();
     stepper_running = 1;
     if (HAL_TIM_PWM_Start_IT(&htim3, STEP_CHANNEL) != HAL_OK)
-        stepper_running = 0;
+        Stepper_Stop();
 }
 
 /* Partire dall'estremo destro, posizionato manualmente: non ha un sensore.
@@ -304,12 +362,7 @@ void Inizializza(void)
     uint32_t passi_centro = corsa_totale_steps / 2U;
     Stepper_SetDirection(DIR_BACKWARD);
     HAL_Delay(1);
-    /* Clock contatore 1 MHz: 125 tick = 8 kHz, impulso alto di 6 us. */
-    __HAL_TIM_SET_AUTORELOAD(&htim3, 124U);
-    __HAL_TIM_SET_COMPARE(&htim3, STEP_CHANNEL, 6U);
-    /* Carica i registri precaricati mentre il timer e' fermo. */
-    htim3.Instance->EGR = TIM_EGR_UG;
-    __HAL_TIM_CLEAR_FLAG(&htim3, TIM_FLAG_UPDATE | TIM_FLAG_CC1);
+    stepper_target_frequency = MAX_FREQUENCY;
     Stepper_MoveSteps(passi_centro);
     inizio = HAL_GetTick();
     while (stepper_running)
@@ -670,9 +723,13 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
         return;
     }
 
-    /* Il movimento a velocita' costante non ha un numero di passi limite. */
+    /* Il movimento continuo non ha un numero di passi limite. */
     if (step_target != 0U && step_count >= step_target)
+    {
         Stepper_Stop();
+        return;
+    }
+    Stepper_UpdateRamp();
 }
 
 /* USER CODE END 4 */
