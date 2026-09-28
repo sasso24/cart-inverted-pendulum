@@ -60,8 +60,8 @@ all: main-build
 main-build: Lettura_Encoder.elf secondary-outputs
 
 # Tool invocations
-Lettura_Encoder.elf Lettura_Encoder.map: $(OBJS) $(USER_OBJS) /Users/salvo/STM32CubeIDE/workspace_1.17.0/Lettura_Encoder/STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Lettura_Encoder.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/salvo/STM32CubeIDE/workspace_1.17.0/Lettura_Encoder/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lettura_Encoder.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Lettura_Encoder.elf Lettura_Encoder.map: $(OBJS) $(USER_OBJS) /Users/salvo/Desktop/Prog\ Embedded/cart-inverted-pendulum/Lettura_Encoder/STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Lettura_Encoder.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/Lettura_Encoder/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lettura_Encoder.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

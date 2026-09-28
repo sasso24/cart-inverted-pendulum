@@ -32,16 +32,17 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define MIRCOSTEP 8
 #define STEP_CHANNEL TIM_CHANNEL_1
-#define MIN_FREQUENCY 500.0f
-#define MAX_FREQUENCY 8000.0f
+#define MIN_FREQUENCY MIRCOSTEP*100.0f
+#define MAX_FREQUENCY MIRCOSTEP*1000.0f
 #define STEPPER_ACCELERATION_HZ_PER_S 10000.0f
 
 // tutte i punti di rif sono da dietro
 #define DIR_FORWARD  GPIO_PIN_SET   //SInistra (da dietro)
 #define DIR_BACKWARD GPIO_PIN_RESET
 
-#define HOMING_VELOCITY_HZ  1000.0f
+#define HOMING_VELOCITY_HZ  MIN_FREQUENCY
 #define HOMING_TIMEOUT_MS  120000U
 /* USER CODE END PD */
 
@@ -152,6 +153,18 @@ uint8_t FinecorsaSinistro_Premuto(void)
     return HAL_GPIO_ReadPin(FC_sx_GPIO_Port, FC_sx_Pin) == GPIO_PIN_SET;
 }
 
+/* Come il sinistro: pull-down esterno, contatto premuto a livello alto. */
+uint8_t FinecorsaDestro_Premuto(void)
+{
+    return HAL_GPIO_ReadPin(Fc_dx_GPIO_Port, Fc_dx_Pin) == GPIO_PIN_SET;
+}
+
+static uint8_t FinecorsaDirezione_Premuto(GPIO_PinState direction)
+{
+    return (direction == DIR_FORWARD) ? FinecorsaSinistro_Premuto()
+                                      : FinecorsaDestro_Premuto();
+}
+
 void Stepper_SetDirection(GPIO_PinState dir)
 {
     stepper_direction = dir;
@@ -243,7 +256,7 @@ void Stepper_MoveSteps(uint32_t steps)
     step_target = steps;
     arresto_finecorsa = 0;
 
-    if (stepper_direction == DIR_FORWARD && FinecorsaSinistro_Premuto())
+    if (FinecorsaDirezione_Premuto(stepper_direction))
     {
         arresto_finecorsa = 1;
         return;
@@ -266,7 +279,7 @@ void Stepper_Move(GPIO_PinState direction, uint32_t steps)
 
     while (stepper_running)
     {
-        if (direction == DIR_FORWARD && FinecorsaSinistro_Premuto())
+        if (FinecorsaDirezione_Premuto(direction))
         {
             Stepper_Stop();
             arresto_finecorsa = 1;
@@ -291,7 +304,7 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
     stepper_target_frequency = Stepper_ClampFrequency(velocity);
     Stepper_SetDirection(direction);
     HAL_Delay(1);
-    if (direction == DIR_FORWARD && FinecorsaSinistro_Premuto())
+    if (FinecorsaDirezione_Premuto(direction))
     {
         arresto_finecorsa = 1;
         return;
@@ -303,8 +316,9 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
         Stepper_Stop();
 }
 
-/* Partire dall'estremo destro, posizionato manualmente: non ha un sensore.
- * Misura la corsa lentamente fino a sinistra e torna al centro a 8 kHz.
+/* Da qualsiasi posizione cerca lentamente il finecorsa destro e azzera
+ * il conteggio; misura poi la corsa fino a sinistra e torna al centro a 8 kHz.
+ * Il riferimento finale resta zero a sinistra, positivo a destra.
  * Chiamare dal main dopo MX_TIM3_Init(), mai da un interrupt.
  */
 void Inizializza(void)
@@ -319,15 +333,37 @@ void Inizializza(void)
     posizione_carrello_max_steps = 0;
     posizione_carrello_steps = 0;
 
-    /* Se si parte gia' a sinistra non si puo' misurare la corsa. */
-    if (FinecorsaSinistro_Premuto())
+    /* Il controllo direzionale consente di partire anche da un finecorsa.
+     * Se siamo gia' a destra, il motore non emette alcun impulso.
+     */
+    Stepper_set_velocity(DIR_BACKWARD, HOMING_VELOCITY_HZ);
+    uint32_t inizio = HAL_GetTick();
+    while (stepper_running)
+    {
+        /* L'ISR arresta il moto al termine della fase alta dello STEP. */
+        if ((uint32_t)(HAL_GetTick() - inizio) >= HOMING_TIMEOUT_MS)
+        {
+            Stepper_Stop();
+            inizializzazione_esito = HAL_TIMEOUT;
+            return;
+        }
+        HAL_Delay(1);
+    }
+
+    Stepper_Stop();
+    HAL_Delay(20);
+    if (!arresto_finecorsa || !FinecorsaDestro_Premuto()
+        || FinecorsaSinistro_Premuto())
     {
         inizializzazione_esito = HAL_ERROR;
         return;
     }
 
+    /* Zero della misura della corsa al contatto destro confermato. */
+    step_count = 0;
+    posizione_carrello_steps = 0;
     Stepper_set_velocity(DIR_FORWARD, HOMING_VELOCITY_HZ);
-    uint32_t inizio = HAL_GetTick();
+    inizio = HAL_GetTick();
     while (stepper_running)
     {
         /* L'ISR conta l'impulso e controlla il finecorsa al termine
@@ -377,7 +413,7 @@ void Inizializza(void)
         HAL_Delay(1);
     }
 
-    if (step_count != passi_centro)
+    if (arresto_finecorsa || step_count != passi_centro)
     {
         riferimento_carrello_valido = 0;
         inizializzazione_esito = HAL_ERROR;
@@ -432,6 +468,10 @@ int main(void)
   }
 
   Inizializza();
+  if (inizializzazione_esito != HAL_OK)
+  {
+      Error_Handler();
+  }
 
   /* USER CODE END 2 */
 
@@ -443,17 +483,19 @@ int main(void)
 
 
 
-	 /*
 
-	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	  Stepper_Move(DIR_FORWARD, 2000);
+
+	  /*HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+	  Stepper_Move(DIR_FORWARD, 4000);
 	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-	  HAL_Delay(1000);
+	  HAL_Delay(500);
 
 
 
-	  Stepper_Move(DIR_BACKWARD, 2000);
+	  Stepper_Move(DIR_BACKWARD, 8000);
+	  HAL_Delay(500);
+	  Stepper_Move(DIR_FORWARD, 4000);
 
 
 	  HAL_Delay(2000);*/
@@ -688,11 +730,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(DIR_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : FC_sx_Pin */
-  GPIO_InitStruct.Pin = FC_sx_Pin;
+  /*Configure GPIO pins : FC_sx_Pin Fc_dx_Pin */
+  GPIO_InitStruct.Pin = FC_sx_Pin|Fc_dx_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(FC_sx_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -716,7 +758,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
     if (riferimento_carrello_valido)
         posizione_carrello_steps += (stepper_direction == DIR_FORWARD) ? -1 : 1;
 
-    if (stepper_direction == DIR_FORWARD && FinecorsaSinistro_Premuto())
+    if (FinecorsaDirezione_Premuto(stepper_direction))
     {
         Stepper_Stop();
         arresto_finecorsa = 1;
