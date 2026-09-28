@@ -3,26 +3,27 @@
   "seed": 42,
   "initial_state": "downward with small random perturbations",
   "control_hz": 50,
-  "max_episode_seconds": 20,
+  "max_episode_seconds": 30,
   "environment": {
     "sha256": {
       "cart_pendolo.xml": "e0bc891954d21b432baadae5a10ba64e34f8b39e4367c2a6577bfc24ec27a5c6",
-      "ambiente.py": "fb144715c879bdd5125e3d215cfb548accb17a32d5cde425a44f8b26eed8ece0",
-      "stepper.py": "e12c030409cba1e16508008a2b578069ae628e1fc742813a181cb18728db1e6b",
-      "stepper.toml": "c171bb723bcf7c04349d08563ba74ea0a53aff6559fe5c6aec4a1a7080b12186"
+      "ambiente.py": "c6579237e13185ff273283692de7719593f143a641027541ca85b38348d93f40",
+      "stepper.py": "729389aa0b0c4d4345e1fdca14235d1bb73a7ac0bb18145ec609d40c88d2776e",
+      "stepper.toml": "230d7c42e89678b7b333434892871d65f32fb1dfd59b4b27a129982f9e40910c"
     },
     "stepper": {
-      "frequenza_min_hz": 1000.0,
-      "frequenza_max_hz": 8000.0,
+      "frequenza_min_hz": 3200.0,
+      "frequenza_max_hz": 32000.0,
       "passi_per_giro": 200,
       "angolo_passo_gradi": 1.8,
-      "microstepping": 8,
+      "microstepping": 32,
       "passo_cinghia_m": 0.002,
       "denti_puleggia": 48,
       "rapporto_trasmissione": 1.0,
-      "zona_morta": 0.0
+      "zona_morta": 0.0,
+      "rampa_hz_s": 1600000.0
     },
-    "observation_size": 5,
+    "observation_size": 6,
     "action": "signed_normalized_step_frequency",
     "control_hz": 50
   }

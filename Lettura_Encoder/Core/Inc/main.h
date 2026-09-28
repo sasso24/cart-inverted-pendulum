@@ -55,6 +55,8 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void Controllo_ButtonTick(void);
+extern volatile uint8_t controllo_abilitato;
 
 /* USER CODE END EFP */
 

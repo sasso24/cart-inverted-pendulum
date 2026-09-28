@@ -32,7 +32,7 @@ class Comandi:
         self.last = f"Manuale: {'+10' if direction > 0 else '-10'} cm"
 
     def manual_action(self, env):
-        """Inseguimento manuale in velocita, senza integrazione di accelerazione."""
+        """Inseguimento manuale in velocita; l'ambiente applica la rampa."""
         if self.manual_target is None:
             return None
         error = self.manual_target - float(env.data.qpos[0])
@@ -97,6 +97,11 @@ def prepare_continuous(env):
     né il periodo della policy: il loop grafico segue il tempo monotono del PC.
     """
     env.max_steps = math.inf
+    # env.reset(options={"exact": True})
+    # env.data.qpos[1] = 0.0       # Asta verticale verso l'alto
+    # env.data.qvel[:] = 0.0      # Carrello e asta inizialmente fermi
+    # mujoco.mj_forward(env.model, env.data)
+    # return env.observation(), env.info()
     return env.reset(options={"exact": True})
 
 
@@ -187,7 +192,7 @@ def run(env, agent):
                     elif commands.enabled and agent is not None:
                         action, _ = agent.predict(obs, deterministic=True)
                     else:
-                        # Zero significa richiesta di arresto, senza stato integrato.
+                        # Zero richiede una decelerazione tramite la rampa.
                         action = np.array([0.], dtype=np.float32)
                     obs, _, terminated, truncated, info = env.step(action, push=commands.force(data.time))
                     accumulator -= env.dt

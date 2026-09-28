@@ -52,7 +52,7 @@ def main():
     axes[0, 1].axhline(-env.limite, color='red', linestyle='--')
     axes[0, 1].set(title='Posizione carrello', ylabel='m')
     axes[1, 0].step(t, requested, where='post', label='Richiesta rete', alpha=.6)
-    axes[1, 0].step(t, hz, where='post', label='Comando dopo arresti')
+    axes[1, 0].plot(t, hz, label='Comando dopo rampa e arresti')
     axes[1, 0].set(title='Frequenza STEP firmata', ylabel='Hz')
     axes[1, 0].legend()
     axes[1, 1].plot(t, target, label='Comandata')

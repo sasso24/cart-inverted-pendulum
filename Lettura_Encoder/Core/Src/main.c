@@ -32,18 +32,19 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MIRCOSTEP 8
+#define MIRCOSTEP 32
 #define STEP_CHANNEL TIM_CHANNEL_1
 #define MIN_FREQUENCY MIRCOSTEP*100.0f
 #define MAX_FREQUENCY MIRCOSTEP*1000.0f
-#define STEPPER_ACCELERATION_HZ_PER_S 10000.0f
+#define STEPPER_ACCELERATION_HZ_PER_S 1600000.0f
 
 // tutte i punti di rif sono da dietro
 #define DIR_FORWARD  GPIO_PIN_SET   //SInistra (da dietro)
 #define DIR_BACKWARD GPIO_PIN_RESET
 
-#define HOMING_VELOCITY_HZ  MIN_FREQUENCY
+#define HOMING_VELOCITY_HZ  MIN_FREQUENCY*2
 #define HOMING_TIMEOUT_MS  120000U
+#define BUTTON_RELEASE_MS  50U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -99,6 +100,15 @@ static volatile uint8_t riferimento_carrello_valido = 0;
 volatile uint8_t carrello_inizializzato = 0;
 volatile HAL_StatusTypeDef inizializzazione_esito = HAL_ERROR;
 
+/* Il main e' l'unico contesto che puo' abilitare il controllo.
+ * L'ISR puo' solo richiedere un avvio oppure fermare immediatamente.
+ */
+volatile uint8_t controllo_abilitato = 0;
+static volatile uint8_t richiesta_avvio = 0;
+static volatile uint8_t pulsante_pronto = 0;
+static volatile uint8_t pulsante_inizializzato = 0;
+static volatile uint32_t pulsante_rilascio_ms = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -113,6 +123,45 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/* Prima dell'abilitazione di B1, l'homing iniziale e' indipendente
+ * dal comando del controllo. Dopo, ogni avvio richiede l'abilitazione.
+ */
+static uint8_t Stepper_MovimentoConsentito(void)
+{
+    return !pulsante_inizializzato || controllo_abilitato;
+}
+
+/* Attesa interrompibile: le vecchie sequenze devono uscire prima che
+ * il main possa accettare una nuova richiesta di avvio.
+ */
+static uint8_t Controllo_Attendi(uint32_t durata_ms)
+{
+    uint32_t inizio = HAL_GetTick();
+    while (Stepper_MovimentoConsentito()
+           && (uint32_t)(HAL_GetTick() - inizio) < durata_ms)
+        HAL_Delay(1);
+    return Stepper_MovimentoConsentito();
+}
+
+/* Chiamata da SysTick durante i movimenti bloccanti nel main.
+ * Nessun ritardo sul primo fronte di pressione; un'altra pressione viene
+ * accettata solo dopo almeno 50 ms di rilascio stabile (PC13 alto).
+ */
+void Controllo_ButtonTick(void)
+{
+    if (!pulsante_inizializzato)
+        return;
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET)
+        pulsante_rilascio_ms = 0;
+    else if (pulsante_rilascio_ms < BUTTON_RELEASE_MS)
+        ++pulsante_rilascio_ms;
+    else
+        pulsante_pronto = 1;
+    __set_PRIMASK(primask);
+}
 
 void Leggi_theta(){
 	uint32_t conteggio = __HAL_TIM_GET_COUNTER(&htim2);
@@ -178,6 +227,46 @@ void Stepper_Stop(void)
     stepper_ramp_active = 0;
 }
 
+static void Controllo_Disabilita(void)
+{
+    controllo_abilitato = 0;
+    Stepper_Stop();
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+}
+
+/* Chiamare solo dal main, dopo l'uscita da ogni sequenza precedente. */
+static void Controllo_AccettaAvvio(void)
+{
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    if (richiesta_avvio)
+    {
+        richiesta_avvio = 0;
+        controllo_abilitato = 1;
+        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    }
+    __set_PRIMASK(primask);
+}
+
+/* Check e avvio devono essere indivisibili rispetto all'ISR di stop.
+ * Sezione breve, senza attese: HAL_TIM_PWM_Start_IT scrive solo registri.
+ * Nel main gli avvii richiedono B1; l'homing iniziale resta autonomo.
+ */
+static void Stepper_StartIfEnabled(void)
+{
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    if (Stepper_MovimentoConsentito())
+    {
+        stepper_running = 1;
+        if (HAL_TIM_PWM_Start_IT(&htim3, STEP_CHANNEL) != HAL_OK)
+            Stepper_Stop();
+    }
+    else
+        Stepper_Stop();
+    __set_PRIMASK(primask);
+}
+
 static float Stepper_ClampFrequency(float frequency)
 {
     if (!isfinite(frequency) || frequency < MIN_FREQUENCY)
@@ -199,10 +288,14 @@ static void Stepper_ApplyFrequency(float frequency)
         period = 2.0f;
     uint32_t ticks = (uint32_t)period;
 
+    /* Protegge anche il read/modify/write di CR1 da uno stop concorrente. */
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
     SET_BIT(htim3.Instance->CR1, TIM_CR1_UDIS);
     __HAL_TIM_SET_AUTORELOAD(&htim3, ticks - 1U);
     __HAL_TIM_SET_COMPARE(&htim3, STEP_CHANNEL, ticks / 2U);
     CLEAR_BIT(htim3.Instance->CR1, TIM_CR1_UDIS);
+    __set_PRIMASK(primask);
 }
 
 /* Chiamata a timer fermo per OGNI nuovo movimento, anche dopo uno stop
@@ -256,6 +349,8 @@ void Stepper_MoveSteps(uint32_t steps)
     step_target = steps;
     arresto_finecorsa = 0;
 
+    if (!Stepper_MovimentoConsentito())
+        return;
     if (FinecorsaDirezione_Premuto(stepper_direction))
     {
         arresto_finecorsa = 1;
@@ -265,16 +360,15 @@ void Stepper_MoveSteps(uint32_t steps)
         return;
 
     Stepper_PrepareRamp();
-    stepper_running = 1;
-    if (HAL_TIM_PWM_Start_IT(&htim3, STEP_CHANNEL) != HAL_OK)
-        Stepper_Stop();
+    Stepper_StartIfEnabled();
 }
 
 void Stepper_Move(GPIO_PinState direction, uint32_t steps)
 {
     Stepper_Stop();
     Stepper_SetDirection(direction);
-    HAL_Delay(1);
+    if (!Controllo_Attendi(1))
+        return;
     Stepper_MoveSteps(steps);
 
     while (stepper_running)
@@ -298,12 +392,13 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
     step_target = 0; /* Zero identifica il movimento continuo. */
     arresto_finecorsa = 0;
 
-    if (!isfinite(velocity) || velocity <= 0.0f)
+    if (!Stepper_MovimentoConsentito() || !isfinite(velocity) || velocity <= 0.0f)
         return;
 
     stepper_target_frequency = Stepper_ClampFrequency(velocity);
     Stepper_SetDirection(direction);
-    HAL_Delay(1);
+    if (!Controllo_Attendi(1))
+        return;
     if (FinecorsaDirezione_Premuto(direction))
     {
         arresto_finecorsa = 1;
@@ -311,9 +406,7 @@ void Stepper_set_velocity(GPIO_PinState direction, float velocity)
     }
 
     Stepper_PrepareRamp();
-    stepper_running = 1;
-    if (HAL_TIM_PWM_Start_IT(&htim3, STEP_CHANNEL) != HAL_OK)
-        Stepper_Stop();
+    Stepper_StartIfEnabled();
 }
 
 /* Da qualsiasi posizione cerca lentamente il finecorsa destro e azzera
@@ -467,11 +560,21 @@ int main(void)
       Error_Handler();
   }
 
+  /* Homing automatico come prima, indipendente dal pulsante. */
   Inizializza();
   if (inizializzazione_esito != HAL_OK)
   {
       Error_Handler();
   }
+
+  /* Da qui B1 abilita/disabilita solo il controllo nel ciclo principale.
+   * Le pressioni durante l'homing non vengono accodate.
+   */
+  Stepper_Stop();
+  __HAL_GPIO_EXTI_CLEAR_IT(B1_Pin);
+  HAL_NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
+  pulsante_inizializzato = 1;
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE END 2 */
 
@@ -479,26 +582,28 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //Leggi_theta();
+      if (!controllo_abilitato)
+      {
+          /* La vecchia sequenza e' ormai uscita: un nuovo avvio e' lecito. */
+          Controllo_AccettaAvvio();
+          if (!controllo_abilitato)
+          {
+              HAL_Delay(1);
+              continue;
+          }
+      }
 
-
-
-
-
-	  /*HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	  Stepper_Move(DIR_FORWARD, 4000);
-	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-
-	  HAL_Delay(500);
-
-
-
-	  Stepper_Move(DIR_BACKWARD, 8000);
-	  HAL_Delay(500);
-	  Stepper_Move(DIR_FORWARD, 4000);
-
-
-	  HAL_Delay(2000);*/
+      //Leggi_theta();
+      /* Sequenza di prova esistente, interamente subordinata a B1. */
+      Stepper_Move(DIR_FORWARD, posizione_carrello_max_steps / 4);
+      if (!Controllo_Attendi(500))
+          continue;
+      Stepper_Move(DIR_BACKWARD, posizione_carrello_max_steps / 2);
+      if (!Controllo_Attendi(500))
+          continue;
+      Stepper_Move(DIR_FORWARD, posizione_carrello_max_steps / 4);
+      if (!Controllo_Attendi(2000))
+          continue;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -719,7 +824,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
@@ -744,14 +849,38 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* Abilitazione rimandata al main, dopo Inizializza(). */
+  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin != B1_Pin || !pulsante_inizializzato)
+        return;
+    /* Entrambi i fronti azzerano il tempo di rilascio: anche un breve
+     * rimbalzo fra due SysTick non puo' riarmare il pulsante. */
+    pulsante_rilascio_ms = 0;
+    if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) != GPIO_PIN_RESET
+        || !pulsante_pronto)
+        return;
+    pulsante_pronto = 0;
+    if (controllo_abilitato || richiesta_avvio)
+    {
+        richiesta_avvio = 0;
+        Controllo_Disabilita(); /* Stop PWM qui, senza attendere il main. */
+    }
+    else
+        richiesta_avvio = 1; /* Avvio del controllo nel ciclo principale. */
+}
+
+
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance != TIM3 || htim->Channel != HAL_TIM_ACTIVE_CHANNEL_1
-        || !stepper_running)
+        || !stepper_running || !Stepper_MovimentoConsentito())
         return;
 
     step_count++;
@@ -785,6 +914,9 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+  /* Fermare l'hardware PRIMA del blocco: il PWM continua senza CPU. */
+  if (htim3.Instance == TIM3)
+      Controllo_Disabilita();
   while (1)
   {
   }

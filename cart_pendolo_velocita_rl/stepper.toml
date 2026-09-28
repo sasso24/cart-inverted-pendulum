@@ -1,12 +1,13 @@
 # VALORI DI ESEMPIO: sostituire con quelli del motore, driver e trasmissione.
 # Hz = impulsi STEP/secondo, NON giri/secondo dell'albero.
 [stepper]
-frequenza_min_hz = 1000.0 # minimo in movimento; zero resta sempre arresto
-frequenza_max_hz = 8000.0
+frequenza_min_hz = 3200.0 # minimo richiesto; la rampa puo attraversare valori inferiori
+frequenza_max_hz = 32000.0
+rampa_hz_s = 1600000.0 # salita/discesa: 0 -> 32000 Hz in 0.5 s; valore da tarare
 zona_morta = 0.0 # azioni con |u| <= questa soglia comandano arresto
 passi_per_giro = 200 # passi interi, prima del microstepping
 angolo_passo_gradi = 1.8 # deve essere 360 / passi_per_giro
-microstepping = 8 # impulsi per passo intero; deve coincidere col driver
+microstepping = 32 # impulsi per passo intero; deve coincidere col driver
 
 # Necessari soltanto per convertire gli Hz nella velocita del carrello.
 # 48 denti e passo 2 mm riprendono l'ipotesi della geometria revisionata.

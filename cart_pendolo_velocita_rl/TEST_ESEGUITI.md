@@ -1,4 +1,24 @@
-# Verifiche della nuova versione — 22 settembre 2026
+# Rampa di frequenza - 28 settembre 2026
+
+- 14 test automatici superati, inclusi salita, frenata, inversione, assenza
+  di overshoot, reset, finecorsa e aggiornamento della rampa a ogni passo fisico.
+- Verificata la distinzione fra frequenza richiesta e applicata, con stato della
+  rampa nel sesto ingresso della rete; Gymnasium e Stable-Baselines3 accettano l'ambiente.
+- 1.805 configurazioni geometriche senza collisioni interne alla corsa.
+- Prova SAC di 128 decisioni con aggiornamenti della rete, salvataggio,
+  caricamento, inferenza e ripresa per altre 16 decisioni riuscita. File di prova
+  temporanei; i modelli dell'utente non sono stati modificati.
+- Checkpoint precedenti senza rampa rifiutati correttamente.
+- La verifica completa `verifica.py` si ferma sulla manovra manuale di 10 cm:
+  con il minimo attuale di 3.200 Hz la manovra va in timeout nei due versi.
+  Il confronto con il codice precedente alla modifica e gli stessi parametri
+  conferma che il problema era gia presente. Con minimo zero, la manovra con
+  rampa termina nei due versi entro 0,5 mm dal bersaglio. Il minimo dell'utente
+  resta invariato; il rapporto JSON storico non e stato rigenerato.
+- Nessuna verifica visiva del viewer, prova hardware o valutazione di una rete
+  addestrata con la rampa. Il test breve verifica soltanto la pipeline.
+
+# Verifiche della versione senza rampa — 22 settembre 2026
 
 - Otto test automatici superati: conversioni, limiti, configurazioni invalide,
   microstepping, Gymnasium, accoppiamento del pendolo, arresto e finecorsa,

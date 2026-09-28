@@ -26,7 +26,7 @@ class CartPendoloEnv(gym.Env):
         self.data = mujoco.MjData(self.model)
         self.limite = float(self.model.joint('scorrimento').range[1])
         self.action_space = spaces.Box(-1., 1., (1,), dtype=np.float32)
-        self.observation_space = spaces.Box(-np.inf, np.inf, (5,), dtype=np.float32)
+        self.observation_space = spaces.Box(-np.inf, np.inf, (6,), dtype=np.float32)
         self.steps = self.stable_steps = self.best_stable_steps = 0
         self.motivo = ''
         self.comando_motore = self.controllo.comando(0.)
@@ -42,7 +42,9 @@ class CartPendoloEnv(gym.Env):
         x, angle = self.data.qpos
         vx, omega = self.data.qvel
         return np.array([x / self.limite, math.sin(angle), math.cos(angle),
-                         vx / self.controllo.p.velocita_max_m_s, omega / 10.], dtype=np.float32)
+                         vx / self.controllo.p.velocita_max_m_s, omega / 10.,
+                         self.comando_motore.frequenza_hz / self.controllo.p.frequenza_max_hz],
+                        dtype=np.float32)
 
     def info(self):
         angle = math.atan2(math.sin(self.data.qpos[1]), math.cos(self.data.qpos[1]))
@@ -61,7 +63,7 @@ class CartPendoloEnv(gym.Env):
                 'is_success': bool(self.best_stable_steps * self.dt >= 3.)}
 
     def _stop(self):
-        self.comando_motore = self.controllo.comando(0.)
+        self.comando_motore = self.controllo.reset()
         self.data.ctrl[0] = 0.
 
     def reset(self, *, seed=None, options=None):
@@ -86,14 +88,14 @@ class CartPendoloEnv(gym.Env):
         if action.shape != (1,) or not np.isfinite(action).all() or not math.isfinite(push):
             raise ValueError('Serve un’azione finita di forma (1,) e una spinta finita.')
         u = float(np.clip(action[0], -1., 1.))
-        self.comando_motore = self.controllo.comando(u)
-        self.frequenza_richiesta_hz = self.comando_motore.frequenza_hz
-        self.data.ctrl[0] = self.comando_motore.velocita_carrello_m_s
+        self.frequenza_richiesta_hz = self.controllo.azione_a_hz(u)
         self.data.qfrc_applied[0] = push
         for _ in range(self.frame_skip):
             if abs(self.data.qpos[0]) >= self.limite:
                 self.motivo = 'finecorsa'
                 break
+            self.comando_motore = self.controllo.avanza(u, self.model.opt.timestep)
+            self.data.ctrl[0] = self.comando_motore.velocita_carrello_m_s
             mujoco.mj_step(self.model, self.data)
             if not np.isfinite(self.data.qpos).all() or not np.isfinite(self.data.qvel).all():
                 self._stop()

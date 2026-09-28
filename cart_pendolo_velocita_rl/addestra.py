@@ -18,7 +18,7 @@ def contract():
     """Firma del modello E del codice: impedisce riprese con dinamica cambiata."""
     names = ('cart_pendolo.xml', 'ambiente.py', 'stepper.py', 'stepper.toml')
     return {"sha256": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in names},
-            "stepper": asdict(ParametriStepper.carica()), "observation_size": 5,
+            "stepper": asdict(ParametriStepper.carica()), "observation_size": 6,
             "action": "signed_normalized_step_frequency", "control_hz": 50}
 
 
@@ -85,7 +85,7 @@ class Progress(BaseCallback):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--steps", type=int, default=400000, help="Nuovi passi di addestramento")
+    parser.add_argument("--steps", type=int, default=450000, help="Nuovi passi di addestramento")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--output", type=Path, default=ROOT / "modelli")
@@ -109,7 +109,7 @@ def main():
             print("Buffer non disponibile: raccolgo nuove esperienze prima di aggiornare la rete.", flush=True)
     else:
         # Due strati da 128 ReLU: stessa taglia di base del progetto precedente,
-        # ma cinque ingressi. SAC usa due critici SOLO in addestramento; il firmware
+        # ma sei ingressi. SAC usa due critici SOLO in addestramento; il firmware
         # eseguirà l'attore deterministico (media seguita da tanh).
         # Una ottimizzazione ogni quattro transizioni limita il costo CPU.
         agent = SAC("MlpPolicy", env, seed=args.seed, device="cpu", verbose=0,
@@ -118,7 +118,7 @@ def main():
                     gradient_steps=1, ent_coef="auto_0.1", policy_kwargs={"net_arch": [128, 128]})
         (args.output / "config.json").write_text(json.dumps({"algorithm": "SAC", "seed": args.seed,
             "initial_state": "downward with small random perturbations", "control_hz": 50,
-            "max_episode_seconds": 20, "environment": contract()}, indent=2))
+            "max_episode_seconds": 30, "environment": contract()}, indent=2))
     print("Addestramento SAC: tutti gli episodi partono dal basso. Ctrl+C salva ed esce.", flush=True)
     # Salviamo anche il replay buffer per poter riprendere senza perdere esperienze.
     try:

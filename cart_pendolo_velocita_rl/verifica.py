@@ -43,7 +43,9 @@ def main():
         assert commands.manual_target is None and 'completato' in commands.last
         assert abs(env.data.qpos[0] - sign * 0.1) < 0.001
     result = {'status': 'OK', 'collision_free_configurations': samples,
-              'observation_size': 5, 'physics_hz': 1 / env.model.opt.timestep,
+              'observation_size': env.observation_space.shape[0],
+              'ramp_hz_s': env.controllo.p.rampa_hz_s,
+              'physics_hz': 1 / env.model.opt.timestep,
               'control_hz': 1 / env.dt, 'max_step_frequency_hz': env.controllo.p.frequenza_max_hz,
               'metres_per_pulse': env.controllo.p.metri_per_impulso,
               'max_cart_velocity_m_s': env.controllo.p.velocita_max_m_s,

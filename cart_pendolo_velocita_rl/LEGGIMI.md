@@ -4,7 +4,7 @@ Questa cartella deriva da `cart_pendolo_stepper_rl` fornita dall'utente.
 Conserva geometria XML, algoritmo SAC, rete con due strati da 128 neuroni,
 comandi della finestra, launcher macOS, valutazione e grafici. Sostituisce il
 comando di accelerazione e il modello di inseguimento STEP con una conversione
-semplice di velocità. Il progetto originale resta intatto.
+di velocità seguita da una rampa di frequenza. Il progetto originale resta intatto.
 
 ## Avvio
 
@@ -43,7 +43,7 @@ copiati: hanno un contratto diverso e non misurano le prestazioni di questa vers
 | File | Responsabilità |
 |---|---|
 | `stepper.toml` | Parametri hardware e conversione |
-| `stepper.py` | Un'azione firmata diventa una frequenza STEP |
+| `stepper.py` | Conversione dell'azione e rampa della frequenza STEP |
 | `cart_pendolo.xml` | Geometria originale, con attuatore di velocità |
 | `ambiente.py` | Osservazioni, azione, ricompensa, finecorsa e reset |
 | `addestra.py` | SAC, checkpoint, ripresa, selezione della rete |
@@ -61,25 +61,26 @@ il modulo la velocità. Non serve una seconda uscita di direzione.
 Con minimo e zona morta nulli: `frequenza_hz = u × frequenza_max_hz`.
 Hz significa **impulsi STEP al secondo**, non giri al secondo dell'albero.
 Il segno è una convenzione software; sul driver si usano il modulo per STEP
-ed il segno per DIR. `u=0` significa arresto degli impulsi.
+ed il segno per DIR. `u=0` richiede una frenata a rampa fino all'arresto.
 
-La configurazione iniziale riprende i valori del `stepper.py` originale,
-che erano esplicitamente provvisori:
+La configurazione attuale contiene valori da confermare sul banco:
 
 | Parametro | Valore |
 |---|---:|
 | Passi interi per giro | 200 |
 | Angolo passo | 1,8° |
-| Microstepping | 8 |
+| Microstepping | 32 |
 | Passo cinghia | 2 mm |
 | Denti puleggia | 48 |
 | Rapporto giri motore / giri puleggia | 1 |
-| Frequenza minima | 0 Hz |
-| Frequenza massima | 50.000 Hz |
+| Frequenza minima richiesta in movimento | 3.200 Hz |
+| Frequenza massima | 32.000 Hz |
+| Rampa di salita e discesa | 64.000 Hz/s |
 
-Con questi valori ci sono 1.600 impulsi/giro e 0,06 mm/impulso: 50.000 Hz
-corrispondono ai **3 m/s massimi del vecchio codice**, non a una velocità
-verificata sul banco. Per esempio `u=-0,5` produce -25.000 Hz e -1,5 m/s.
+Con questi valori ci sono 6.400 impulsi/giro e 0,015 mm/impulso: 32.000 Hz
+corrispondono a 0,48 m/s. Per esempio `u=-0,5` richiede -17.600 Hz e -0,264 m/s.
+La rampa iniziale equivale a 0,96 m/s² del riferimento di velocità;
+non è un limite misurato del motore.
 Cambiare i valori in `stepper.toml` prima dell'addestramento.
 
 ```
@@ -93,16 +94,27 @@ Passi/giro e angolo vengono verificati: il loro prodotto deve essere 360°.
 Microstepping e trasmissione devono corrispondere all'hardware.
 Con zona morta d, per `|u| <= d` si restituisce zero; altrimenti:
 `f = segno(u) × [f_min + (|u|-d)/(1-d) × (f_max-f_min)]`.
-Un minimo positivo introduce un salto fra arresto e movimento. Non è una
-velocità minima negativa. Valori fuori [-1,1] sono saturati; NaN e infinito
-sono rifiutati.
+Un minimo positivo introduce un salto nella richiesta, smussato dalla rampa.
+Durante partenza, frenata e inversione il comando attraversa anche frequenze
+inferiori al minimo. Valori fuori [-1,1] sono saturati; NaN e infinito sono rifiutati.
+
+`rampa_hz_s` deve essere finito e positivo. A ogni passo fisico (2 ms):
+
+```text
+f_applicata += clip(f_richiesta - f_applicata, -rampa_hz_s * dt, +rampa_hz_s * dt)
+```
+
+La rampa vale nei due versi e non supera la frequenza richiesta. Con i valori
+attuali 0 -> 32.000 Hz richiede 0,5 s; +32.000 -> -32.000 Hz richiede 1 s.
+Reset, finecorsa e fine episodio azzerano subito il comando e lo stato della rampa.
 
 ## Simulazione e osservazioni
 
-Il percorso è `rete → Hz firmati → m/s carrello → attuatore MuJoCo`.
+Il percorso è `rete → Hz richiesti → rampa → Hz applicati → m/s → attuatore MuJoCo`.
 L'attuatore di velocità usa un guadagno numerico fisso `kv=200` nell'XML:
 forza equivalente = guadagno × errore di velocità. Non richiede di identificare
-coppia, rigidezza, accelerazione massima o inerzia del rotore. Non simula
+coppia, rigidezza o inerzia del rotore. La rampa limita il riferimento, non
+l'accelerazione fisica effettiva del carrello. Non simula
 impulsi individuali, perdita di passi o limiti di coppia. Ha un breve
 transitorio di inseguimento e non rappresenta una velocità imposta esattamente.
 La dinamica del pendolo è ancora accoppiata fisicamente al carrello.
@@ -112,26 +124,29 @@ un'altra revisione. Masse e dimensioni non confermate restano ipotesi.
 Finecorsa e limite di corsa vengono letti dall'XML. Fisica a 500 Hz, controllo
 a 50 Hz, episodi di 20 s; il viewer usa durata continua fino a reset/arresto.
 
-Le osservazioni sono cinque, da sensori ideali dello stato simulato:
+Le osservazioni sono sei: cinque da sensori ideali e una dallo stato della rampa:
 
 1. posizione carrello / limite di corsa;
 2. sin(angolo);
 3. cos(angolo);
 4. velocità carrello / velocità massima configurata;
 5. velocità angolare / 10 rad/s.
+6. frequenza applicata dopo la rampa / frequenza massima.
 
-Zero angolare è il pendolo in alto, π il pendolo in basso. Non c'è più lo
-stato interno del generatore di accelerazione né la posizione da conteggio
-simulato. Sul banco queste grandezze devono essere misurate o stimate con
+Zero angolare è il pendolo in alto, π il pendolo in basso. La frequenza della
+rampa è uno stato interno noto al controllore. Sul banco le grandezze fisiche
+devono essere misurate o stimate con
 normalizzazioni identiche: il conteggio STEP da solo non misura lo slittamento.
-La rete è **5 → 128 ReLU → 128 ReLU → 1 tanh** e richiede nuovo addestramento.
+La rete è **6 → 128 ReLU → 128 ReLU → 1 tanh** e richiede nuovo addestramento.
 Le firme di XML, ambiente, stepper e TOML impediscono il caricamento di
 checkpoint incompatibili dopo modifiche al modello o ai parametri.
+I checkpoint precedenti senza rampa non possono essere ripresi. Avviare, ad esempio,
+`./Addestra.command --output modelli_rampa --steps 300000` per conservare quelli esistenti.
 
 `env.step()` mantiene l'interfaccia Gymnasium. Nel dizionario `info`:
 
-- `motor_frequency_hz`: comando firmato, azzerato a fine episodio;
-- `requested_frequency_hz`: richiesta prima degli arresti;
+- `motor_frequency_hz`: comando firmato dopo la rampa, azzerato a fine episodio;
+- `requested_frequency_hz`: richiesta prima della rampa e degli arresti;
 - `step_frequency_hz`, `direction`: modulo e verso separati;
 - `command_velocity_m_s`, `cart_velocity_m_s`: riferimento e velocità simulata.
 
@@ -141,8 +156,9 @@ Il convertitore è utilizzabile anche senza MuJoCo:
 from stepper import ControlloStepper
 motore = ControlloStepper()
 f_hz = motore.azione_a_hz(-0.5)
-comando = motore.comando(-0.5)
+comando = motore.avanza(-0.5, dt=0.002)  # chiamare a ogni passo della rampa
 # comando.frequenza_step_hz, comando.direzione
+motore.reset()  # azzeramento immediato
 ```
 
 ## Finestra
@@ -151,7 +167,7 @@ R reset, C alterna SAC/arresto, A/D applicano spinte, Spazio pausa, Esc chiude.
 Mouse per ruotare, rotella per zoom. Frecce: movimento manuale di +/-10 cm;
 durante il movimento la policy viene sospesa e poi ripristinata. Il controllo
 manuale usa un riferimento di velocità proporzionale all'errore, limitato a
-0,3 m/s e al massimo configurato. Non è una traiettoria con accelerazione limitata.
+0,3 m/s e al massimo configurato, seguito dalla stessa rampa usata dalla policy.
 Con un minimo Hz elevato la precisione manuale può peggiorare: dopo 10 s
 scatta il timeout con richiesta di arresto. I finecorsa fermano la simulazione
 finché non si preme R. Il display mostra il comando STEP firmato in Hz.
