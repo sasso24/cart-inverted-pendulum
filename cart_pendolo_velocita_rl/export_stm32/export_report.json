@@ -1,0 +1,81 @@
+{
+  "checkpoint": "/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/cart_pendolo_velocita_rl/modelli/migliore.zip",
+  "checkpoint_sha256": "c55f785c4ebe2b2bf324a3717729acca45cac2ee0a0a971e47b1d9d1bee9be63",
+  "onnx_sha256": "7f723424601fc303dccbd7982af715da64c4a66d6913e265352aeb2bbd23986e",
+  "opset": 13,
+  "ir_version": 7,
+  "dtype": "float32",
+  "input": {
+    "name": "observation",
+    "shape": [
+      1,
+      6
+    ]
+  },
+  "output": {
+    "name": "action",
+    "shape": [
+      1,
+      1
+    ],
+    "range": [
+      -1,
+      1
+    ]
+  },
+  "operators": [
+    "Gemm",
+    "Relu",
+    "Gemm",
+    "Relu",
+    "Gemm",
+    "Tanh"
+  ],
+  "parameters": 17537,
+  "file_bytes": 71015,
+  "validation_samples": 5100,
+  "simulation_samples": 1000,
+  "max_absolute_error": 7.703900337219238e-06,
+  "mean_absolute_error": 2.1001733330194838e-07,
+  "observed_output_min": -0.9999998807907104,
+  "observed_output_max": 1.0000001192092896,
+  "atol": 1e-05,
+  "rtol": 2e-05,
+  "validation_passed": true,
+  "xcubeai_validation": "Not run; import and Analyze/Validate in X-CUBE-AI.",
+  "versions": {
+    "torch": "2.14.0",
+    "onnx": "1.23.0",
+    "onnxruntime": "1.30.0"
+  },
+  "training_config": {
+    "algorithm": "SAC",
+    "seed": 42,
+    "initial_state": "downward with small random perturbations",
+    "control_hz": 50,
+    "max_episode_seconds": 30,
+    "environment": {
+      "sha256": {
+        "cart_pendolo.xml": "e0bc891954d21b432baadae5a10ba64e34f8b39e4367c2a6577bfc24ec27a5c6",
+        "ambiente.py": "c6579237e13185ff273283692de7719593f143a641027541ca85b38348d93f40",
+        "stepper.py": "729389aa0b0c4d4345e1fdca14235d1bb73a7ac0bb18145ec609d40c88d2776e",
+        "stepper.toml": "230d7c42e89678b7b333434892871d65f32fb1dfd59b4b27a129982f9e40910c"
+      },
+      "stepper": {
+        "frequenza_min_hz": 3200.0,
+        "frequenza_max_hz": 32000.0,
+        "passi_per_giro": 200,
+        "angolo_passo_gradi": 1.8,
+        "microstepping": 32,
+        "passo_cinghia_m": 0.002,
+        "denti_puleggia": 48,
+        "rapporto_trasmissione": 1.0,
+        "zona_morta": 0.0,
+        "rampa_hz_s": 1600000.0
+      },
+      "observation_size": 6,
+      "action": "signed_normalized_step_frequency",
+      "control_hz": 50
+    }
+  }
+}
