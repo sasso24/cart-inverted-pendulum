@@ -17,8 +17,12 @@ Non è firmware pronto e nessuno script di questo progetto comanda hardware.
   e gli impulsi minimi del driver. La risoluzione del timer introduce arrotondamento.
 - La frequenza è impulsi/secondo, non giri/secondo. Non integrare più l'azione
   come accelerazione. La rampa firmware deve coincidere con quella simulata.
-- Implementare homing, conteggio degli impulsi emessi, acquisizione angolare,
-  gestione del wrap e stima delle velocità. I sensori ideali di MuJoCo non sono
+- Implementare homing, conteggio degli impulsi emessi, acquisizione angolare
+  e gestione del wrap. Le velocità NON vanno derivate dalle misure: portare
+  lo stimatore di `stima.py` con le costanti di `stimatore.toml`
+  (`predici` nell'interrupt della rampa a 500 Hz con la velocità applicata,
+  `correggi` a 50 Hz con posizione e angolo letti, poi i sei ingressi dalla stima).
+  La rete è stata addestrata con questi ingressi stimati. I sensori ideali di MuJoCo non sono
   automaticamente equivalenti alle stime disponibili sul banco.
 - Finecorsa, timeout e arresto devono funzionare indipendentemente dalla rete.
   Gli arresti di sicurezza azzerano anche lo stato della rampa, senza decelerazione.

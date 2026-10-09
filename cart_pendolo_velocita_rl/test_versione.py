@@ -92,7 +92,8 @@ class AmbienteTest(unittest.TestCase):
     def setUp(self):
         from ambiente import CartPendoloEnv
         self.env = CartPendoloEnv(replace(ParametriStepper.carica(), frequenza_min_hz=0.,
-                                         frequenza_max_hz=10000., microstepping=16))
+                                         frequenza_max_hz=10000., microstepping=16,
+                                         rampa_hz_s=64000.))
         self.env.reset(seed=42, options={'exact': True})
 
     def tearDown(self):

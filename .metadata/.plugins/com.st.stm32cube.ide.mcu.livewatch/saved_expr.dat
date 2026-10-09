@@ -1,3 +1,11 @@
 posizione_carrello_min_steps
 posizione_carrello_max_steps
 posizione_carrello_steps
+theta_deg
+ultimo_carrello_steps
+velocita_carrello_m_s
+frequenza_richiesta_hz
+ultimo_motore_ms
+ultimo_comando_ms
+controllo_abilitato
+frequenza_applicata_hz

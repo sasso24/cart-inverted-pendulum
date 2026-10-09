@@ -1,0 +1,60 @@
+{
+  "algorithm": "SAC",
+  "seed": 42,
+  "initial_state": "downward with small random perturbations",
+  "control_hz": 50,
+  "max_episode_seconds": 20.0,
+  "environment": {
+    "sha256": {
+      "cart_pendolo.xml": "e5c47b0a52150eecaef64613a7c20883b37a4c6d19fea6075380c4e3e3f9db53",
+      "ambiente.py": "9634b81b4c4ecbde979fb9c35c30b7a1f023d40ffd3c5fa869c0781b9e38cae5",
+      "stepper.py": "729389aa0b0c4d4345e1fdca14235d1bb73a7ac0bb18145ec609d40c88d2776e",
+      "stepper.toml": "230d7c42e89678b7b333434892871d65f32fb1dfd59b4b27a129982f9e40910c",
+      "disturbi.py": "691899792c6d391c1c683e4328484240d3741413c458792d6926bae0afa047b7"
+    },
+    "stepper": {
+      "frequenza_min_hz": 3200.0,
+      "frequenza_max_hz": 32000.0,
+      "passi_per_giro": 200,
+      "angolo_passo_gradi": 1.8,
+      "microstepping": 32,
+      "passo_cinghia_m": 0.002,
+      "denti_puleggia": 48,
+      "rapporto_trasmissione": 1.0,
+      "zona_morta": 0.0,
+      "rampa_hz_s": 1600000.0
+    },
+    "observation_size": 6,
+    "action": "signed_normalized_step_frequency",
+    "control_hz": 50,
+    "disturbi": {
+      "intensita": 0.25,
+      "massa_rel": 0.1,
+      "smorzamento_rel": 0.25,
+      "guadagno_motore_rel": 0.15,
+      "ritardo_max_s": 0.006,
+      "frequenze_min_hz": [
+        8.0,
+        20.0,
+        3.0
+      ],
+      "frequenze_max_hz": [
+        18.0,
+        40.0,
+        10.0
+      ],
+      "zeta_min": 0.08,
+      "zeta_max": 0.25,
+      "forza_cinghia_n": 0.2,
+      "forza_motore_n": 0.1,
+      "coppia_asta_nm": 0.003,
+      "accelerazione_scala_m_s2": 10.0,
+      "eccitazione_casuale": 0.25,
+      "correlazione_s": 0.04,
+      "rumore_posizione_m": 0.05,
+      "rumore_angolo_rad": 0.05,
+      "offset_angolo_rad": 0.00872664626,
+      "encoder_conteggi_giro": 2400
+    }
+  }
+}

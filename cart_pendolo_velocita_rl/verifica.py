@@ -10,7 +10,7 @@ from finestra import Comandi, prepare_continuous
 
 
 def main():
-    suite = unittest.defaultTestLoader.discover(str(ROOT), pattern='test_versione.py')
+    suite = unittest.defaultTestLoader.discover(str(ROOT), pattern='test_*.py')
     if not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful():
         raise SystemExit(1)
     env = CartPendoloEnv()
