@@ -1,10 +1,10 @@
-11:55:58 **** Incremental Build of configuration Debug for project Prova_controllo ****
+15:04:29 **** Incremental Build of configuration Debug for project Prova_controllo ****
 make -j7 all 
 arm-none-eabi-size  Prova_controllo.elf 
    text	   data	    bss	    dec	    hex	filename
- 103632	   1968	   6000	 111600	  1b3f0	Prova_controllo.elf
+ 105176	   1968	   6032	 113176	  1ba18	Prova_controllo.elf
 Finished building: default.size.stdout
  
 
-11:55:58 Build Finished. 0 errors, 0 warnings. (took 572ms)
+15:04:29 Build Finished. 0 errors, 0 warnings. (took 338ms)
 

@@ -1,3 +1,6 @@
 posizione_carrello_min_steps
 posizione_carrello_max_steps
 posizione_carrello_steps
+theta_deg
+rete_azione
+frequenza_richiesta_hz

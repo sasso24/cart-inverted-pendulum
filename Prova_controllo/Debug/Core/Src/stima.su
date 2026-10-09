@@ -1,0 +1,4 @@
+../Core/Src/stima.c:10:7:Stima_Wrap	16	static
+../Core/Src/stima.c:19:6:Stima_Reset	24	static
+../Core/Src/stima.c:28:6:Stima_Predici	40	static
+../Core/Src/stima.c:41:6:Stima_Correggi	32	static
