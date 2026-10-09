@@ -1,3 +1,14 @@
+# Hardware-in-the-loop — 9 ottobre 2026
+
+- Firmware: `HIL_MODE` in `main.c` (default 0). Con 1 la scheda riceve le misure
+  simulate via USART2, esegue `stima.c` e la rete X-CUBE-AI, risponde col comando.
+  Compilato con arm-none-eabi-gcc in entrambe le modalità, 0 warning.
+- PC: `hil.py` / `HIL.command`, istruzioni in `Prova_controllo/HIL.md`.
+- Senza scheda (`Prova_controllo/tests/test_hil.py`): codice HIL reale di main.c
+  su host, UART su pseudo-terminale, rete come MLP C con i pesi del firmware.
+  3/3 episodi stabili, diff ingressi 1,6e-7, diff azione 3,9e-7.
+- Da fare sulla scheda: tempi reali, runtime ST, seriale ST-LINK.
+
 # Stimatore nel firmware STM32 — 9 ottobre 2026
 
 - `Prova_controllo/Core/Src/stima.c`: porting di `stima.py`, predizione in

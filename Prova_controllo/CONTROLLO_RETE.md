@@ -1,5 +1,7 @@
 # Controllo con la rete importata
 
+Prova hardware-in-the-loop senza motore: vedi [HIL.md](HIL.md) (`HIL_MODE` in `main.c`).
+
 Dopo il reset vengono inizializzate la rete X-CUBE-AI e le periferiche.
 Prima dell'homing, a motore fermo, `Inizializza_Theta()` aspetta che il
 conteggio dell'encoder rimanga invariato per 1 secondo, poi fissa theta a
