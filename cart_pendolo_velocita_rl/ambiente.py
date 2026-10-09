@@ -10,6 +10,18 @@ from stepper import ControlloStepper, ParametriStepper
 ROOT = Path(__file__).resolve().parent
 
 
+def ricompensa(x, angle, omega, u, u_precedente):
+    """Pendolo in alto, carrello vicino al centro, comando senza scatti.
+
+    Il termine di posizione e stretto (scala 15 cm): con exp(-0.25*x^2) il
+    carrello a 40 cm perdeva solo il 4% e nelle prove lunghe derivava fino al finecorsa.
+    """
+    upright = (math.cos(angle) + 1.) / 2.
+    centro = 0.6 + 0.4*math.exp(-(x/0.15)**2)
+    fermo = 0.5 + 0.5*math.exp(-0.1*omega*omega)
+    return upright*centro*fermo - 0.005*u*u - 0.02*(u - u_precedente)**2
+
+
 class CartPendoloEnv(gym.Env):
     metadata = {'render_modes': []}
     frame_skip = 10
@@ -28,6 +40,7 @@ class CartPendoloEnv(gym.Env):
         self.action_space = spaces.Box(-1., 1., (1,), dtype=np.float32)
         self.observation_space = spaces.Box(-np.inf, np.inf, (6,), dtype=np.float32)
         self.steps = self.stable_steps = self.best_stable_steps = 0
+        self.u_precedente = 0.
         self.motivo = ''
         self.comando_motore = self.controllo.comando(0.)
         self.frequenza_richiesta_hz = 0.
@@ -71,9 +84,11 @@ class CartPendoloEnv(gym.Env):
         mujoco.mj_resetData(self.model, self.data)
         exact = (options or {}).get('exact', False)
         self.data.qpos[:] = [0. if exact else self.np_random.uniform(-0.1, 0.1),
-                            math.pi + (0. if exact else self.np_random.uniform(-0.05, 0.05))]
+                            #math.pi + (0. if exact else self.np_random.uniform(-0.05, 0.05))
+                            0. if exact else self.np_random.uniform(-0.05, 0.05)]
         self.data.qvel[1] = 0. if exact else self.np_random.uniform(-0.02, 0.02)
         self.steps = self.stable_steps = self.best_stable_steps = 0
+        self.u_precedente = 0.
         self.motivo = ''
         self.frequenza_richiesta_hz = 0.
         self._stop()
@@ -112,8 +127,8 @@ class CartPendoloEnv(gym.Env):
             self._stop()
         x, angle = self.data.qpos
         vx, omega = self.data.qvel
-        upright = (math.cos(angle) + 1.) / 2.
-        reward = upright * math.exp(-0.25*x*x) * (0.5 + 0.5*math.exp(-0.1*omega*omega)) - 0.005*u*u
+        reward = ricompensa(x, angle, omega, u, self.u_precedente)
+        self.u_precedente = u
         stable = (math.cos(angle) > math.cos(math.radians(12)) and abs(x) < self.limite
                   and abs(omega) < 1. and abs(vx) < 0.75 and not terminated)
         self.stable_steps = self.stable_steps + 1 if stable else 0

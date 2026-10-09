@@ -90,22 +90,17 @@ class Comandi:
         return self.push_force if simulation_time < self.push_until else 0.
 
 
-def prepare_continuous(env):
+def prepare_continuous(env, seed=None):
     """Disattiva il timeout solo su questa istanza, senza alterare il training.
 
     Reset manuali e arresti fisici restano validi. Non cambiamo il passo fisico
     né il periodo della policy: il loop grafico segue il tempo monotono del PC.
     """
     env.max_steps = math.inf
-    # env.reset(options={"exact": True})
-    # env.data.qpos[1] = 0.0       # Asta verticale verso l'alto
-    # env.data.qvel[:] = 0.0      # Carrello e asta inizialmente fermi
-    # mujoco.mj_forward(env.model, env.data)
-    # return env.observation(), env.info()
-    return env.reset(options={"exact": True})
+    return env.reset(seed=seed, options={"exact": True})
 
 
-def run(env, agent):
+def run(env, agent, seed=None):
     # Una sola finestra, un solo event loop: niente callback Python sul thread
     # del viewer passivo. Su macOS eseguire con python, sul thread principale.
     if not glfw.init():
@@ -114,13 +109,15 @@ def run(env, agent):
     context = None
     try:
         glfw.window_hint(glfw.FOCUSED, glfw.TRUE)
-        window = glfw.create_window(1100, 760, "Pendolo stepper - SAC velocita Hz", None, None)
+        window = glfw.create_window(1100, 760, "Pendolo stepper - SAC e velocita Hz", None, None)
         if not window:
             raise RuntimeError("Impossibile creare la finestra grafica.")
         glfw.make_context_current(window)
         glfw.swap_interval(1)
         model, data = env.model, env.data
-        obs, _ = prepare_continuous(env)
+        obs, _ = prepare_continuous(env, seed)
+        if hasattr(agent, "reset"):
+            agent.reset()
         scene = mujoco.MjvScene(model, maxgeom=1000)
         context = mujoco.MjrContext(model, mujoco.mjtFontScale.mjFONTSCALE_150)
         camera = mujoco.MjvCamera()
@@ -177,6 +174,8 @@ def run(env, agent):
             previous_time = now
             if commands.restart:
                 obs, _ = env.reset(options={"exact": True})
+                if hasattr(agent, "reset"):
+                    agent.reset()
                 commands.restart = False
                 accumulator = 0.
                 stopped = False
@@ -188,12 +187,15 @@ def run(env, agent):
                 while accumulator >= env.dt:
                     action = commands.manual_action(env)
                     if action is not None:
-                        pass  # La manovra manuale ha temporaneamente la precedenza.
+                        if hasattr(agent, "reset"):
+                            agent.reset()  # La manovra manuale sospende il controllo.
                     elif commands.enabled and agent is not None:
                         action, _ = agent.predict(obs, deterministic=True)
                     else:
                         # Zero richiede una decelerazione tramite la rampa.
                         action = np.array([0.], dtype=np.float32)
+                        if hasattr(agent, "reset"):
+                            agent.reset()
                     obs, _, terminated, truncated, info = env.step(action, push=commands.force(data.time))
                     accumulator -= env.dt
                     if terminated or truncated:
@@ -218,11 +220,11 @@ def run(env, agent):
             active = glfw.get_window_attrib(window, glfw.FOCUSED)
             status = ("ARRESTATO" if stopped else "IN PAUSA" if commands.paused else "CONTINUO")
             status += " | " + ("MANUALE 10 cm" if commands.manual_target is not None
-                                else "SAC ATTIVO" if commands.enabled else "ARRESTO")
+                                else getattr(agent, "nome", "SAC ATTIVO") if commands.enabled else "ARRESTO")
             # HUD compatto: caratteri piccoli e quattro righe, senza ripetere
             # intestazioni e comandi. Conserva gli indicatori utili al controllo.
             info = env.info()
-            text = (status + f" | t: {data.time:.1f} s | equilibrio: {info['stable_seconds']:.1f} s\n"
+            text = (status + f" | t: {data.time:.1f} s | equilibrio: {env.stable_steps * env.dt:.1f} s\n"
                     + f"x: {data.qpos[0]:.2f} m | STEP: {info['motor_frequency_hz']:+.0f} Hz | "
                     + f"angolo: {info['angle_deg']:.1f} deg | v: {float(env.data.qvel[0]):.2f} m/s\n"
                     + "Frecce: +/-10 cm  C: policy  R: reset  A/D: spinta  Spazio: pausa  Esc: esci\n"

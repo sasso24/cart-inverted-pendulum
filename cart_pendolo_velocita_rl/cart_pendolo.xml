@@ -98,8 +98,8 @@
         <geom name="mozzo_settore_31" type="box" rgba=".045 .05 .055 1" pos="0.008336674883427458 0 -0.0016582677371370941" size=".0025 .013 0.0010781885436251665" euler="0 -6.086835766330224 0" mass="0.00014102805771505424" />
         <geom name="vite_mozzo" type="cylinder" rgba=".65 .68 .72 1" fromto="0 .013 0 0 .016 0" size=".004" mass=".001" contype="0" conaffinity="0" />
         <!-- Asta uniforme: stessa densita sui due bracci. Lunghezza totale 0.977 m; massa con ipotesi acciaio pieno circa 0.1506 kg. -->
-        <geom name="asta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 0 0 0 .877" size=".0025" density="7850" />
-        <geom name="asta_opposta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 -.1 0 0 0" size=".0025" density="7850" />
+        <geom name="asta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 0 0 0 .82" size=".0025" density="7850" />
+        <geom name="asta_opposta" type="cylinder" rgba=".65 .68 .72 1" fromto="0 0 -.16 0 0 0" size=".0025" density="7850" />
       </body>
     </body>
   </worldbody>

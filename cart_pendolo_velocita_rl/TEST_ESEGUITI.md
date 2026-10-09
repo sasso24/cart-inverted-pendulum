@@ -1,3 +1,72 @@
+# Stimatore nel firmware STM32 — 9 ottobre 2026
+
+- `Prova_controllo/Core/Src/stima.c`: porting di `stima.py`, predizione in
+  SysTick ogni 2 ms, correzione in `Rete_Process` ogni 20 ms. Rete aggiornata
+  ai pesi di `modelli_disturbi/migliore.zip` (`aggiorna_pesi_xcubeai.py`).
+- C contro Python: 20 sequenze da 60 s con wrap ±pi, differenza massima 1,4e-6.
+- Catena del firmware in simulazione (stima.c via ctypes + pesi letti da
+  `network_data_params.c`, float32): 60/60 episodi da 60 s stabili
+  (disturbi 0,25, intensità 1, rumore massimo 10 mm / 1°), angolo max 6,6°.
+- `test_controllo.py` aggiornato e superato (ingressi stimati, integrazione
+  della velocità STEP, aggancio della posizione a controllo fermo).
+- Compilazione e link del firmware completo con arm-none-eabi-gcc 13.2
+  (Cortex-M4 hard-float, runtime ST): 0 warning, 97,6 kB di flash.
+- Non eseguiti: caricamento sulla scheda, Validate X-CUBE-AI, prova sul banco.
+  `tests/test_control_button.py` non compila già nella versione precedente
+  (manca il mock della rete X-CUBE-AI).
+
+# SAC dall’alto con rumore dei sensori — 1 ottobre 2026
+
+- Rimosso il controllo LQR (`equilibrio.py`, test, launcher, profilo e documento).
+- Rumore: posizione 5–10 mm, encoder 0,5–1° (1 sigma per lettura a 50 Hz,
+  estratto per episodio), più quantizzazione 2400 conteggi/giro e offset ±0,125°.
+  Disturbi fisici invariati, `intensita = 0.25`.
+- Nuovo stimatore `stima.py`: senza di esso anche un controllore ideale
+  cadeva in 1–2 s con questi livelli di rumore (velocità derivate inutilizzabili).
+- Ricompensa: termine di centratura del carrello più stretto (scala 15 cm)
+  e piccola penalità sulle variazioni del comando. Con la vecchia ricompensa
+  la rete stava in alto, ma nelle prove da 60 s il carrello derivava fino al finecorsa.
+- Addestramento: 400k passi da zero con disturbi, poi 250k passi di rifinitura
+  con la nuova ricompensa. Rete scelta: `modelli_disturbi/migliore.zip`.
+- `Valuta.command` (semi 2000–2019, 20 s): 20/20 disturbati, 20/20 nominali.
+  Rapporto: `risultati/valutazione_disturbi.json`.
+- Prova lunga, semi 4000–4019, 60 s per episodio, 100/100 interamente stabili:
+  nominale, disturbi 0,25, disturbi a intensità 1, rumore fisso al massimo
+  (10 mm, 1°), spinte di ±1 N per 100 ms. Angolo massimo 4,5° (partenza fino
+  a 2,9°), carrello entro 15 cm dal centro.
+- 25 test automatici superati: `python -m unittest test_versione test_disturbi test_stima`.
+- `verifica.py` si ferma nella manovra manuale con le frecce: lo fa anche la
+  versione precedente non modificata, quindi non dipende da queste modifiche.
+  Prove eseguite con MuJoCo 3.14 (requirements: 3.12).
+- Nessuna prova sul banco. Lo stimatore va portato sul firmware (vedi `TODO_STM32.md`).
+
+# Disturbi e vibrazioni - 29 settembre 2026
+
+- 21 test automatici superati: i 14 esistenti e 7 nuovi per configurazioni,
+  determinismo, assenza di deriva dei parametri fra reset, modi oscillanti e
+  decadimento, integrazione esatta, ritardi, limiti, arresti, separazione fra
+  rumore di misura e fisica, compatibilita Gymnasium e contratti checkpoint.
+- Il test storico della rampa ora imposta esplicitamente 64.000 Hz/s nella
+  propria fixture: assumeva questa rampa anche dopo che il TOML era passato
+  a 1.600.000 Hz/s. Nessun cambiamento al parametro hardware.
+- Prova SAC temporanea di 3.104 decisioni (incluse ottimizzazioni), valutazione
+  doppia nominale/disturbata, salvataggio, ripresa per altre 8 decisioni e
+  simulazione senza finestra completati. Non e un addestramento completo.
+- La rete esistente `modelli/migliore.zip` e stata valutata sui semi 2000–2019:
+  20/20 successi nominali e 20/20 con il profilo `disturbi.toml` a intensita 0,35.
+  Ricompense medie rispettivamente 607,98 e 601,90; durata media della migliore
+  sequenza stabile 9,287 s e 9,09 s. Nessun finecorsa nelle due suite.
+  Rapporto: `risultati/stress_rete_esistente.json`.
+- Questi risultati usano il criterio storico di almeno 3 s consecutivi di
+  equilibrio. Il profilo iniziale e lieve e non identificato sul banco:
+  non dimostra robustezza alle risonanze reali e non riproduce il fallimento
+  osservato sull'hardware. Frequenze e ampiezze restano configurabili.
+- I checkpoint nominali esistenti superano ancora il controllo di compatibilita.
+  XML, ambiente nominale, TOML hardware e firmware non sono stati modificati.
+- Nessuna prova hardware o verifica visiva della finestra. La verifica geometrica
+  e la manovra manuale storica non sono state rieseguite per questa modifica;
+  resta la limitazione della manovra riportata sotto.
+
 # Rampa di frequenza - 28 settembre 2026
 
 - 14 test automatici superati, inclusi salita, frenata, inversione, assenza

@@ -1,0 +1,11 @@
+# Stimatore dello stato (stima.py). Gli stessi numeri vanno copiati nel firmware.
+# k_g, k_a, k_d derivano dall'XML attuale: se cambiano masse o geometria
+# ricalcolarli con  python -c "import stima,mujoco;print(stima.coefficienti_da_modello(mujoco.MjModel.from_xml_path('cart_pendolo.xml')))"
+[stimatore]
+k_g = 17.1317    # 1/s^2: theta'' = k_g*sin(theta) - k_a*cos(theta)*a_carrello - k_d*omega
+k_a = 1.74635    # rad/m
+k_d = 0.35034    # 1/s
+# Guadagni di correzione: piu bassi = meno rumore ma piu fiducia nel modello.
+l_theta = 0.2    # frazione dell'errore angolare corretta a ogni lettura (50 Hz)
+l_omega = 1.0    # 1/s: omega += l_omega * errore angolare
+l_x = 0.05       # frazione dell'errore di posizione corretta a ogni lettura

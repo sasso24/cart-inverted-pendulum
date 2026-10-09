@@ -1,3 +1,43 @@
+# Stabilizzazione dall’alto con disturbi — 1 ottobre 2026
+
+Il controllo LQR (`equilibrio.py` e file collegati) è stato rimosso: resta solo SAC.
+Tutti gli episodi partono dall’alto; lo swing-up non è ancora incluso.
+
+**Perché con i disturbi la rete non stabilizzava più.** Nel vecchio
+`disturbi.toml` il rumore era 0,05 × intensità 0,25 = 12,5 mm e 0,0125 rad
+(0,72°). Il problema principale però non era il valore, ma come venivano
+calcolate le velocità: differenza di due letture rumorose ogni 20 ms.
+Con 7,5 mm di rumore la velocità del carrello ha circa 0,53 m/s di rumore
+(il massimo comandabile è 0,48 m/s); con 0,75° la velocità angolare ha circa
+0,9 rad/s di rumore. La rete riceveva quasi solo rumore.
+
+**Correzione.**
+
+1. `disturbi.toml`: rumore di posizione 5–10 mm e dell’encoder 0,5–1°
+   (deviazione standard di ogni lettura a 50 Hz, estratta a ogni episodio
+   nell’intervallo). Non è più scalato da `intensita`.
+2. `stima.py` + `stimatore.toml`: stimatore dello stato. Prevede il moto con la
+   fisica nota (velocità applicata dalla rampa per il carrello, equazione del
+   pendolo per l’angolo) e lo corregge poco con le misure. La rete riceve gli
+   stessi sei ingressi di prima, ma stimati invece che derivati. Lo stesso
+   algoritmo (poche righe) va portato sul firmware: vedi `TODO_STM32.md`.
+3. Nuova rete addestrata con i disturbi: `modelli_disturbi/migliore.zip`.
+
+```sh
+./Avvia_RL.command --model modelli_disturbi/migliore.zip
+./Avvia_RL.command --model modelli_disturbi/migliore.zip --nominale
+./Valuta.command --model modelli_disturbi/migliore.zip --episodes 20 --output risultati/valutazione_disturbi.json
+```
+
+I risultati delle prove sono in `TEST_ESEGUITI.md`.
+
+**Firmware (9 ottobre).** Lo stimatore è portato in C in
+`Prova_controllo/Core/Src/stima.c` e i pesi X-CUBE-AI sono quelli della nuova
+rete. Per aggiornare i pesi dopo un nuovo addestramento:
+`python aggiorna_pesi_xcubeai.py --model modelli_disturbi/migliore.zip`.
+
+---
+
 # Pendolo — SAC con velocità in Hz
 
 Questa cartella deriva da `cart_pendolo_stepper_rl` fornita dall'utente.
@@ -75,11 +115,11 @@ La configurazione attuale contiene valori da confermare sul banco:
 | Rapporto giri motore / giri puleggia | 1 |
 | Frequenza minima richiesta in movimento | 3.200 Hz |
 | Frequenza massima | 32.000 Hz |
-| Rampa di salita e discesa | 64.000 Hz/s |
+| Rampa di salita e discesa | 1.600.000 Hz/s |
 
 Con questi valori ci sono 6.400 impulsi/giro e 0,015 mm/impulso: 32.000 Hz
 corrispondono a 0,48 m/s. Per esempio `u=-0,5` richiede -17.600 Hz e -0,264 m/s.
-La rampa iniziale equivale a 0,96 m/s² del riferimento di velocità;
+La rampa configurata equivale a 24 m/s² del riferimento di velocità;
 non è un limite misurato del motore.
 Cambiare i valori in `stepper.toml` prima dell'addestramento.
 
@@ -105,7 +145,8 @@ f_applicata += clip(f_richiesta - f_applicata, -rampa_hz_s * dt, +rampa_hz_s * d
 ```
 
 La rampa vale nei due versi e non supera la frequenza richiesta. Con i valori
-attuali 0 -> 32.000 Hz richiede 0,5 s; +32.000 -> -32.000 Hz richiede 1 s.
+attuali 0 -> 32.000 Hz richiede 0,02 s; +32.000 -> -32.000 Hz richiede 0,04 s.
+Il commento storico nel TOML indica ancora 0,5 s; fa fede il valore numerico.
 Reset, finecorsa e fine episodio azzerano subito il comando e lo stato della rampa.
 
 ## Simulazione e osservazioni
@@ -142,6 +183,101 @@ Le firme di XML, ambiente, stepper e TOML impediscono il caricamento di
 checkpoint incompatibili dopo modifiche al modello o ai parametri.
 I checkpoint precedenti senza rampa non possono essere ripresi. Avviare, ad esempio,
 `./Addestra.command --output modelli_rampa --steps 300000` per conservare quelli esistenti.
+
+## Addestramento con vibrazioni e disturbi
+
+Il profilo opzionale `disturbi.toml` aggiunge disturbi al modello nominale gia
+allineato al banco. Non cambia l'XML, i parametri hardware, i sei ingressi
+della rete o il firmware. Senza profilo, il percorso nominale e i checkpoint
+esistenti rimangono compatibili.
+
+Per addestrare una nuova policy robusta, dalla cartella di questo progetto:
+
+```sh
+./Addestra.command --disturbi disturbi.toml --output modelli_disturbi --steps 450000
+./Addestra.command --resume --output modelli_disturbi --steps 300000
+./Valuta.command --model modelli_disturbi/migliore.zip --episodes 20 --output risultati/valutazione_disturbi.json
+./Avvia_RL.command --model modelli_disturbi/migliore.zip
+./Avvia_RL.command --model modelli_disturbi/migliore.zip --nominale
+```
+
+La ripresa usa il profilo salvato nel checkpoint: modificare il TOML non cambia
+silenziosamente il training in corso. Per un profilo differente avviare un nuovo
+addestramento in una cartella diversa. La selezione confronta il nominale e il
+disturbato sui medesimi cinque stati iniziali, e massimizza la minore delle due
+durate stabili peggiori. La valutazione finale usa semi separati (2000 e successivi),
+riporta entrambe le suite e le durate di equilibrio. Il successo richiede
+l’intero episodio stabile; il criterio storico dei tre secondi resta solo nel
+campo diagnostico `three_second_success`.
+
+Per misurare subito quanto e sensibile la rete gia addestrata:
+
+```sh
+./Valuta.command --model modelli/migliore.zip --disturbi disturbi.toml --episodes 20 --output risultati/stress_rete_esistente.json
+./Avvia_RL.command --model modelli/migliore.zip --disturbi disturbi.toml
+./Grafici.command --model modelli/migliore.zip --disturbi disturbi.toml --output risultati/grafici_disturbi
+```
+
+Valutazione, viewer e grafici usano automaticamente il profilo salvato con una
+nuova policy robusta. `--disturbi altro.toml` permette uno stress diverso;
+`--nominale` lo disabilita. Viewer e grafici accettano anche `--seed`.
+
+### Cosa viene simulato
+
+- **Tre modi oscillanti smorzati**, eccitati dall'accelerazione del riferimento
+  del motore e da rumore correlato nel tempo. Cinghia e motore applicano forze
+  al carrello; l'asta applica una coppia al pendolo. Ogni modo segue
+  `y'' + 2*zeta*w*y' + w²*y = w²*eccitazione`. La risposta viene convertita in
+  forza/coppia tramite `ampiezza*tanh(y)`, per limitarne il valore.
+- **Eccitazione casuale correlata**, con tempo caratteristico `correlazione_s`:
+  evita di rappresentare tutte le vibrazioni come campioni bianchi indipendenti.
+- **Variazioni per episodio** di masse e inerzie (scalate insieme), smorzamento
+  dei due giunti, guadagno del servo, frequenze dei modi, smorzamento dei modi,
+  ampiezze, offset angolare e ritardo del comando. Nessuna deriva cumulativa
+  dei parametri tra reset; i coefficienti derivati MuJoCo vengono ricalcolati.
+- **Misure perturbate** di posizione e angolo; l'angolo e quantizzato ai
+  conteggi encoder configurati. Le misure passano dallo stimatore `stima.py`:
+  le velocita NON sono derivate dalle misure. Seno e coseno usano lo stesso
+  angolo stimato; le scale di normalizzazione sono sempre quelle nominali. Lo stato fisico, la ricompensa
+  e i finecorsa non usano le misure rumorose. Il modello non aggiunge passi persi.
+
+I modi sono integrati a 500 Hz con soluzione esatta per eccitazione costante
+nel singolo passo fisico; il comando della rete resta a 50 Hz. Si richiedono
+almeno dieci passi fisici per periodo: con 2 ms il limite configurabile e 50 Hz.
+Non aumentare solo la frequenza dei modi oltre tale soglia. I modi sono
+**disturbi equivalenti**, non un modello strutturale flessibile dell'asta,
+della cinghia o delle bobine del motore. Non riproducono automaticamente
+frequenze, accoppiamenti ed energia del sistema reale.
+
+### Come regolare il profilo
+
+I valori iniziali sono ipotesi di stress, non misure: cinghia 8–18 Hz,
+motore 20–40 Hz, asta 3–10 Hz; `zeta` tra 0,08 e 0,25. A intensita 1 i
+limiti massimi sono rispettivamente 0,20 N, 0,10 N e 0,003 Nm; a ogni episodio
+l'ampiezza di ciascun modo e estratta tra il 50% e il 100% del suo limite.
+
+Il profilo fornito usa `intensita = 0.25`. Questo fattore scala ampiezze,
+variazioni dei parametri, offset angolare e ritardo massimo; non scala le
+frequenze, `zeta`, il tempo di correlazione, la risoluzione dell'encoder
+e il rumore dei sensori (`rumore_posizione_m`, `rumore_angolo_gradi`).
+Con questi valori il ritardo e 0 o 2 ms, arrotondato per difetto al passo fisico.
+`intensita = 0` restituisce esattamente l'ambiente nominale, anche nei sensori.
+
+Per cominciare cambia solo `intensita`, confrontando ad esempio 0,2, 0,35 e 0,6
+nelle valutazioni. Usa frequenze misurate quando disponibili e amplia i range
+solo quanto giustificato dalle osservazioni. Vibrazioni ad alta frequenza possono
+essere aliasate nei campioni della policy a 50 Hz: una misura a 50 Hz non basta
+per identificare modi a 40 Hz.
+
+Ogni rapporto disturbato registra parametri estratti, forza e coppia finali.
+I seed rendono le prove ripetibili; chiamare piu volte `observation()` non genera
+nuovo rumore. Le spinte manuali si sommano ai disturbi; reset e fine episodio
+svuotano la coda dei comandi e le forze applicate.
+
+Test automatici: `python -m unittest test_versione test_disturbi` nell'ambiente
+Python del progetto. Verificano determinismo, confronto nominale, oscillazioni
+smorzate, ritardo, rumore separato dalla fisica, limiti e contratti checkpoint.
+La gestione dei parametri segue la [documentazione MuJoCo](https://mujoco.readthedocs.io/en/latest/programming/simulation.html).
 
 `env.step()` mantiene l'interfaccia Gymnasium. Nel dizionario `info`:
 

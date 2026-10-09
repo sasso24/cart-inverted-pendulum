@@ -115,6 +115,7 @@ static void reset(void) {
     riferimento_carrello_valido=1; carrello_inizializzato=1;
     pulsante_inizializzato=1; pulsante_pronto=1; pulsante_rilascio_ms=0;
     richiesta_avvio=0; rete_inferenze=0; controllo_errore=0;
+    stima_valida=0; ultimo_stima_ms=0;
     Stepper_SetDirection(DIR_BACKWARD);
     output_value=0.5f;
     assert(Rete_Init());
@@ -175,10 +176,30 @@ int main(void) {
     reset(); start(); tick=20; timer2.CNT=(uint32_t)-2;
     posizione_carrello_steps+=640; frequenza_applicata_hz=-16000;
     Rete_Process();
-    near(input_values[0],0.0096f/0.462f); near(input_values[3],1);
-    near(input_values[4],(2*2*PI_F/2400)/0.02f/10);
-    near(input_values[5],-0.5f);
+    // Prima lettura: lo stimatore parte dalla misura, velocita' nulle.
+    near(input_values[0],0.0096f/0.462f); near(input_values[3],0);
+    near(input_values[4],0); near(input_values[5],-0.5f);
+    near(stima.theta,-PI_F+2*2*PI_F/2400);
+    // Lo stimatore integra la velocita' STEP programmata ogni 2 ms in SysTick;
+    // le letture rumorose dell'angolo vengono attenuate (L_THETA=0.2).
+    reset(); start(); tick=20; Rete_Process();
+    stepper_running=1; frequenza_applicata_hz=3200;
+    for (int i=0;i<10;i++){ tick+=2; Controllo_StimaTick(); }
+    near(stima.x,10*0.002f*3200*METRI_PER_STEP); near(stima.velocita,0.048f);
+    timer2.CNT+=(uint32_t)(-24); tick=40; Rete_Process();
+    near(input_values[3],0.1f);
+    near(input_values[0],stima.x/0.462f);
+    // 24 conteggi (3,6 gradi) in 20 ms: la derivata darebbe omega=3,1 rad/s,
+    // lo stimatore ne prende solo una frazione.
+    assert(input_values[4]>0 && input_values[4]*10<0.5f*(24*2*PI_F/2400)/0.02f);
+    // A controllo fermo: v=0 e x agganciata al conteggio STEP.
+    Controllo_Disabilita(); float xprima=stima.x;
+    for (int i=0;i<5;i++){ tick+=2; Controllo_StimaTick(); }
+    near(stima.x,xprima); near(stima.velocita,0);
+    tick=60; Rete_Process(); near(stima.x,0);
+
     // Uscita zero e saturazione, senza seconda tanh.
+    reset(); start(); tick=20; Rete_Process();
     output_value=0; tick=40; Rete_Process(); near(frequenza_richiesta_hz,0);
     output_value=-2; tick=60; Rete_Process(); near(frequenza_richiesta_hz,-32000);
 
@@ -238,7 +259,9 @@ startup = section(source, '2')
 assert startup.index('HAL_TIM_Encoder_Start') < startup.index('Inizializza_Theta()') < startup.index('Inizializza();')
 assert 'Inizializza_Theta' not in section(source, 'WHILE')
 
-unit = MOCK + section(source, 'PD')
+stima_h = (ROOT / 'Core/Inc/stima.h').read_text()
+stima_c = (ROOT / 'Core/Src/stima.c').read_text().replace('#include "stima.h"', '')
+unit = MOCK + stima_h + stima_c + section(source, 'PD')
 unit += '\nTIM_HandleTypeDef htim2, htim3;\n'
 for name in ('PV', 'PFP', '0', '4'):
     unit += section(source, name)

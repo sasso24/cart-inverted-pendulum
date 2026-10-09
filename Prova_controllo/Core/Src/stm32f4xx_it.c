@@ -189,6 +189,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
   Controllo_ButtonTick();
   Controllo_MotorTick();
+  Controllo_StimaTick();
 
   /* USER CODE END SysTick_IRQn 1 */
 }

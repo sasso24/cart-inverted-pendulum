@@ -15,15 +15,15 @@ from onnx import TensorProto, helper, numpy_helper
 from stable_baselines3 import SAC
 from stable_baselines3.common.torch_layers import FlattenExtractor
 
-from addestra import check_contract
-from ambiente import CartPendoloEnv
+from addestra import check_contract, profilo_salvato
+from disturbi import crea_ambiente
 
 ROOT = Path(__file__).resolve().parent
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli/migliore.zip')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
     parser.add_argument('--output', type=Path, default=ROOT / 'export_stm32')
     args = parser.parse_args()
     check_contract(args.model.parent)
@@ -89,7 +89,8 @@ def main():
     observations[:, 5] = rng.uniform(-1, 1, 4096)
     boundaries = np.array([[0, 0, 1, 0, 0, 0], [0, 0, -1, 0, 0, 0],
                            [1, 0, 1, 1, 1, 1], [-1, 0, 1, -1, -1, -1]], dtype=np.float32)
-    env = CartPendoloEnv()
+    # Rollout con lo stesso profilo dell'addestramento: ingressi stimati da stima.py.
+    env = crea_ambiente(profilo_salvato(args.model.parent))
     rollout = []
     try:
         obs, _ = env.reset(seed=2026)

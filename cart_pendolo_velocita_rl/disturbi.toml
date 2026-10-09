@@ -1,0 +1,31 @@
+# Profilo iniziale di stress: NON frequenze o ampiezze identificate sul banco.
+# Aumentare intensita gradualmente (0 = ambiente nominale, 1 = valori completi).
+[disturbi]
+intensita = 0.25
+massa_rel = 0.10
+smorzamento_rel = 0.25
+guadagno_motore_rel = 0.15
+ritardo_max_s = 0.006
+
+# Tre modi equivalenti: cinghia, motore (forze sul carrello), asta (coppia).
+# Frequenze estratte per episodio; integrare sempre al passo fisico di 2 ms.
+frequenze_min_hz = [8.0, 20.0, 3.0]
+frequenze_max_hz = [18.0, 40.0, 10.0]
+zeta_min = 0.08
+zeta_max = 0.25
+forza_cinghia_n = 0.20
+forza_motore_n = 0.10
+coppia_asta_nm = 0.003
+accelerazione_scala_m_s2 = 10.0
+eccitazione_casuale = 0.25
+correlazione_s = 0.04
+
+# Errori nelle misure, senza alterare lo stato fisico o le normalizzazioni.
+# Deviazione standard (1 sigma) di ogni lettura a 50 Hz, estratta a ogni
+# episodio nell'intervallo [min, max]. NON scalata da intensita.
+rumore_posizione_m = [0.005, 0.010]   # 5-10 mm
+rumore_angolo_gradi = [0.5, 1.0]      # 0,5-1 grado, prima della quantizzazione
+offset_angolo_rad = 0.00872664626 # +/-0.5 gradi a intensita 1 (scalato da intensita)
+encoder_conteggi_giro = 2400
+# Le velocita NON sono piu derivate dalle misure: le stima stima.py
+# (parametri in stimatore.toml), lo stesso algoritmo da portare sul firmware.

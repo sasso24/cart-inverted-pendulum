@@ -57,6 +57,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 void Controllo_ButtonTick(void);
 void Controllo_MotorTick(void);
+void Controllo_StimaTick(void);
 extern volatile uint8_t controllo_abilitato;
 
 /* USER CODE END EFP */

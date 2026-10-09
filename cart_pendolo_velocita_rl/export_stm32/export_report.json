@@ -1,7 +1,7 @@
 {
-  "checkpoint": "/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/cart_pendolo_velocita_rl/modelli/migliore.zip",
-  "checkpoint_sha256": "c55f785c4ebe2b2bf324a3717729acca45cac2ee0a0a971e47b1d9d1bee9be63",
-  "onnx_sha256": "7f723424601fc303dccbd7982af715da64c4a66d6913e265352aeb2bbd23986e",
+  "checkpoint": "cart_pendolo_velocita_rl/modelli_disturbi/migliore.zip",
+  "checkpoint_sha256": "8be568c63fa7cb9391c3ef88c4d44be66cb60aa4447f0755c5756b27c684b411",
+  "onnx_sha256": "f713cab0849c3ef3bd8af34d2a485f7e96aac5033ade79f7488a69b7508e72f8",
   "opset": 13,
   "ir_version": 7,
   "dtype": "float32",
@@ -35,31 +35,35 @@
   "file_bytes": 71015,
   "validation_samples": 5100,
   "simulation_samples": 1000,
-  "max_absolute_error": 7.703900337219238e-06,
-  "mean_absolute_error": 2.1001733330194838e-07,
-  "observed_output_min": -0.9999998807907104,
+  "max_absolute_error": 8.553266525268555e-06,
+  "mean_absolute_error": 1.0955564988535116e-07,
+  "observed_output_min": -1.0000001192092896,
   "observed_output_max": 1.0000001192092896,
   "atol": 1e-05,
   "rtol": 2e-05,
   "validation_passed": true,
-  "xcubeai_validation": "Not run; import and Analyze/Validate in X-CUBE-AI.",
+  "xcubeai_validation": "Pesi copiati in Prova_controllo/X-CUBE-AI/App/network_data_params.c con aggiorna_pesi_xcubeai.py; Validate su scheda non eseguito.",
   "versions": {
-    "torch": "2.14.0",
-    "onnx": "1.23.0",
-    "onnxruntime": "1.30.0"
+    "torch": "2.14.1+cu130",
+    "onnx": "1.23.2",
+    "onnxruntime": "1.25.0"
   },
   "training_config": {
     "algorithm": "SAC",
-    "seed": 42,
-    "initial_state": "downward with small random perturbations",
+    "seed": 1,
+    "initial_state": "upright with small random perturbations",
     "control_hz": 50,
-    "max_episode_seconds": 30,
+    "initialized_from": "/home/claude/base390.zip",
+    "max_episode_seconds": 20.0,
     "environment": {
       "sha256": {
-        "cart_pendolo.xml": "e0bc891954d21b432baadae5a10ba64e34f8b39e4367c2a6577bfc24ec27a5c6",
-        "ambiente.py": "c6579237e13185ff273283692de7719593f143a641027541ca85b38348d93f40",
+        "cart_pendolo.xml": "e5c47b0a52150eecaef64613a7c20883b37a4c6d19fea6075380c4e3e3f9db53",
+        "ambiente.py": "d27b12606e596f373a2e7974770821a458688bf48ec986b5b6f3c3fa9be49c0d",
         "stepper.py": "729389aa0b0c4d4345e1fdca14235d1bb73a7ac0bb18145ec609d40c88d2776e",
-        "stepper.toml": "230d7c42e89678b7b333434892871d65f32fb1dfd59b4b27a129982f9e40910c"
+        "stepper.toml": "230d7c42e89678b7b333434892871d65f32fb1dfd59b4b27a129982f9e40910c",
+        "disturbi.py": "d7e01d87fcecd1f5e251da1c608413a0d8fb23cf83156b159be635bdd6bf63d6",
+        "stima.py": "d50b1014f40cb226679c686d7eab86b3aecf6e0b82a41f93a85796858e576392",
+        "stimatore.toml": "2ddc4472f45de55081379675766364197d9d01c9b7b5c77a8484b57c8c1a14e6"
       },
       "stepper": {
         "frequenza_min_hz": 3200.0,
@@ -75,7 +79,42 @@
       },
       "observation_size": 6,
       "action": "signed_normalized_step_frequency",
-      "control_hz": 50
+      "control_hz": 50,
+      "disturbi": {
+        "intensita": 0.25,
+        "massa_rel": 0.1,
+        "smorzamento_rel": 0.25,
+        "guadagno_motore_rel": 0.15,
+        "ritardo_max_s": 0.006,
+        "frequenze_min_hz": [
+          8.0,
+          20.0,
+          3.0
+        ],
+        "frequenze_max_hz": [
+          18.0,
+          40.0,
+          10.0
+        ],
+        "zeta_min": 0.08,
+        "zeta_max": 0.25,
+        "forza_cinghia_n": 0.2,
+        "forza_motore_n": 0.1,
+        "coppia_asta_nm": 0.003,
+        "accelerazione_scala_m_s2": 10.0,
+        "eccitazione_casuale": 0.25,
+        "correlazione_s": 0.04,
+        "rumore_posizione_m": [
+          0.005,
+          0.01
+        ],
+        "rumore_angolo_gradi": [
+          0.5,
+          1.0
+        ],
+        "offset_angolo_rad": 0.00872664626,
+        "encoder_conteggi_giro": 2400
+      }
     }
   }
 }

@@ -24,6 +24,7 @@
 #include <math.h>
 #include "network.h"
 #include "network_data.h"
+#include "stima.h"
 
 /* USER CODE END Includes */
 
@@ -155,6 +156,14 @@ static uint32_t ultimo_campione_ms = 0;
 static int32_t ultimo_carrello_steps = 0;
 static float ultimo_theta_rad = PI_F;
 
+/* Stimatore dello stato (stima.c), lo stesso usato in addestramento.
+ * Predizione in SysTick ogni 2 ms, correzione in Rete_Process ogni 20 ms.
+ * La rete riceve x, theta, v, omega STIMATI, non derivati dalle letture.
+ */
+Stima stima;                         /* osservabile dal debugger */
+static volatile uint8_t stima_valida = 0;
+static uint32_t ultimo_stima_ms = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -167,6 +176,7 @@ static void MX_CRC_Init(void);
 /* USER CODE BEGIN PFP */
 static void Controllo_Fault(uint32_t errore);
 static void Rete_Process(void);
+void Controllo_StimaTick(void);
 
 /* USER CODE END PFP */
 
@@ -724,8 +734,27 @@ done:
     __set_PRIMASK(primask);
 }
 
-/* Campionamento anche a controllo fermo: omega resta valida al riavvio.
- * La velocita' del carrello e' stimata dagli STEP, non da un encoder lineare.
+/* Eseguita da SysTick dopo Controllo_MotorTick: predizione dello stimatore
+ * ogni 2 ms con la velocita' STEP effettivamente programmata (zero se il
+ * timer e' fermo, anche durante la pausa per il cambio di DIR).
+ * Fuori dal controllo il carrello e' considerato fermo.
+ */
+void Controllo_StimaTick(void)
+{
+    if (!stima_valida)
+        return;
+    uint32_t now = HAL_GetTick();
+    if ((uint32_t)(now - ultimo_stima_ms) < MOTOR_PERIOD_MS)
+        return;
+    ultimo_stima_ms = now;
+    float v = (controllo_abilitato && stepper_running)
+        ? frequenza_applicata_hz * METRI_PER_STEP : 0.0f;
+    Stima_Predici(&stima, v, MOTOR_PERIOD_MS * 0.001f);
+}
+
+/* Campionamento anche a controllo fermo: lo stimatore resta aggiornato.
+ * La posizione del carrello viene dagli STEP emessi (nessun encoder lineare);
+ * le velocita' vengono dallo stimatore, non da differenze fra letture.
  */
 static void Rete_Process(void)
 {
@@ -742,23 +771,36 @@ static void Rete_Process(void)
     cart_steps = posizione_carrello_steps;
     applied_hz = frequenza_applicata_hz;
     __set_PRIMASK(primask);
-    float dt = elapsed * 0.001f;
-    float delta_theta = theta_rad - ultimo_theta_rad;
-    if (delta_theta > PI_F)
-        delta_theta -= 2.0f * PI_F;
-    else if (delta_theta < -PI_F)
-        delta_theta += 2.0f * PI_F;
-    velocita_angolare_rad_s = delta_theta / dt;
-    velocita_carrello_m_s = (cart_steps - ultimo_carrello_steps) * METRI_PER_STEP / dt;
+    float x_misurata = (cart_steps - 0.5f * (float)corsa_totale_steps) * METRI_PER_STEP;
     ultimo_theta_rad = theta_rad;
     ultimo_carrello_steps = cart_steps;
 
-    rete_osservazione[0] = (cart_steps - 0.5f * (float)corsa_totale_steps)
-        * METRI_PER_STEP / POSIZIONE_SCALA_M;
-    rete_osservazione[1] = sinf(theta_rad);
-    rete_osservazione[2] = cosf(theta_rad);
-    rete_osservazione[3] = velocita_carrello_m_s / VELOCITA_SCALA_M_S;
-    rete_osservazione[4] = velocita_angolare_rad_s / OMEGA_SCALA_RAD_S;
+    /* Correzione dello stimatore; SysTick non deve predire a meta' aggiornamento. */
+    Stima st;
+    primask = __get_PRIMASK();
+    __disable_irq();
+    if (!stima_valida)
+    {
+        /* Prima lettura dopo l'homing: pendolo fermo, carrello fermo. */
+        Stima_Reset(&stima, x_misurata, theta_rad, 0.0f);
+        ultimo_stima_ms = HAL_GetTick();
+        stima_valida = 1;
+    }
+    else
+        Stima_Correggi(&stima, x_misurata, theta_rad);
+    /* A controllo fermo il conteggio STEP e' esatto: niente deriva della stima. */
+    if (!controllo_abilitato)
+        stima.x = x_misurata;
+    st = stima;
+    __set_PRIMASK(primask);
+    velocita_carrello_m_s = st.velocita;
+    velocita_angolare_rad_s = st.omega;
+
+    rete_osservazione[0] = st.x / POSIZIONE_SCALA_M;
+    rete_osservazione[1] = sinf(st.theta);
+    rete_osservazione[2] = cosf(st.theta);
+    rete_osservazione[3] = st.velocita / VELOCITA_SCALA_M_S;
+    rete_osservazione[4] = st.omega / OMEGA_SCALA_RAD_S;
     rete_osservazione[5] = applied_hz / MAX_FREQUENCY;
     if (!controllo_abilitato || !rete_pronta)
         return;

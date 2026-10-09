@@ -12,20 +12,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from stable_baselines3 import SAC
-from ambiente import ROOT, CartPendoloEnv
-from addestra import check_contract
+from ambiente import ROOT
+from addestra import check_contract, profilo_salvato
+from disturbi import ParametriDisturbi, crea_ambiente
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model', type=Path, default=ROOT / 'modelli/migliore.zip')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati')
+    profile = parser.add_mutually_exclusive_group()
+    profile.add_argument('--disturbi', type=Path)
+    profile.add_argument('--nominale', action='store_true')
+    parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
     torch.set_num_threads(1)
     check_contract(args.model.parent)
     agent = SAC.load(args.model, device='cpu')
-    env = CartPendoloEnv()
-    obs, info = env.reset(options={'exact': True})
+    disturbi = (None if args.nominale else ParametriDisturbi.carica(args.disturbi)
+                if args.disturbi else profilo_salvato(args.model.parent))
+    env = crea_ambiente(disturbi)
+    obs, info = env.reset(seed=args.seed, options={'exact': True})
     rows = [[0., info['angle_deg'], info['cart_x'], 0., 0., 0., 0.]]
     for _ in range(env.max_steps):
         action, _ = agent.predict(obs, deterministic=True)

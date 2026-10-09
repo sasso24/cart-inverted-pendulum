@@ -20,17 +20,45 @@ La convenzione resta zero con il pendolo in alto e `ENCODER_SIGN = -1`. Il verso
 (`DIR_BACKWARD`). La coerenza del verso angolare con la simulazione deve essere
 verificata sulla meccanica.
 
+## Stimatore dello stato
+
+La rete (`modelli_disturbi/migliore.zip`) e' stata addestrata con ingressi
+stimati, non derivati dalle letture: il firmware usa lo stesso stimatore
+di `cart_pendolo_velocita_rl/stima.py`, portato in `Core/Src/stima.c`
+(costanti in `Core/Inc/stima.h`, uguali a `stimatore.toml`).
+
+- **Predizione, ogni 2 ms** (`Controllo_StimaTick` in SysTick, dopo
+  `Controllo_MotorTick`): integra il modello del pendolo
+  `theta'' = K_G sin(theta) - K_A cos(theta) a - K_D omega` con
+  l'accelerazione del carrello ricavata dalla velocita' STEP programmata.
+  Se il timer STEP e' fermo, o il controllo non e' attivo, la velocita' e' zero.
+- **Correzione, ogni 20 ms** (`Rete_Process`): con l'angolo dell'encoder
+  `theta += 0,2 r`, `omega += 1,0 r` (r = errore angolare con wrap) e con la
+  posizione dagli STEP `x += 0,05 (x_mis - x)`. A controllo fermo x viene
+  agganciata al conteggio STEP.
+- La prima lettura dopo l'homing inizializza la stima (pendolo fermo).
+  La stima resta aggiornata anche a controllo fermo, quindi al riavvio
+  con B1 omega e' gia' valida. Struttura `stima` osservabile nel debugger.
+
+Le velocita' NON vengono piu' calcolate come differenza di due letture:
+con il rumore dell'encoder sarebbero inutilizzabili per la rete.
+
 ## Ingressi e comando
 
 La rete viene eseguita nel main ogni 20 ms. L'osservazione contiene:
 
-1. Posizione rispetto al centro misurato dall'homing, in metri / 0,462.
-2. Seno di theta.
-3. Coseno di theta.
-4. Velocita' del carrello, stimata dagli STEP degli ultimi 20 ms, / 0,48 m/s.
-5. Velocita' angolare, ricavata dall'encoder con gestione del passaggio
-   fra -pi e +pi, / 10 rad/s.
+1. Posizione stimata rispetto al centro misurato dall'homing, in metri / 0,462.
+2. Seno di theta stimato.
+3. Coseno di theta stimato.
+4. Velocita' del carrello stimata (ultima velocita' STEP programmata) / 0,48 m/s.
+5. Velocita' angolare stimata / 10 rad/s.
 6. Frequenza STEP firmata programmata nel timer dopo la rampa / 32000 Hz.
+
+I pesi in `X-CUBE-AI/App/network_data_params.c` sono quelli di
+`modelli_disturbi/migliore.zip`, copiati con
+`cart_pendolo_velocita_rl/aggiorna_pesi_xcubeai.py` (stesso layout float32
+del generatore ST, verificato rigenerando bit per bit il file precedente).
+In alternativa importare `export_stm32/pendolo_actor.onnx` in STM32CubeMX.
 
 La conversione meccanica e' quella del modello esportato: 200 passi/giro,
 32 microstep, cinghia da 2 mm e puleggia da 48 denti, cioe' 15 micrometri/STEP.
@@ -82,6 +110,8 @@ ai limiti, eseguire il reset e il nuovo homing.
   Coprono calibrazione theta prima dell'homing, timeout di stabilita',
   ingressi, uscita, rampa, inversioni, B1 durante l'inferenza,
   antirimbalzo, finecorsa, errori e scadenze temporali.
+- Stimatore C contro Python, 20 sequenze da 60 s:
+  `python3 Prova_controllo/tests/test_stima.py` (ambiente Python del progetto RL).
 - Sul Mac corrente il compilatore host richiede un SDK compatibile:
   `SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk python3 Prova_controllo/tests/test_controllo.py`.
 - In STM32CubeIDE ricompilare `Prova_controllo`: i percorsi Debug/Release
