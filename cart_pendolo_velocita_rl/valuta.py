@@ -7,10 +7,11 @@ from stable_baselines3 import SAC
 from ambiente import ROOT
 from addestra import evaluate_comparison, check_contract, profilo_salvato
 from disturbi import ParametriDisturbi
+from configurazione import configurazione_ambiente
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=ROOT / "modelli" / "migliore.zip")
+    parser.add_argument("--model", type=Path, default=ROOT / "modelli_swingup" / "migliore.zip")
     parser.add_argument("--episodes", type=int, default=20)
     parser.add_argument("--output", type=Path, default=ROOT / "risultati" / "valutazione.json")
     profile = parser.add_mutually_exclusive_group()
@@ -24,9 +25,15 @@ if __name__ == "__main__":
     agent = SAC.load(args.model, device="cpu")
     disturbi = (None if args.nominale else ParametriDisturbi.carica(args.disturbi)
                 if args.disturbi else profilo_salvato(args.model.parent))
-    result = evaluate_comparison(agent, args.episodes, seed_start=2000, disturbi=disturbi)
+    cfg = configurazione_ambiente(args.model.parent)
+    result = evaluate_comparison(agent, args.episodes, seed_start=2000, disturbi=disturbi,
+                                 configurazione=cfg)
     result["model"] = str(args.model.resolve())
-    result["success_definition"] = "Intero episodio senza interruzioni con |angolo|<12 gradi, |x|<limite della corsa, |omega|<1 rad/s, |vx|<0.75 m/s"
+    ep = (cfg or __import__('configurazione').Configurazione()).episodio
+    result["success_definition"] = (
+        f"In equilibrio senza interruzioni da {ep.tempo_max_salita_s:g} s alla fine "
+        f"(|angolo|<{ep.stabile_angolo_gradi:g} gradi, |x|<limite della corsa, "
+        f"|omega|<{ep.stabile_omega_rad_s:g} rad/s, |vx|<{ep.stabile_velocita_m_s:g} m/s)")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2))
     print(f"Successi: {result['success_rate']:.0%} su {args.episodes} prove; "

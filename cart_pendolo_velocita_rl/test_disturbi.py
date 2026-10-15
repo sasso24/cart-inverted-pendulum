@@ -171,7 +171,15 @@ class DisturbiTest(unittest.TestCase):
             (path/'config.json').write_text(json.dumps(config))
             check_contract(path)
             self.assertEqual(profilo_salvato(path), p)
+            # Codice cambiato: avviso per simulare, errore per riprendere.
             config['environment']['sha256']['disturbi.py'] = 'diverso'
+            (path/'config.json').write_text(json.dumps(config))
+            with self.assertWarns(UserWarning):
+                check_contract(path)
+            with self.assertRaises(ValueError):
+                check_contract(path, rigoroso=True)
+            # XML o parametri fisici cambiati: sempre errore.
+            config['environment']['sha256']['cart_pendolo.xml'] = 'diverso'
             (path/'config.json').write_text(json.dumps(config))
             with self.assertRaises(ValueError):
                 check_contract(path)

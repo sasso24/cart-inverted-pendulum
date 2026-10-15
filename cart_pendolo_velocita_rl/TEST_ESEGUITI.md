@@ -1,3 +1,63 @@
+# Swing-up da -180° e configurazione unica — 14 ottobre 2026
+
+**Rete** `modelli_swingup/migliore.zip` (6-128-128-1, SAC, seed 42, scelta a
+1,02 M passi su 1,5 M; `config.toml` = configurazione salvata con la rete).
+Addestramento con disturbi (intensità 0,35, ritardo fino a 4 ms) e guasti
+sensori (offset encoder ±2°, conteggi persi fino a 0,2%, 0,5 impulsi spuri/s
+da 1-4 conteggi, passi persi fino al 2%), rumore 5-10 mm / 0,5-1°.
+
+**Valutazione** (`valuta.py`, 40 semi 2000-2039 mai usati in addestramento,
+episodi da 20 s, partenza appesa ±3°; successo = in equilibrio senza
+interruzioni da 12 s alla fine):
+
+| | nominale | disturbi + guasti sensori |
+|---|---:|---:|
+| Successi | 40/40 | 27/40 |
+| In equilibrio alla fine dell'episodio | 40/40 | 28/40 |
+| Tempo di salita (medio / max) | 9,4 / 10,2 s | 9,6 / 11,6 s |
+| Corsa massima | 0,20 m | 0,37 m (limite 0,40) |
+| Arresti per limite di corsa | 0 | 0 |
+
+Stessi 40 semi, rete invariata, un solo tipo di guasto per volta:
+senza guasti sensori 40/40; solo offset ±2° 32/40 successi (37/40 in
+equilibrio alla fine); guasti senza offset 36/40 (37/40). L'offset iniziale
+pesa di più: nel firmware viene azzerato a ogni avvio (ricalibrazione a -180°).
+
+Un controllore euristico di pompaggio dell'energia sullo stesso modello sale
+in 8-11 s: con 0,48 m/s di velocità massima del carrello la salita non può
+essere molto più rapida. Nelle cadute il carrello deriva verso un lato
+(offset/deriva dell'angolo) e la rete spesso fa un giro completo e riprende
+il pendolo. Durante l'equilibrio il comando cambia ancora spesso verso
+(`peso_inversione = 0,02` non basta).
+
+**Altre prove**
+
+- Codice nuovo con i vecchi checkpoint: `modelli_disturbi/migliore.zip`,
+  nominale e disturbato, 1.800 passi: osservazioni, stato e ricompense
+  identici bit per bit al codice del 9 ottobre.
+- `python -m unittest test_versione test_disturbi test_stima test_configurazione`:
+  35 test OK. `verifica.py` fallisce sulla manovra manuale da 10 cm come già
+  il codice del 9 ottobre (minimo 3.200 Hz).
+- `esporta_onnx.py`: 5.100 ingressi, errore massimo PyTorch/ONNX 5,2e-6.
+- Firmware `Controllo_SwingUp`: compilato con arm-none-eabi-gcc 13.2
+  (anche `HIL_MODE 1`), 0 warning; text 106.944 B.
+  `tests/test_controllo.py` (codice USER CODE reale, HAL simulata: ricalibrazione
+  all'avvio, salti encoder, limiti di corsa, B1, fault, rampa) OK;
+  `tests/test_stima.py` OK (1,4e-6); `tests/test_hil.py` OK (protocollo e pesi,
+  diff ingressi 1,4e-6, diff azione 2,3e-6; swing-up 2/3).
+- `Prova_controllo/tests/test_hil.py` e `test_stima.py` passano ancora col
+  codice Python nuovo.
+- Ricalibrazione condizionata (sera del 14/10): a B1 l'angolo torna a -180°
+  solo se quello letto è entro ±20° da -180° (e l'encoder è fermo); entro ±10°
+  da 0° la rete parte con l'equilibrio senza ricalibrare; altrove avvio
+  rifiutato. `tests/test_controllo.py` OK (anche le soglie), firmware
+  ricompilato 0 warning (text 107.072 B). Stessa rete, partenza dall'alto
+  ±3° in simulazione: 20/20 in equilibrio per 20 s con sensori ideali,
+  16/20 con disturbi e guasti.
+- Non provato: scheda reale, motore, encoder sul banco.
+
+---
+
 # Hardware-in-the-loop — 9 ottobre 2026
 
 - Firmware: `HIL_MODE` in `main.c` (default 0). Con 1 la scheda riceve le misure

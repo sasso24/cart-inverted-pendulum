@@ -15,11 +15,12 @@ from stable_baselines3 import SAC
 from ambiente import ROOT
 from addestra import check_contract, profilo_salvato
 from disturbi import ParametriDisturbi, crea_ambiente
+from configurazione import configurazione_ambiente
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli/migliore.zip')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_swingup/migliore.zip')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati')
     profile = parser.add_mutually_exclusive_group()
     profile.add_argument('--disturbi', type=Path)
@@ -31,7 +32,7 @@ def main():
     agent = SAC.load(args.model, device='cpu')
     disturbi = (None if args.nominale else ParametriDisturbi.carica(args.disturbi)
                 if args.disturbi else profilo_salvato(args.model.parent))
-    env = crea_ambiente(disturbi)
+    env = crea_ambiente(disturbi, configurazione=configurazione_ambiente(args.model.parent))
     obs, info = env.reset(seed=args.seed, options={'exact': True})
     rows = [[0., info['angle_deg'], info['cart_x'], 0., 0., 0., 0.]]
     for _ in range(env.max_steps):
@@ -52,11 +53,11 @@ def main():
     fig, axes = plt.subplots(2, 2, figsize=(12, 8), constrained_layout=True)
     fig.suptitle('Pendolo con stepper — SAC velocita in Hz')
     axes[0, 0].plot(t, np.abs(angle))
-    axes[0, 0].axhspan(0, 12, color='green', alpha=.12)
+    axes[0, 0].axhspan(0, env.ep.stabile_angolo_gradi, color='green', alpha=.12)
     axes[0, 0].set(title='Distanza dalla verticale', ylabel='gradi')
     axes[0, 1].plot(t, x)
-    axes[0, 1].axhline(env.limite, color='red', linestyle='--')
-    axes[0, 1].axhline(-env.limite, color='red', linestyle='--')
+    axes[0, 1].axhline(env.limite_corsa, color='red', linestyle='--')
+    axes[0, 1].axhline(-env.limite_corsa, color='red', linestyle='--')
     axes[0, 1].set(title='Posizione carrello', ylabel='m')
     axes[1, 0].step(t, requested, where='post', label='Richiesta rete', alpha=.6)
     axes[1, 0].plot(t, hz, label='Comando dopo rampa e arresti')

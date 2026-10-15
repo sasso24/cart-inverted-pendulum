@@ -1,0 +1,156 @@
+# =============================================================================
+#  CONFIGURAZIONE UNICA del pendolo inverso (addestramento SAC + firmware)
+# =============================================================================
+# Tutto si cambia da qui. Uso:
+#     python addestra.py                       (o ./Addestra.command)
+#     python addestra.py --config altra.toml --output modelli_prova
+# Ogni addestramento copia questa configurazione in <cartella>/config.json:
+# simula, valuta, grafici, hil ed esporta_firmware usano quella copia, quindi
+# cambiare questo file non altera le reti gia addestrate.
+# Angoli: 0 = pendolo in alto, -180 (= +180) = pendolo appeso in basso.
+
+[modello]
+file_xml = "cart_pendolo.xml"
+
+# -----------------------------------------------------------------------------
+[episodio]
+swing_up = true                # true: parte appeso e deve salire; false: parte dall'alto
+angolo_iniziale_gradi = -180.0 # solo con swing_up
+dispersione_x_m = 0.05         # posizione iniziale casuale del carrello (+/-)
+dispersione_angolo_rad = 0.05  # (+/-) intorno all'angolo iniziale
+dispersione_omega_rad_s = 0.1
+frazione_partenza_alto = 0.2   # solo addestramento: quota di episodi che partono in alto
+durata_s = 20.0
+limite_corsa_m = 0.40          # arresto (anche nel firmware); 0 = finecorsa XML 0.462 m
+penalita_finecorsa = 10.0
+giri_max = 0.0                 # 0 = nessun limite ai giri completi del pendolo
+stabile_angolo_gradi = 12.0    # "in equilibrio" = entro queste tre soglie
+stabile_omega_rad_s = 1.0
+stabile_velocita_m_s = 0.75
+tempo_max_salita_s = 12.0      # successo = in equilibrio senza interruzioni da qui alla fine
+                               # (con 0,48 m/s di velocita massima la salita richiede 8-11 s)
+scala_omega_rad_s = 10.0       # normalizzazione dell'ingresso omega (anche nel firmware)
+
+# -----------------------------------------------------------------------------
+[ricompensa]
+# r = alto^esponente_alto * F_x * F_omega * F_angolo * F_v
+#     + peso_energia * exp(-((E-1)/scala_energia)^2)
+#     - G*(peso_azione*u^2 + peso_variazione*(u-u_prec)^2 + peso_inversione*[cambio di verso])
+#     - peso_bordo*(ingresso nella fascia di bordo)^2
+# G = alto^esponente_penalita_alto: 0 = penalita sul comando sempre attive;
+# 2 = solo vicino all'alto, cosi lo swing-up puo usare tutto il motore.
+# alto = (1+cos(angolo))/2.  Ogni F = minimo + (1-minimo)*exp(-(valore/scala)^2):
+# minimo = 1 spegne il termine, minimo vicino a 0 lo rende decisivo.
+#
+# Priorita alla velocita angolare: il termine di angolo e largo (basta "stare su"),
+# mentre F_omega e stretto e pesa molto. Cosi un errore di qualche grado
+# dell'encoder costa poco, un pendolo che si muove costa molto.
+esponente_alto = 1.0
+minimo_omega = 0.2
+scala_omega_rad_s = 1.5
+minimo_angolo = 1.0           # 1 = nessun premio extra per l'angolo esatto
+scala_angolo_gradi = 10.0
+minimo_x = 0.7                # carrello vicino al centro (meno importante)
+scala_x_m = 0.2
+minimo_velocita = 0.8         # carrello fermo
+scala_velocita_m_s = 0.2
+peso_energia = 0.1            # aiuto per lo swing-up: energia vicina a quella "fermo in alto"
+scala_energia = 0.3
+peso_azione = 0.005
+peso_variazione = 0.02
+peso_inversione = 0.02        # contro i continui cambi di verso del motore
+esponente_penalita_alto = 0.0   # 2.0 provato il 14/10: nessun miglioramento
+peso_bordo = 0.5
+inizio_bordo_m = 0.28         # da qui a limite_corsa_m la penalita cresce
+
+# -----------------------------------------------------------------------------
+[disturbi]
+attivi = true                 # false = addestramento nominale (sensori ideali)
+intensita = 0.35              # scala ampiezze, variazioni dei parametri, offset base, ritardo
+massa_rel = 0.10
+smorzamento_rel = 0.25
+guadagno_motore_rel = 0.15
+ritardo_max_s = 0.012         # con intensita 0.35: ritardo 0, 2 o 4 ms
+frequenze_min_hz = [8.0, 20.0, 3.0]   # modi: cinghia, motore, asta
+frequenze_max_hz = [18.0, 40.0, 10.0]
+zeta_min = 0.08
+zeta_max = 0.25
+forza_cinghia_n = 0.20
+forza_motore_n = 0.10
+coppia_asta_nm = 0.003
+accelerazione_scala_m_s2 = 10.0
+eccitazione_casuale = 0.25
+correlazione_s = 0.04
+rumore_posizione_m = [0.005, 0.010]   # 1 sigma per lettura, estratta per episodio
+rumore_angolo_gradi = [0.5, 1.0]
+offset_angolo_rad = 0.00872664626     # offset base (+/-0.5 gradi a intensita 1)
+encoder_conteggi_giro = 2400
+
+# -----------------------------------------------------------------------------
+[sensori]
+# Guasti dell'encoder e del conteggio STEP (solo con disturbi attivi; non scalati).
+offset_max_gradi = 2.0          # offset iniziale casuale in +/- questo valore
+prob_conteggio_perso_max = 0.002 # per episodio in [0, max]: ogni conteggio puo andare perso -> deriva
+salti_al_s = 0.5                # impulsi spuri (rumore elettrico) al secondo, in media
+salto_max_conteggi = 4          # ampiezza di ogni impulso spurio, 1..max conteggi
+passi_persi_max = 0.02          # frazione di passi persi del motore -> deriva della posizione
+
+# -----------------------------------------------------------------------------
+[stepper]
+# Da tarare sull'hardware. Hz = impulsi STEP/secondo.
+frequenza_min_hz = 3200.0
+frequenza_max_hz = 32000.0
+rampa_hz_s = 1600000.0          # 0 -> 32000 Hz in 0.02 s
+zona_morta = 0.0
+passi_per_giro = 200
+angolo_passo_gradi = 1.8
+microstepping = 32
+passo_cinghia_m = 0.002
+denti_puleggia = 48
+rapporto_trasmissione = 1.0
+
+# -----------------------------------------------------------------------------
+[stimatore]
+# Ricalcolare k_g, k_a, k_d se cambia l'XML (vedi stimatore.toml).
+k_g = 17.1317
+k_a = 1.74635
+k_d = 0.35034
+l_theta = 0.2
+l_omega = 1.0
+l_x = 0.05
+
+# -----------------------------------------------------------------------------
+[addestramento]
+cartella = "modelli_swingup"
+passi = 1500000
+seed = 42
+valuta_ogni = 20000
+episodi_selezione = 6
+usa_disturbi = true
+strati = [128, 128]           # [128, 128] = compatibile col progetto X-CUBE-AI esistente
+learning_rate = 0.0003
+buffer = 1000000
+learning_starts = 10000
+batch = 256
+gamma = 0.99
+tau = 0.005
+train_freq = 4
+gradient_steps = 1
+ent_coef = "auto_0.1"
+
+# -----------------------------------------------------------------------------
+[firmware]
+# Usati da esporta_firmware.py per scrivere Core/Inc/config_controllo.h.
+nome_progetto = "Controllo_SwingUp"
+# Partenza con B1, in base all'angolo letto dall'encoder:
+#  - entro angolo_ricalibrazione_gradi da -180 -> pendolo appeso: se fermo da
+#    tempo_quiete_ms l'angolo torna esattamente a -180 (ricalibrazione), poi swing-up;
+#  - entro angolo_max_avvio_gradi da 0 -> pendolo portato su a mano: niente
+#    ricalibrazione, solo equilibrio;
+#  - altrimenti avvio rifiutato (controllo_errore = 11).
+ricalibra_theta_all_avvio = true
+angolo_ricalibrazione_gradi = 20.0
+tempo_quiete_ms = 1000
+angolo_max_avvio_gradi = 10.0
+angolo_max_controllo_gradi = 45.0  # solo senza swing-up: arresto oltre questo angolo
+omega_max_plausibile_rad_s = 25.0  # salto dell'encoder piu grande in 20 ms = guasto

@@ -17,34 +17,42 @@ from stable_baselines3.common.torch_layers import FlattenExtractor
 
 from addestra import check_contract, profilo_salvato
 from disturbi import crea_ambiente
+from configurazione import configurazione_ambiente, configurazione_modello
 
 ROOT = Path(__file__).resolve().parent
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
-    parser.add_argument('--output', type=Path, default=ROOT / 'export_stm32')
-    args = parser.parse_args()
-    check_contract(args.model.parent)
-    source_hash = hashlib.sha256(args.model.read_bytes()).hexdigest()
-    model = SAC.load(args.model, device='cpu')
-    model.policy.set_training_mode(False)
+def strati_attore(model):
+    """Strati lineari dell'attore deterministico: 6 -> (ReLU)* -> 1 tanh."""
     actor = model.actor
+    tipi = [type(layer) for layer in actor.latent_pi]
     if (model.observation_space.shape != (6,)
             or model.action_space.shape != (1,)
             or not np.all(model.action_space.low == -1)
             or not np.all(model.action_space.high == 1)
             or actor.use_sde
             or not isinstance(actor.features_extractor, FlattenExtractor)
-            or [type(layer) for layer in actor.latent_pi]
-            != [torch.nn.Linear, torch.nn.ReLU, torch.nn.Linear, torch.nn.ReLU]
+            or tipi != [torch.nn.Linear, torch.nn.ReLU] * (len(tipi) // 2)
             or not isinstance(actor.mu, torch.nn.Linear)):
-        raise ValueError('Attore incompatibile con questo esportatore 6-128-128-1.')
-    layers = [actor.latent_pi[0], actor.latent_pi[2], actor.mu]
-    if [(x.in_features, x.out_features) for x in layers] != [(6, 128), (128, 128), (128, 1)]:
+        raise ValueError('Attore incompatibile: serve 6 -> Linear/ReLU ... -> 1 tanh.')
+    layers = list(actor.latent_pi[::2]) + [actor.mu]
+    if layers[0].in_features != 6 or layers[-1].out_features != 1 or any(
+            a.out_features != b.in_features for a, b in zip(layers, layers[1:])):
         raise ValueError('Dimensioni degli strati inattese.')
+    return layers
 
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
+    parser.add_argument('--output', type=Path, default=ROOT / 'export_stm32')
+    args = parser.parse_args(argv)
+    check_contract(args.model.parent)
+    source_hash = hashlib.sha256(args.model.read_bytes()).hexdigest()
+    scala_omega = configurazione_modello(args.model.parent).episodio.scala_omega_rad_s
+    model = SAC.load(args.model, device='cpu')
+    model.policy.set_training_mode(False)
+    layers = strati_attore(model)
     # Grafo esplicito: evita operatori di campionamento SAC e dimensioni dinamiche.
     nodes, weights = [], []
     previous = 'observation'
@@ -55,10 +63,11 @@ def main():
             numpy_helper.from_array(layer.bias.detach().cpu().numpy().copy(), bias),
         ])
         affine = f'affine_{i}'
-        output = 'action' if i == 2 else f'hidden_{i}'
+        ultimo = i == len(layers) - 1
+        output = 'action' if ultimo else f'hidden_{i}'
         nodes.append(helper.make_node('Gemm', [previous, weight, bias], [affine],
                                       name=f'dense_{i}', transB=1))
-        nodes.append(helper.make_node('Tanh' if i == 2 else 'Relu', [affine], [output],
+        nodes.append(helper.make_node('Tanh' if ultimo else 'Relu', [affine], [output],
                                       name=f'activation_{i}'))
         previous = output
     graph = helper.make_graph(
@@ -70,7 +79,8 @@ def main():
     helper.set_model_props(exported, {
         'checkpoint_sha256': source_hash,
         'policy': 'SAC deterministic: tanh(mu), no sampling',
-        'inputs': 'x/limite,sin(theta),cos(theta),vx/vmax,omega/10,f_applied/fmax',
+        'inputs': f'x/limite,sin(theta),cos(theta),vx/vmax,omega/{scala_omega:g},f_applied/fmax',
+        'architecture': '-'.join(str(n) for n in [6] + [l.out_features for l in layers]),
         'output': 'normalized signed STEP frequency request [-1,1]',
         'control_hz': '50',
     })
@@ -90,7 +100,8 @@ def main():
     boundaries = np.array([[0, 0, 1, 0, 0, 0], [0, 0, -1, 0, 0, 0],
                            [1, 0, 1, 1, 1, 1], [-1, 0, 1, -1, -1, -1]], dtype=np.float32)
     # Rollout con lo stesso profilo dell'addestramento: ingressi stimati da stima.py.
-    env = crea_ambiente(profilo_salvato(args.model.parent))
+    cfg = configurazione_ambiente(args.model.parent)
+    env = crea_ambiente(profilo_salvato(args.model.parent), configurazione=cfg)
     rollout = []
     try:
         obs, _ = env.reset(seed=2026)

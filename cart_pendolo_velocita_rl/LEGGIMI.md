@@ -1,3 +1,54 @@
+# Swing-up e configurazione unica — 14 ottobre 2026
+
+**Tutto si regola da `config.toml`**: swing-up sì/no e angolo di partenza,
+durata, limite di corsa, ricompensa, disturbi, guasti dei sensori, motore,
+stimatore, taglia della rete e iperparametri SAC, opzioni del firmware.
+Ogni sezione del file è commentata.
+
+```sh
+./Addestra.command                                  # usa config.toml -> modelli_swingup/
+./Addestra.command --config prova.toml --output modelli_prova
+./Avvia_RL.command                                  # default: modelli_swingup/migliore.zip
+./Valuta.command --episodes 20 --output risultati/valutazione_swingup.json
+./Grafici.command --output risultati/grafici_swingup
+./Esporta_Firmware.command --model modelli_swingup/migliore.zip   # -> ../Controllo_SwingUp
+```
+
+Ogni addestramento salva la configurazione completa in `<cartella>/config.json`
+(e una copia del TOML in `config_usata.toml`): simulazione, valutazione,
+grafici, HIL ed esportazione usano quella, quindi modificare `config.toml`
+non cambia il comportamento delle reti già addestrate. I vecchi checkpoint
+(`modelli_disturbi`, `modelli`) senza configurazione salvata usano i valori
+storici e danno **traiettorie identiche bit per bit** al codice del 9 ottobre.
+Se cambia solo il codice Python compare un avviso; se cambia l'XML o un
+parametro fisico il checkpoint viene rifiutato. Per riprendere (`--resume`)
+il codice deve essere identico.
+
+**Cosa c'è di nuovo**
+
+- `[episodio] swing_up = true`: il pendolo parte appeso (-180°) e la rete deve
+  portarlo su. In addestramento il 20% degli episodi parte in alto
+  (`frazione_partenza_alto`) per allenare presto l'equilibrio. Successo =
+  in equilibrio senza interruzioni da `tempo_max_salita_s` (10 s) alla fine.
+- `limite_corsa_m = 0.40`: l'episodio (e il firmware) si ferma a ±0,40 m,
+  lasciando 6 cm di frenata prima dei finecorsa.
+- `[ricompensa]` parametrica. Con i valori del file la priorità è sulla
+  **velocità angolare**: il termine sull'angolo è largo (basta stare su,
+  qualche grado di errore dell'encoder costa pochissimo), quello su omega è
+  stretto e pesante. Ci sono anche aiuto energetico per lo swing-up, penalità
+  sulle inversioni di verso del motore e penalità vicino ai bordi.
+- `[sensori]`: guasti dell'encoder visti sul banco — offset iniziale, conteggi
+  persi che si accumulano col moto (deriva), impulsi spuri da disturbi
+  elettrici — e passi persi del motore (deriva della posizione contata).
+- `[disturbi]`: stesso modello di prima, intensità 0,35 e ritardo fino a 4 ms.
+- `esporta_firmware.py`: scrive `config_controllo.h` e i pesi nel progetto
+  STM32 `Controllo_SwingUp` (vedi il suo `LEGGIMI.md`), più l'ONNX verificato.
+- Test: `python -m unittest test_versione test_disturbi test_stima test_configurazione`.
+
+I risultati della rete addestrata sono in `TEST_ESEGUITI.md`.
+
+---
+
 # Stabilizzazione dall’alto con disturbi — 1 ottobre 2026
 
 Il controllo LQR (`equilibrio.py` e file collegati) è stato rimosso: resta solo SAC.

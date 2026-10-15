@@ -26,10 +26,8 @@ NOME_ARRAY = 's_network_weights_array_u64'
 
 
 def pesi_rete(model_path):
-    actor = SAC.load(model_path, device='cpu').actor
-    layers = [actor.latent_pi[0], actor.latent_pi[2], actor.mu]
-    if [(l.in_features, l.out_features) for l in layers] != [(6, 128), (128, 128), (128, 1)]:
-        raise ValueError('Serve una rete 6-128-128-1.')
+    from esporta_onnx import strati_attore
+    layers = strati_attore(SAC.load(model_path, device='cpu'))
     parti = []
     for layer in layers:
         parti += [layer.weight.detach().numpy().ravel(), layer.bias.detach().numpy()]
@@ -46,7 +44,9 @@ def leggi_array(testo):
 def scrivi_array(testo, pesi):
     inizio, attuali = leggi_array(testo)
     if len(attuali) != len(pesi) + 1:
-        raise ValueError(f'Dimensione diversa: firmware {len(attuali)} float, rete {len(pesi)}+1.')
+        raise ValueError(f'Dimensione diversa: firmware {len(attuali)} float, rete {len(pesi)}+1. '
+                         'La rete ha strati diversi da quella generata con X-CUBE-AI: importare '
+                         'export_stm32/pendolo_actor.onnx in STM32CubeMX (X-CUBE-AI) e rigenerare.')
     dati = np.concatenate([pesi, np.zeros(1, '<f4')])
     parole = np.frombuffer(dati.tobytes(), dtype='<u8')
     righe = []
@@ -58,13 +58,13 @@ def scrivi_array(testo, pesi):
     return testo[:apertura] + '\n' + '\n'.join(righe) + '\n' + testo[chiusura:]
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
     parser.add_argument('--params', type=Path, default=ROOT.parent / 'Prova_controllo'
                         / 'X-CUBE-AI/App/network_data_params.c')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     pesi = pesi_rete(args.model)
     # newline='' conserva le terminazioni di riga originali (LF o CRLF).
     with args.params.open(newline='') as stream:

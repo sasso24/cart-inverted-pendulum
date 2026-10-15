@@ -159,7 +159,7 @@ def episodio(scheda, env, policy, seed, passi, scrittore, indice):
         x_m, th_m = env.misura_grezza
         r = decodifica(scheda.passo(registrate, x_m, th_m, env.comando_motore.frequenza_hz))
     stat['rete_us_medio'] = float(np.mean(tempi)) if tempi else 0.
-    stat['successo'] = (not stat['terminato']) and env.best_stable_steps == env.steps
+    stat['successo'] = env.successo(stat['terminato'])
     stat['secondi_stabili'] = env.best_stable_steps * env.dt
     env.stimatore.predici = originale
     return stat
@@ -173,8 +173,10 @@ def main():
     parser.add_argument('--episodi', type=int, default=5)
     parser.add_argument('--secondi', type=float, default=20.)
     parser.add_argument('--seed', type=int, default=7000)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
-    parser.add_argument('--disturbi', type=Path, default=ROOT / 'disturbi.toml')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip',
+                        help='Rete caricata sulla scheda (swing-up: modelli_swingup/migliore.zip)')
+    parser.add_argument('--disturbi', type=Path,
+                        help='Profilo TOML; default quello salvato col modello (o disturbi.toml)')
     parser.add_argument('--intensita', type=float, help='Sovrascrive intensita del profilo')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati/hil')
     parser.add_argument('--ping', action='store_true', help='Verifica solo la connessione')
@@ -200,12 +202,18 @@ def main():
         def policy(obs):
             return agent.predict(np.asarray(obs, dtype=np.float32), deterministic=True)[0][0]
 
-        profilo = ParametriDisturbi.carica(args.disturbi)
+        from addestra import profilo_salvato
+        from configurazione import configurazione_ambiente
+        cfg = configurazione_ambiente(args.model.parent)
+        if args.disturbi is not None:
+            profilo = ParametriDisturbi.carica(args.disturbi)
+        else:
+            profilo = profilo_salvato(args.model.parent) or ParametriDisturbi.carica(ROOT / 'disturbi.toml')
         if args.intensita is not None:
             profilo = replace(profilo, intensita=args.intensita)
         if profilo.intensita == 0:
             raise SystemExit("Serve intensita > 0: l'HIL usa le misure dell'ambiente disturbato.")
-        env = crea_ambiente(profilo)
+        env = crea_ambiente(profilo, configurazione=cfg)
         passi = int(round(args.secondi / env.dt))
         env.max_steps = passi
 
@@ -231,7 +239,7 @@ def main():
                       f"diff obs {s['diff_obs_max']:.1e} | diff azione {s['diff_azione_max']:.1e} | "
                       f"rete {s['rete_us_medio']:.0f} us (max {s['rete_us_max']})", flush=True)
         riepilogo = {
-            'porta': porta, 'modello': str(args.model), 'profilo': str(args.disturbi),
+            'porta': porta, 'modello': str(args.model), 'profilo': str(args.disturbi or 'salvato col modello'),
             'intensita': profilo.intensita, 'secondi': args.secondi, 'csv': percorso_csv.name,
             'successi': sum(r['successo'] for r in risultati), 'episodi': len(risultati),
             'diff_obs_max': max(r['diff_obs_max'] for r in risultati),

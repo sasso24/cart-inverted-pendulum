@@ -12,7 +12,7 @@ import tomllib
 import mujoco
 import numpy as np
 
-from ambiente import CartPendoloEnv, ricompensa
+from ambiente import CartPendoloEnv
 from stima import StimatoreStato
 
 
@@ -109,13 +109,14 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
     def __init__(self, disturbi, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.disturbi = disturbi
+        self.sensori = self.cfg.sensori if self.cfg is not None else None
         if max(disturbi.frequenze_max_hz) * self.model.opt.timestep > 0.1:
             raise ValueError('Servono almeno 10 passi fisici per periodo dei modi.')
         self._nominale = {n: getattr(self.model, n).copy() for n in
                           ('body_mass', 'body_inertia', 'dof_damping',
                            'actuator_gainprm', 'actuator_biasprm')}
         self._obs = None
-        self.stimatore = StimatoreStato()
+        self.stimatore = StimatoreStato(self.cfg.stimatore if self.cfg is not None else None)
         self.parametri_episodio = {}
         self.forza_disturbo_n = self.coppia_disturbo_nm = 0.
 
@@ -178,8 +179,48 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             'amplitude_limits': self._ampiezze.tolist(),
             'delay_s': delay*self.model.opt.timestep, 'angle_offset_rad': self._offset,
             'position_noise_m': self._sigma_x, 'angle_noise_deg': math.degrees(self._sigma_theta)}
+        self._guasti_iniziali()
         self._misura(iniziale=True)
         return self.observation(), self.info()
+
+    def _guasti_iniziali(self):
+        """Guasti di config.toml [sensori], estratti per episodio dopo i disturbi
+        storici: con [sensori] tutto a zero la sequenza casuale non cambia."""
+        g, rng = self.sensori, self.np_random
+        self._guasti = g is not None and g.attivi
+        self.errore_encoder_rad = self.errore_x_m = 0.
+        if not self._guasti:
+            return
+        tick = 2*math.pi/self.disturbi.encoder_conteggi_giro
+        massimo = math.radians(g.offset_max_gradi)
+        self.errore_encoder_rad = rng.uniform(-massimo, massimo) if massimo else 0.
+        self._p_perso = rng.uniform(0., g.prob_conteggio_perso_max) if g.prob_conteggio_perso_max else 0.
+        self._frazione_passi = rng.uniform(0., g.passi_persi_max) if g.passi_persi_max else 0.
+        self._theta_prec, self._x_prec = float(self.data.qpos[1]), float(self.data.qpos[0])
+        self._tick = tick
+        self.parametri_episodio.update({
+            'encoder_offset_deg': math.degrees(self.errore_encoder_rad),
+            'encoder_lost_count_probability': self._p_perso,
+            'lost_step_fraction': self._frazione_passi})
+
+    def _aggiorna_guasti(self):
+        """Errori che si accumulano col moto, una volta per lettura (20 ms)."""
+        g, rng = self.sensori, self.np_random
+        theta, x = float(self.data.qpos[1]), float(self.data.qpos[0])
+        d_theta, d_x = theta - self._theta_prec, x - self._x_prec
+        self._theta_prec, self._x_prec = theta, x
+        if self._p_perso:
+            conteggi = int(abs(d_theta)/self._tick)
+            persi = rng.binomial(conteggi, self._p_perso) if conteggi else 0
+            # Conteggi persi: l'angolo misurato si muove meno di quello vero.
+            self.errore_encoder_rad -= math.copysign(persi*self._tick, d_theta)
+        if g.salti_al_s:
+            for _ in range(rng.poisson(g.salti_al_s*self.dt)):
+                ampiezza = int(rng.integers(1, g.salto_max_conteggi + 1))
+                self.errore_encoder_rad += (1 if rng.random() < 0.5 else -1)*ampiezza*self._tick
+        if self._frazione_passi:
+            # Passi persi: il conteggio degli STEP supera lo spostamento vero.
+            self.errore_x_m += self._frazione_passi*d_x/(1. - self._frazione_passi)
 
     def _misura(self, iniziale=False):
         """Lettura rumorosa a 50 Hz, poi correzione dello stimatore (stima.py).
@@ -188,6 +229,11 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         """
         p = self.disturbi
         x, theta = self.data.qpos
+        if self._guasti:
+            if not iniziale:
+                self._aggiorna_guasti()
+            x += self.errore_x_m
+            theta += self.errore_encoder_rad
         x += self.np_random.normal(0., self._sigma_x)
         theta += self._offset + self.np_random.normal(0., self._sigma_theta)
         tick = 2*math.pi/p.encoder_conteggi_giro
@@ -199,7 +245,8 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             self.stimatore.correggi(x, theta)
         st = self.stimatore
         self._obs = np.array([st.x/self.limite, math.sin(st.theta), math.cos(st.theta),
-                              st.velocita/self.controllo.p.velocita_max_m_s, st.omega/10.,
+                              st.velocita/self.controllo.p.velocita_max_m_s,
+                              st.omega/self.ep.scala_omega_rad_s,
                               self.comando_motore.frequenza_hz/self.controllo.p.frequenza_max_hz],
                              dtype=np.float32)
 
@@ -228,7 +275,7 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         self.frequenza_richiesta_hz = self.controllo.azione_a_hz(u)
         start = self.data.time
         for _ in range(self.frame_skip):
-            if abs(self.data.qpos[0]) >= self.limite:
+            if self._fuori_corsa():
                 self.motivo = 'finecorsa'
                 break
             self._azioni.append(u)
@@ -243,30 +290,25 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
                 self._stop()
                 self._episode_done = True
                 raise FloatingPointError('Stato fisico non finito.')
-            if abs(self.data.qpos[0]) >= self.limite:
+            if self._fuori_corsa():
                 self.motivo = 'finecorsa'
                 break
-        self.steps += 1
-        terminated, truncated = bool(self.motivo), self.steps >= self.max_steps
-        self._episode_done = terminated or truncated
-        if self._episode_done:
-            self._stop()
-        x, angle = self.data.qpos
-        vx, omega = self.data.qvel
-        reward = ricompensa(x, angle, omega, u, self.u_precedente)
-        self.u_precedente = u
-        stable = (math.cos(angle) > math.cos(math.radians(12)) and abs(x) < self.limite
-                  and abs(omega) < 1. and abs(vx) < 0.75 and not terminated)
-        self.stable_steps = self.stable_steps+1 if stable else 0
-        self.best_stable_steps = max(self.best_stable_steps, self.stable_steps)
+        reward, terminated, truncated = self._fine_passo(u)
         if self.data.time > start:
             self._misura()
         else:
             self._misura(iniziale=True)
-        return self.observation(), float(reward-5.*terminated), terminated, truncated, self.info()
+        return self.observation(), reward, terminated, truncated, self.info()
 
 
-def crea_ambiente(disturbi=None, **kwargs):
+def crea_ambiente(disturbi=None, *, configurazione=None, **kwargs):
+    """Ambiente nominale o disturbato.
+
+    Con configurazione=..., episodio, ricompensa, sensori, stepper e stimatore
+    vengono da li; `disturbi` (anche None) sceglie il profilo di disturbi.
+    """
+    if configurazione is not None:
+        kwargs['configurazione'] = configurazione
     if disturbi is None or disturbi.intensita == 0:
         return CartPendoloEnv(**kwargs)
     return CartPendoloDisturbatoEnv(disturbi, **kwargs)
