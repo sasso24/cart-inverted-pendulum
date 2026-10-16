@@ -1,4 +1,4 @@
-17:05:37 **** Incremental Build of configuration Debug for project Prova_controllo ****
+10:32:01 **** Build of configuration Debug for project Prova_controllo ****
 make -j7 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/ST/AI/Inc -I../X-CUBE-AI/App -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 arm-none-eabi-gcc -o "Prova_controllo.elf" @"objects.list"  -l:NetworkRuntime1010_CM4_GCC.a -mcpu=cortex-m4 -T"/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/Prova_controllo/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Prova_controllo.map" -Wl,--gc-sections -static -L../Middlewares/ST/AI/Lib --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
@@ -15,11 +15,11 @@ Finished building target: Prova_controllo.elf
 arm-none-eabi-size  Prova_controllo.elf 
 arm-none-eabi-objdump -h -S Prova_controllo.elf  > "Prova_controllo.list"
    text	   data	    bss	    dec	    hex	filename
- 107616	   1968	   6120	 115704	  1c3f8	Prova_controllo.elf
+ 105176	   1968	   6032	 113176	  1ba18	Prova_controllo.elf
 Finished building: default.size.stdout
  
 Finished building: Prova_controllo.list
  
 
-17:05:43 Build Finished. 0 errors, 4 warnings. (took 5s.317ms)
+10:32:02 Build Finished. 0 errors, 4 warnings. (took 904ms)
 

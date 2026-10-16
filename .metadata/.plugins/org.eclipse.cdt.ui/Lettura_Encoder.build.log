@@ -1,10 +1,10 @@
-13:59:47 **** Build of configuration Debug for project Lettura_Encoder ****
+10:44:38 **** Incremental Build of configuration Debug for project Lettura_Encoder ****
 make -j7 all 
 arm-none-eabi-size  Lettura_Encoder.elf 
    text	   data	    bss	    dec	    hex	filename
-  17984	     24	   1848	  19856	   4d90	Lettura_Encoder.elf
+  15984	     32	   1840	  17856	   45c0	Lettura_Encoder.elf
 Finished building: default.size.stdout
  
 
-13:59:48 Build Finished. 0 errors, 0 warnings. (took 303ms)
+10:44:38 Build Finished. 0 errors, 0 warnings. (took 288ms)
 

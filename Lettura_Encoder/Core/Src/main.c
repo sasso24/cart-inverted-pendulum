@@ -561,11 +561,11 @@ int main(void)
   }
 
   /* Homing automatico come prima, indipendente dal pulsante. */
-  Inizializza();
+  /*Inizializza();
   if (inizializzazione_esito != HAL_OK)
   {
       Error_Handler();
-  }
+  }*/
 
   /* Da qui B1 abilita/disabilita solo il controllo nel ciclo principale.
    * Le pressioni durante l'homing non vengono accodate.
@@ -582,20 +582,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      if (!controllo_abilitato)
+      /*if (!controllo_abilitato)
       {
           /* La vecchia sequenza e' ormai uscita: un nuovo avvio e' lecito. */
-          Controllo_AccettaAvvio();
+          /*Controllo_AccettaAvvio();
           if (!controllo_abilitato)
           {
               HAL_Delay(1);
               continue;
           }
-      }
+      }*/
 
-      //Leggi_theta();
+      Leggi_theta();
       /* Sequenza di prova esistente, interamente subordinata a B1. */
-      Stepper_Move(DIR_FORWARD, posizione_carrello_max_steps / 4);
+      /*Stepper_Move(DIR_FORWARD, posizione_carrello_max_steps / 4);
       if (!Controllo_Attendi(500))
           continue;
       Stepper_Move(DIR_BACKWARD, posizione_carrello_max_steps / 2);
@@ -604,6 +604,7 @@ int main(void)
       Stepper_Move(DIR_FORWARD, posizione_carrello_max_steps / 4);
       if (!Controllo_Attendi(2000))
           continue;
+      */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

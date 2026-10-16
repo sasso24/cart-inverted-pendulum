@@ -4,4 +4,4 @@ posizione_carrello_steps
 theta_deg
 rete_azione
 frequenza_richiesta_hz
-TIM2->CNT
+htim2.Instance->CNT

@@ -9,6 +9,7 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/Controllo_SwingUp"/>
 			<item value="/Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/Lettura_Encoder"/>
 		</list>
 	</section>
