@@ -1,7 +1,8 @@
 posizione_carrello_min_steps
 posizione_carrello_max_steps
 posizione_carrello_steps
-theta_deg
 rete_azione
 frequenza_richiesta_hz
 htim2.Instance->CNT
+(htim2.Instance->CR1 >> 4) & 1
+theta_deg

@@ -171,7 +171,8 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         self._sigma_theta = math.radians(rng.uniform(*p.rumore_angolo_gradi))
         self._colore = np.zeros(3)
         self._rho = math.exp(-self.model.opt.timestep / p.correlazione_s)
-        self._ultima_velocita = 0.
+        # Partenza casuale col carrello in moto: nessun gradino fittizio di accelerazione.
+        self._ultima_velocita = float(self.data.ctrl[0])
         self.forza_disturbo_n = self.coppia_disturbo_nm = 0.
         self.parametri_episodio = {
             'intensita': s, 'mass_scales': scales.tolist(), 'damping_scales': damping.tolist(),
@@ -204,7 +205,7 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             'lost_step_fraction': self._frazione_passi})
 
     def _aggiorna_guasti(self):
-        """Errori che si accumulano col moto, una volta per lettura (20 ms)."""
+        """Errori che si accumulano col moto, una volta per lettura (ogni periodo)."""
         g, rng = self.sensori, self.np_random
         theta, x = float(self.data.qpos[1]), float(self.data.qpos[0])
         d_theta, d_x = theta - self._theta_prec, x - self._x_prec
@@ -223,7 +224,7 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             self.errore_x_m += self._frazione_passi*d_x/(1. - self._frazione_passi)
 
     def _misura(self, iniziale=False):
-        """Lettura rumorosa a 50 Hz, poi correzione dello stimatore (stima.py).
+        """Lettura rumorosa a ogni periodo, poi correzione dello stimatore (stima.py).
 
         La rete non vede le misure grezze: derivarle amplificherebbe il rumore.
         """
@@ -240,7 +241,10 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         theta = round(theta/tick)*tick
         self.misura_grezza = (x, theta)
         if iniziale:
-            self.stimatore.reset(x, theta, self.comando_motore.velocita_carrello_m_s)
+            # Partenza casuale (solo addestramento): lo stimatore parte dalla omega
+            # vera, come se il pendolo fosse seguito da prima; altrimenti fermo.
+            omega = float(self.data.qvel[1]) if self.partenza_casuale else 0.
+            self.stimatore.reset(x, theta, self.comando_motore.velocita_carrello_m_s, omega)
         else:
             self.stimatore.correggi(x, theta)
         st = self.stimatore

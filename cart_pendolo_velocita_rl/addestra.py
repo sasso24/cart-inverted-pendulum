@@ -47,7 +47,7 @@ def contract(disturbi=None):
 def firma(cfg):
     """Firma dei nuovi checkpoint: configurazione completa + impronte di XML e codice."""
     return {'observation_size': 6, 'action': 'signed_normalized_step_frequency',
-            'control_hz': 50, 'xml_sha256': _sha(cfg.modello.file_xml),
+            'control_hz': round(1. / cfg.episodio.periodo_controllo_s, 6), 'xml_sha256': _sha(cfg.modello.file_xml),
             'codice_sha256': {name: _sha(name) for name in CODICE}}
 
 
@@ -143,17 +143,30 @@ def evaluate_comparison(agent, episodes=5, seed_start=1000, disturbi=None, confi
 
 
 class Progress(BaseCallback):
-    def __init__(self, folder, frequency, disturbi=None, configurazione=None, episodes=5):
+    def __init__(self, folder, frequency, disturbi=None, configurazione=None, episodes=5,
+                 salva_buffer_ogni=0):
         super().__init__()
+        self.salva_buffer_ogni = salva_buffer_ogni
+        self._ultimo_buffer = 0
         self.folder, self.frequency = folder, frequency
         self.disturbi, self.configurazione, self.episodes = disturbi, configurazione, episodes
-        self.versione = 3 if configurazione is None else 4
+        # Versione 5 (16/10): prima la quota di successi peggiore tra nominale e
+        # disturbato, poi la durata stabile peggiore, poi la ricompensa. Con la
+        # versione 4 una rete con 0% di successi ma 0,2 s di equilibrio batteva
+        # una con il 50%.
+        self.versione = 3 if configurazione is None else 5
         self.started = time.monotonic()
         self.best = (float("-inf"), float("-inf"))
         if (folder / "best_metrics.json").exists():
             previous = json.loads((folder / "best_metrics.json").read_text())
             if previous.get('selection_version') == self.versione:
-                self.best = (previous['selection_score'], previous['selection_reward'])
+                self.best = self._chiave(previous)
+
+    def _chiave(self, metrics):
+        if self.versione < 5:
+            return (metrics['selection_score'], metrics['selection_reward'])
+        successi = min(metrics['success_rate'], metrics.get('nominal', metrics)['success_rate'])
+        return (successi, metrics['selection_score'], metrics['selection_reward'])
 
     def _on_step(self):
         # Valutare costa: eseguiamo episodi completi solo ogni frequency decisioni.
@@ -176,9 +189,16 @@ class Progress(BaseCallback):
                              metrics["success_rate"], metrics["elapsed_seconds_this_run"],
                              nominale['success_rate'], metrics['selection_score']])
         self.model.save(self.folder / "ultimo")
+        # Buffer salvato anche durante l'addestramento: se il processo viene
+        # interrotto bruscamente (kill, riavvio) --resume riparte con le esperienze.
+        if self.salva_buffer_ogni and self.num_timesteps - self._ultimo_buffer >= self.salva_buffer_ogni:
+            temporaneo = self.folder / "esperienze_tmp.pkl"
+            self.model.save_replay_buffer(temporaneo)
+            temporaneo.replace(self.folder / "esperienze.pkl")
+            self._ultimo_buffer = self.num_timesteps
         # A parita di durata stabile vince la ricompensa peggiore tra nominale
         # e disturbato: evita di tenere la prima rete appena sufficiente.
-        candidate = (metrics["selection_score"], metrics["selection_reward"])
+        candidate = self._chiave(metrics)
         if candidate > self.best:
             self.best = candidate
             self.model.save(self.folder / "migliore")
@@ -208,6 +228,10 @@ def main():
     parser.add_argument("--output", type=Path, help='Default [addestramento].cartella')
     parser.add_argument("--eval-every", type=int, help='Default [addestramento].valuta_ogni')
     parser.add_argument('--parti-da', type=Path, help='Nuovo addestramento che parte dai pesi di una rete .zip')
+    parser.add_argument('--salva-buffer-ogni', type=int, default=200000,
+                        help='Passi tra due salvataggi del buffer durante l addestramento (0 = solo alla fine)')
+    parser.add_argument('--riempi', type=int, default=2000,
+                        help='Con --resume senza buffer: passi raccolti prima di riprendere gli aggiornamenti')
     parser.add_argument('--disturbi', type=Path,
                         help='Profilo [disturbi] in un TOML separato (sostituisce quello di --config)')
     args = parser.parse_args()
@@ -248,7 +272,7 @@ def main():
         if buffer.exists():
             agent.load_replay_buffer(buffer)
         else:
-            agent.learning_starts = agent.num_timesteps + 2000
+            agent.learning_starts = agent.num_timesteps + args.riempi
             print("Buffer non disponibile: raccolgo nuove esperienze prima di aggiornare la rete.", flush=True)
     elif args.parti_da:
         # Pesi e coefficiente di entropia della rete indicata; buffer vuoto.
@@ -266,7 +290,7 @@ def main():
     if not args.resume:
         ep = cfg.episodio
         (output / "config.json").write_text(json.dumps({
-            "algorithm": "SAC", "seed": a.seed, "control_hz": 50,
+            "algorithm": "SAC", "seed": a.seed, "control_hz": round(1. / env.unwrapped.dt, 6),
             "initial_state": (f"swing-up da {ep.angolo_iniziale_gradi:g} gradi" if ep.swing_up
                               else "upright with small random perturbations"),
             "initialized_from": str(args.parti_da) if args.parti_da else None,
@@ -278,11 +302,16 @@ def main():
         print(f'Disturbi attivi: intensita {disturbi.intensita:g}; selezione su nominale e disturbato.', flush=True)
     if cfg.sensori.attivi and disturbi is not None:
         print('Guasti sensori attivi: ' + ', '.join(f'{k}={v:g}' for k, v in asdict(cfg.sensori).items()), flush=True)
+    print(f'Periodo di controllo {env.unwrapped.dt*1000:g} ms ({env.unwrapped.frame_skip} passi fisici), '
+          f'gamma {a.gamma:g}', flush=True)
+    if cfg.episodio.frazione_partenza_casuale and not legacy:
+        print(f'Partenze casuali: {cfg.episodio.frazione_partenza_casuale:.0%} degli episodi', flush=True)
     print(("Swing-up: episodi dal basso " if cfg.episodio.swing_up and not legacy
            else "Equilibrio: episodi dall'alto ") + f"-> {output}. Ctrl+C salva ed esce.", flush=True)
     try:
         agent.learn(total_timesteps=steps,
-                    callback=Progress(output, eval_every, disturbi, cfg_env, a.episodi_selezione),
+                    callback=Progress(output, eval_every, disturbi, cfg_env, a.episodi_selezione,
+                                      args.salva_buffer_ogni),
                     reset_num_timesteps=not args.resume)
     except KeyboardInterrupt:
         print("Interruzione richiesta: salvo lo stato corrente.", flush=True)

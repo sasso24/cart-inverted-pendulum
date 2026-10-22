@@ -80,26 +80,41 @@ typedef struct { ai_handle data; } ai_buffer;
 #define AI_NETWORK_IN_1_SIZE 6
 #define AI_NETWORK_OUT_1_SIZE 1
 #define AI_NETWORK_DATA_ACTIVATIONS_SIZE 1024
+static uint32_t P_mock;   /* periodo della rete, impostato da reset() */
 static float input_values[6], output_value;
 static ai_buffer input_buffer = {input_values}, output_buffer = {&output_value};
 static int batches=1, fail_init, during_run;
 void HAL_GPIO_EXTI_Callback(uint16_t);
 void Controllo_MotorTick(void);
+/* Reti selezionabili (reti_candidate.c): qui due array finti, si controlla il puntatore. */
+#define RETI_CANDIDATE_N 2U
+static const char pesi_finti[2][4];
+static const ai_handle reti_candidate_pesi[RETI_CANDIDATE_N] = {
+    (ai_handle)pesi_finti[0], (ai_handle)pesi_finti[1] };
+typedef struct { float l_theta, l_omega, l_b, l_x; } GuadagniStima;
+static GuadagniStima reti_candidate_stima[RETI_CANDIDATE_N];   /* riempita da reset() */
+static const void *pesi_usati; static int distrutte;
 static ai_error ai_network_create_and_init(ai_handle *h, const ai_handle *a, const ai_handle *w) {
+    pesi_usati = w ? w[0] : NULL;
     *h=input_values; return (ai_error){fail_init, 0};
 }
+static ai_handle ai_network_destroy(ai_handle h) { ++distrutte; return AI_HANDLE_NULL; }
 static ai_buffer *ai_network_inputs_get(ai_handle h, void *n) { return &input_buffer; }
 static ai_buffer *ai_network_outputs_get(ai_handle h, void *n) { return &output_buffer; }
 static ai_error ai_network_get_error(ai_handle h) { return (ai_error){2, 42}; }
 static ai_i32 ai_network_run(ai_handle h, const ai_buffer *i, ai_buffer *o) {
     if (during_run==1) HAL_GPIO_EXTI_Callback(B1_Pin);
-    if (during_run==2) tick+=20;
-    if (during_run==3) { tick+=40; Controllo_MotorTick(); }
+    if (during_run==2) tick+=P_mock;
+    if (during_run==3) { tick+=2*P_mock; Controllo_MotorTick(); }
     return batches;
 }
 '''
 TESTS = r'''
+#define P CONTROL_PERIOD_MS   /* periodo della rete da config_controllo.h */
 static void reset(void) {
+    P_mock=P;
+    reti_candidate_stima[0] = (GuadagniStima){ STIMA_L_THETA, STIMA_L_OMEGA, STIMA_L_B, STIMA_L_X };
+    reti_candidate_stima[1] = (GuadagniStima){ 0.2f, 1.0f, 0.0f, 0.05f };
     Controllo_Disabilita();
     delay_hook=NULL; theta_inizializzato=1;
     memset(pins,0,sizeof pins);
@@ -157,18 +172,18 @@ int main(void) {
     assert(Inizializza_Theta()==HAL_OK && starts==0);
     timer2.CNT=0; Leggi_theta(); near(theta_rad,Stima_Wrap(PI_F+ENCODER_SIGN*2*PI_F/2400));
 
-    reset(); start(); tick=20; Rete_Process();
+    reset(); start(); tick=P; Rete_Process();
     near(input_values[0],0); near(input_values[1],0); near(input_values[2],-1);
     near(input_values[3],0); near(input_values[4],0); near(input_values[5],0);
     near(frequenza_richiesta_hz,17600); assert(rete_inferenze==1);
-    tick=22; Controllo_MotorTick(); assert(stepper_running);
+    tick=P+2; Controllo_MotorTick(); assert(stepper_running);
     near(frequenza_rampa_hz,3200); assert(frequenza_applicata_hz>0);
     pulse(); assert(posizione_carrello_steps==30801);
     // Stop B1 immediato, nessun riavvio nei tick successivi; antirimbalzo.
     HAL_GPIO_EXTI_Callback(B1_Pin); assert(!controllo_abilitato && !stepper_running);
     near(frequenza_richiesta_hz,0); near(frequenza_applicata_hz,0);
     HAL_GPIO_EXTI_Callback(B1_Pin); assert(!richiesta_avvio);
-    tick=24; Controllo_MotorTick(); assert(!stepper_running);
+    tick=P+4; Controllo_MotorTick(); assert(!stepper_running);
     pins[B1_Pin]=GPIO_PIN_SET;
     for(int i=0;i<51;i++) Controllo_ButtonTick();
     pins[B1_Pin]=GPIO_PIN_RESET; HAL_GPIO_EXTI_Callback(B1_Pin);
@@ -178,7 +193,7 @@ int main(void) {
     // All'avvio lo stimatore riparte dalla lettura (x=0, theta=pi, fermo);
     // la prima lettura del controllo e' gia' una correzione.
     reset(); start(); near(stima.x,0); near(stima.omega,0);
-    tick=20; timer2.CNT=(uint32_t)(2*ENCODER_SIGN);
+    tick=P; timer2.CNT=(uint32_t)(2*ENCODER_SIGN);
     posizione_carrello_steps+=640; frequenza_applicata_hz=-16000;
     Rete_Process();
     near(input_values[0],STIMA_L_X*0.0096f/0.462f); near(input_values[3],0);
@@ -188,26 +203,26 @@ int main(void) {
     near(input_values[4],STIMA_L_OMEGA*2*2*PI_F/2400/10);
     // Lo stimatore integra la velocita' STEP programmata ogni 2 ms in SysTick;
     // le letture rumorose dell'angolo vengono attenuate (L_THETA=0.2).
-    reset(); start(); tick=20; Rete_Process();
+    reset(); start(); tick=P; Rete_Process();
     stepper_running=1; frequenza_applicata_hz=3200;
     for (int i=0;i<10;i++){ tick+=2; Controllo_StimaTick(); }
     near(stima.x,10*0.002f*3200*METRI_PER_STEP); near(stima.velocita,0.048f);
-    timer2.CNT+=(uint32_t)(24*ENCODER_SIGN); tick=40; Rete_Process();
+    timer2.CNT+=(uint32_t)(24*ENCODER_SIGN); tick=2*P; Rete_Process();
     near(input_values[3],0.1f);
     near(input_values[0],stima.x/0.462f);
-    // 24 conteggi (3,6 gradi) in 20 ms: la derivata darebbe omega=3,1 rad/s,
+    // 24 conteggi (3,6 gradi) in un periodo: la derivata darebbe omega=3,1 rad/s (20 ms),
     // lo stimatore ne prende solo una frazione.
-    assert(input_values[4]>0 && input_values[4]*10<0.5f*(24*2*PI_F/2400)/0.02f);
+    assert(input_values[4]>0 && input_values[4]*10<0.5f*(24*2*PI_F/2400)/(P*0.001f));
     // A controllo fermo: v=0 e x agganciata al conteggio STEP.
     Controllo_Disabilita(); float xprima=stima.x;
     for (int i=0;i<5;i++){ tick+=2; Controllo_StimaTick(); }
     near(stima.x,xprima); near(stima.velocita,0);
-    tick=60; Rete_Process(); near(stima.x,0);
+    tick=3*P; Rete_Process(); near(stima.x,0);
 
     // Uscita zero e saturazione, senza seconda tanh.
-    reset(); start(); tick=20; Rete_Process();
-    output_value=0; tick=40; Rete_Process(); near(frequenza_richiesta_hz,0);
-    output_value=-2; tick=60; Rete_Process(); near(frequenza_richiesta_hz,-32000);
+    reset(); start(); tick=P; Rete_Process();
+    output_value=0; tick=2*P; Rete_Process(); near(frequenza_richiesta_hz,0);
+    output_value=-2; tick=3*P; Rete_Process(); near(frequenza_richiesta_hz,-32000);
 
     // Decelerazione e inversione solo dopo un impulso completo e setup DIR.
     reset(); start(); frequenza_richiesta_hz=6400;
@@ -216,27 +231,48 @@ int main(void) {
     frequenza_richiesta_hz=-6400;
     tick=6; Controllo_MotorTick(); near(frequenza_rampa_hz,3200);
     tick=8; Controllo_MotorTick(); assert(stop_al_fronte_step && stepper_running);
-    pulse(); assert(!stepper_running); near(frequenza_applicata_hz,0);
-    tick=10; Controllo_MotorTick(); assert(!stepper_running && stepper_direction==DIR_FORWARD);
-    tick=12; Controllo_MotorTick(); assert(stepper_running && frequenza_applicata_hz<0);
+    // L'ISR ferma il timer al fronte e imposta subito il nuovo DIR: la rampa
+    // riparte da zero al periodo successivo, come stepper.py (+3200, 0, -3200).
+    pulse(); assert(!stepper_running && stepper_direction==DIR_FORWARD);
+    near(frequenza_applicata_hz,0); near(frequenza_rampa_hz,0);
+    tick=10; Controllo_MotorTick(); assert(stepper_running && frequenza_applicata_hz<0);
+    near(frequenza_rampa_hz,-3200);
     int32_t before=posizione_carrello_steps; pulse(); assert(posizione_carrello_steps==before-1);
     frequenza_richiesta_hz=0;
-    tick=14; Controllo_MotorTick(); tick=16; Controllo_MotorTick(); pulse();
+    tick=12; Controllo_MotorTick(); tick=14; Controllo_MotorTick(); pulse();
     assert(!stepper_running); near(frequenza_applicata_hz,0);
+    // Se il fronte tarda, la rampa resta a zero (nessun salto alla ripartenza).
+    reset(); start(); frequenza_richiesta_hz=6400;
+    tick=2; Controllo_MotorTick(); tick=4; Controllo_MotorTick();
+    frequenza_richiesta_hz=-6400;
+    tick=6; Controllo_MotorTick(); tick=8; Controllo_MotorTick(); assert(stop_al_fronte_step);
+    tick=10; Controllo_MotorTick(); near(frequenza_rampa_hz,0); assert(stepper_running);
+    pulse(); assert(!stepper_running && stepper_direction==DIR_FORWARD);
+    tick=12; Controllo_MotorTick(); near(frequenza_rampa_hz,-3200); assert(stepper_running);
+#if CFG_TICK_FERMO_INVERSIONE == 1
+    // Attraversamento dello zero (+1600 -> -1600): un periodo fermo a zero.
+    reset(); start(); frequenza_richiesta_hz=4800;
+    tick=2; Controllo_MotorTick(); near(frequenza_rampa_hz,3200);
+    frequenza_richiesta_hz=1600; tick=4; Controllo_MotorTick(); near(frequenza_rampa_hz,1600);
+    frequenza_richiesta_hz=-6400; tick=6; Controllo_MotorTick();
+    near(frequenza_rampa_hz,0); assert(stop_al_fronte_step);
+    pulse(); assert(!stepper_running && stepper_direction==DIR_FORWARD);
+    tick=8; Controllo_MotorTick(); near(frequenza_rampa_hz,-3200); assert(stepper_running);
+#endif
 
     // B1 durante l'inferenza non permette di pubblicare il vecchio comando.
-    reset(); start(); during_run=1; tick=20; Rete_Process();
+    reset(); start(); during_run=1; tick=P; Rete_Process();
     assert(!controllo_abilitato); near(frequenza_richiesta_hz,0); assert(rete_inferenze==0);
     // Errori rete, valori non finiti e deadline fermano il controllo.
-    reset(); start(); batches=0; tick=20; Rete_Process();
+    reset(); start(); batches=0; tick=P; Rete_Process();
     assert(controllo_errore==2 && !rete_pronta && !controllo_abilitato);
-    reset(); start(); output_value=NAN; tick=20; Rete_Process();
+    reset(); start(); output_value=NAN; tick=P; Rete_Process();
     assert(controllo_errore==3 && !controllo_abilitato);
-    reset(); start(); during_run=2; tick=20; Rete_Process();
+    reset(); start(); during_run=2; tick=P; Rete_Process();
     assert(controllo_errore==5 && !controllo_abilitato);
-    reset(); start(); during_run=3; tick=20; Rete_Process();
+    reset(); start(); during_run=3; tick=P; Rete_Process();
     assert(controllo_errore==5 && !controllo_abilitato);
-    reset(); start(); tick=40; Controllo_MotorTick();
+    reset(); start(); tick=2*P; Controllo_MotorTick();
     assert(controllo_errore==5 && !controllo_abilitato);
     // Finecorsa dal tick e dall'ISR STEP: fault latched, nessuna ripartenza.
     reset(); start(); pins[FC_sx_Pin]=GPIO_PIN_SET; tick=1; Controllo_MotorTick();
@@ -283,7 +319,7 @@ int main(void) {
     assert(controllo_abilitato && controllo_errore==0 && avvio_modo==2);
     assert(theta_ricalibrazioni==0 && posizione==5);
     near(stima.theta,5*2*PI_F/ENCODER_CPR); near(stima.omega,0);
-    tick=20; Rete_Process(); near(input_values[2],cosf(5*2*PI_F/ENCODER_CPR));
+    tick=P; Rete_Process(); near(input_values[2],cosf(5*2*PI_F/ENCODER_CPR));
     // Lo stesso anche con l'encoder fermo: in alto l'angolo non viene mai riazzerato.
     reset(); posizione=-60; theta_rad=-60*2*PI_F/ENCODER_CPR;
     richiesta_avvio=1; Controllo_AccettaAvvio();
@@ -305,22 +341,86 @@ int main(void) {
     }
     // La quiete si accumula a letture con al piu' un conteggio e si azzera col moto.
     reset(); encoder_quiete_ms=0;
-    for (int i=1;i<=50;i++){ tick=20*i; timer2.CNT=(uint32_t)(i%2); Rete_Process(); }
+    for (int i=1;i<=(int)(1000/P);i++){ tick=P*i; timer2.CNT=(uint32_t)(i%2); Rete_Process(); }
     assert(encoder_quiete_ms==1000);
-    timer2.CNT+=5; tick=1020; Rete_Process(); assert(encoder_quiete_ms==0);
+    timer2.CNT+=5; tick=1000+P; Rete_Process(); assert(encoder_quiete_ms==0);
 #endif
     // Salto impossibile dell'encoder (disturbo): arresto con errore 9.
-    reset(); start(); tick=20; timer2.CNT=CFG_SALTO_ENCODER_MAX+1; Rete_Process();
+    reset(); start(); tick=P; timer2.CNT=CFG_SALTO_ENCODER_MAX+1; Rete_Process();
     assert(controllo_errore==9 && !controllo_abilitato && encoder_salti==1);
-    reset(); start(); tick=20; timer2.CNT=CFG_SALTO_ENCODER_MAX; Rete_Process();
+    reset(); start(); tick=P; timer2.CNT=CFG_SALTO_ENCODER_MAX; Rete_Process();
     assert(controllo_abilitato && rete_inferenze==1);
-    // Periodo di 20 ms senza deriva: il campione successivo non slitta.
-    reset(); start(); tick=21; Rete_Process(); assert(ultimo_campione_ms==20);
-    tick=40; Rete_Process(); assert(rete_inferenze==2 && ultimo_campione_ms==40);
+    // Periodo senza deriva: il campione successivo non slitta.
+    reset(); start(); tick=P+1; Rete_Process(); assert(ultimo_campione_ms==P);
+    tick=2*P; Rete_Process(); assert(rete_inferenze==2 && ultimo_campione_ms==2*P);
+#if CFG_TICK_FERMO_INVERSIONE > 0
+    // Rampa del firmware = ControlloStepper.avanza (stepper.py) su sequenze casuali
+    // con molte inversioni (attese calcolate in Python, vedi sotto). Con 0 (reti
+    // fino al 14/10) la simulazione attraversa lo zero senza fermarsi, il firmware no.
+    reset(); start();
+    for (unsigned i=0;i<sizeof RAMPA_RICHIESTE/sizeof RAMPA_RICHIESTE[0];i++) {
+        frequenza_richiesta_hz=RAMPA_RICHIESTE[i]; ultimo_comando_ms=tick;
+        tick+=2; Controllo_MotorTick();
+        if (stop_al_fronte_step) pulse();   // il fronte arriva prima del periodo successivo
+        assert(controllo_abilitato);
+        if (fabsf(frequenza_rampa_hz-RAMPA_ATTESE[i])>0.01f) fprintf(stderr,"i=%u req=%g prev=%g\n",i,RAMPA_RICHIESTE[i],i?RAMPA_ATTESE[i-1]:0.0f);
+        near(frequenza_rampa_hz,RAMPA_ATTESE[i]);
+        if (RAMPA_ATTESE[i]!=0.0f) assert(stepper_running
+            && (RAMPA_ATTESE[i]>0) == (stepper_direction==DIR_BACKWARD));
+    }
+    puts("OK: rampa e inversioni identiche a stepper.py");
+#endif
+    // Cambio di rete dal debugger: solo a controllo fermo, indice valido.
+    reset(); assert(pesi_usati==pesi_finti[0] && rete_attiva==0);
+    rete_scelta=1; start(); Rete_CambiaSeRichiesto(); assert(rete_attiva==0);  // in controllo: no
+    Controllo_Disabilita(); distrutte=0; Rete_CambiaSeRichiesto();
+    assert(rete_attiva==1 && pesi_usati==pesi_finti[1] && distrutte==1 && rete_pronta);
+    near(stima_l_theta,0.2f); near(stima_l_omega,1.0f); near(stima_l_b,0.0f); near(stima_l_x,0.05f);
+    rete_scelta=7; Rete_CambiaSeRichiesto(); assert(rete_attiva==1);            // fuori intervallo
+    rete_scelta=0; fail_init=1; Rete_CambiaSeRichiesto();
+    assert(rete_attiva==0 && !rete_pronta && controllo_errore==1);
+    fail_init=0; rete_scelta=0; rete_attiva=0; assert(Rete_Init());
+    near(stima_l_theta,STIMA_L_THETA); near(stima_l_b,STIMA_L_B);
+    puts("OK: cambio di rete (rete_scelta) solo a controllo fermo");
     puts("OK: calibrazione theta, ricalibrazione all'avvio solo da appeso, partenza dall'alto, salti encoder, limiti di corsa, "
          "ingressi, azioni, rampa, inversione, B1, fault, deadline e wraparound");
 }
 '''
+
+def rampa_attesa(config_h):
+    """Richieste casuali (multipli di 100 Hz, esatti in float32) e frequenze di rampa
+    attese da stepper.py con i parametri dell'header."""
+    import random
+    import re
+    import sys
+    from dataclasses import replace
+    sys.path.insert(0, str(ROOT.parent / 'cart_pendolo_velocita_rl'))
+    from stepper import ControlloStepper, ParametriStepper
+
+    def valore(nome, default=None):
+        trovato = re.search(rf'#define {nome}\s+\(?(-?[0-9.e+-]+)f?U?', config_h)
+        if trovato is None and default is not None:
+            return default    # header precedente: stesso default del firmware
+        return float(trovato[1])
+    p = replace(ParametriStepper.carica(), frequenza_min_hz=valore('CFG_FREQ_MIN_HZ'),
+                frequenza_max_hz=valore('CFG_FREQ_MAX_HZ'), rampa_hz_s=valore('CFG_RAMPA_HZ_S'),
+                zona_morta=0.0, tick_fermo_inversione=int(valore('CFG_TICK_FERMO_INVERSIONE', 0)))
+    assert valore('CFG_ZONA_MORTA') == 0.0
+    c, rng = ControlloStepper(p), random.Random(3)
+    passi = round((p.frequenza_max_hz - p.frequenza_min_hz) / 100)
+    richieste, attese, segno = [], [], 1
+    while len(richieste) < 2000:
+        if len(richieste) > 6 and rng.random() < 0.6:
+            segno = -segno
+        u = segno * rng.randint(0, passi) / passi
+        for _ in range(rng.randint(1, 6)):
+            richieste.append(c.azione_a_hz(u))
+            attese.append(c.avanza(u, 0.002).frequenza_hz)
+    def array(nome, v):
+        return f'static const float {nome}[] = {{' + ','.join(f'{x:.1f}f' for x in v) + '};\n'
+    return ('#if CFG_TICK_FERMO_INVERSIONE > 0\n' + array('RAMPA_RICHIESTE', richieste)
+            + array('RAMPA_ATTESE', attese) + '#endif\n')
+
 
 def section(text, name):
     return text.split(f'/* USER CODE BEGIN {name} */', 1)[1].split(f'/* USER CODE END {name} */', 1)[0]
@@ -334,6 +434,7 @@ config_h = (ROOT / 'Core/Inc/config_controllo.h').read_text()
 stima_h = (ROOT / 'Core/Inc/stima.h').read_text().replace('#include "config_controllo.h"', '')
 stima_c = (ROOT / 'Core/Src/stima.c').read_text().replace('#include "stima.h"', '')
 unit = MOCK + config_h + stima_h + stima_c + section(source, 'PD')
+unit += rampa_attesa(config_h)
 unit += '\nTIM_HandleTypeDef htim2, htim3;\n'
 for name in ('PV', 'PFP', '0', '4'):
     unit += section(source, name)

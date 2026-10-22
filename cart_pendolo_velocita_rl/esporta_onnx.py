@@ -50,6 +50,7 @@ def main(argv=None):
     check_contract(args.model.parent)
     source_hash = hashlib.sha256(args.model.read_bytes()).hexdigest()
     scala_omega = configurazione_modello(args.model.parent).episodio.scala_omega_rad_s
+    periodo = configurazione_modello(args.model.parent).episodio.periodo_controllo_s
     model = SAC.load(args.model, device='cpu')
     model.policy.set_training_mode(False)
     layers = strati_attore(model)
@@ -82,7 +83,7 @@ def main(argv=None):
         'inputs': f'x/limite,sin(theta),cos(theta),vx/vmax,omega/{scala_omega:g},f_applied/fmax',
         'architecture': '-'.join(str(n) for n in [6] + [l.out_features for l in layers]),
         'output': 'normalized signed STEP frequency request [-1,1]',
-        'control_hz': '50',
+        'control_hz': f'{1. / periodo:g}',
     })
     onnx.checker.check_model(exported, full_check=True)
     options = ort.SessionOptions()

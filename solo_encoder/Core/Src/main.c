@@ -50,7 +50,7 @@ UART_HandleTypeDef huart2;
 #define PI_F         3.14159265358979323846f
 
 // Metti -1 se vuoi invertire il verso positivo dell'angolo.
-#define ENCODER_SIGN  -1
+#define ENCODER_SIGN  1
 
 static uint32_t conteggio_precedente = 0;
 static int32_t posizione = HALF_CPR;
@@ -145,7 +145,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	Leggi_theta();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

@@ -1,0 +1,564 @@
+{
+  "episodes": 6,
+  "mean_reward": 230.2704371403814,
+  "success_rate": 0.0,
+  "worst_stable_seconds": 0.0,
+  "mean_stable_seconds": 0.0,
+  "stable_metric": "final_stable_seconds",
+  "details": [
+    {
+      "seed": 1000,
+      "reward": 224.1428309475901,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": 12281.26449584961,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": 0.1818095201295045,
+      "cart_x": -0.033046423067504174,
+      "angle_deg": -116.94352020467953,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": -0.014796913176753943,
+      "disturbance_torque_nm": -0.00022866866591798044,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          0.9792273559781275,
+          1.0020131317934036
+        ],
+        "damping_scales": [
+          0.945931349014138,
+          0.961770479762324
+        ],
+        "motor_gain_scale": 1.0266365629801173,
+        "frequencies_hz": [
+          13.51671776731214,
+          37.27444151416777,
+          8.637605546341453
+        ],
+        "zeta": [
+          0.1222233527450436,
+          0.11227576005386185,
+          0.24727924892166925
+        ],
+        "amplitude_limits": [
+          0.05844990080811812,
+          0.022406699524628794,
+          0.0006320544479939557
+        ],
+        "delay_s": 0.004,
+        "angle_offset_rad": 0.0009322067175942282,
+        "position_noise_m": 0.009494037643742325,
+        "angle_noise_deg": 0.9873818903535835,
+        "encoder_offset_deg": -2.0764057829867735,
+        "encoder_lost_count_probability": 0.002097267826110314,
+        "lost_step_fraction": 0.008944828937820415
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.889462844021,
+      "max_cart_x_m": 0.19356613035676826,
+      "first_upright_s": null
+    },
+    {
+      "seed": 1001,
+      "reward": 205.14842837744246,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": 31028.101348876953,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": 0.4635005199238034,
+      "cart_x": 0.050695914736867354,
+      "angle_deg": -125.21204260221656,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": -0.019958575024505185,
+      "disturbance_torque_nm": -0.00019573972993445604,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          1.0250523045178788,
+          0.970333904398747
+        ],
+        "damping_scales": [
+          0.9476907927779492,
+          1.0227676748902865
+        ],
+        "motor_gain_scale": 0.9578490240197023,
+        "frequencies_hz": [
+          9.522044045102998,
+          23.60490014825418,
+          3.9234987161259425
+        ],
+        "zeta": [
+          0.24729988653182247,
+          0.21007604590075973,
+          0.12308954550589306
+        ],
+        "amplitude_limits": [
+          0.05217173443263247,
+          0.021193947860071467,
+          0.0007142548620870869
+        ],
+        "delay_s": 0.0,
+        "angle_offset_rad": -0.0026709062302077064,
+        "position_noise_m": 0.006005929098058142,
+        "angle_noise_deg": 0.6330285173234651,
+        "encoder_offset_deg": 2.7379872440963697,
+        "encoder_lost_count_probability": 0.0023517230297419927,
+        "lost_step_fraction": 0.00217048309017571
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.89872556494794,
+      "max_cart_x_m": 0.24699985235661537,
+      "first_upright_s": null
+    },
+    {
+      "seed": 1002,
+      "reward": 233.58202462572757,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": -25804.018211364746,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": -0.384817897886369,
+      "cart_x": 0.009015061233791317,
+      "angle_deg": 108.01499189209035,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": 0.0012308130945931316,
+      "disturbance_torque_nm": 4.0346078304492545e-05,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          0.9922644343373438,
+          0.9885991830759675
+        ],
+        "damping_scales": [
+          1.0096065426676841,
+          0.9452632202913016
+        ],
+        "motor_gain_scale": 0.9600634997988723,
+        "frequencies_hz": [
+          16.403498245850006,
+          28.054001149306064,
+          9.501960170987834
+        ],
+        "zeta": [
+          0.13914524429014152,
+          0.1422121357103285,
+          0.24825795709741194
+        ],
+        "amplitude_limits": [
+          0.04490767961625244,
+          0.018061239556254334,
+          0.0005264834141454279
+        ],
+        "delay_s": 0.0,
+        "angle_offset_rad": -0.0021739763891553093,
+        "position_noise_m": 0.00577200332846968,
+        "angle_noise_deg": 0.626128223766558,
+        "encoder_offset_deg": 1.54425368848103,
+        "encoder_lost_count_probability": 0.0009981353737070972,
+        "lost_step_fraction": 0.00043676056825922685
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.90163917330656,
+      "max_cart_x_m": 0.2201565345550213,
+      "first_upright_s": null
+    },
+    {
+      "seed": 1003,
+      "reward": 234.9381835161792,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": -23145.412635803223,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": -0.34696569547414885,
+      "cart_x": 0.05981158556025714,
+      "angle_deg": 113.63077789140883,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": -0.012393587058978233,
+      "disturbance_torque_nm": 0.00022544667382573997,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          1.011255409023893,
+          1.0176479003173253
+        ],
+        "damping_scales": [
+          1.0390421269244434,
+          0.9720765099132139
+        ],
+        "motor_gain_scale": 1.0102417617923063,
+        "frequencies_hz": [
+          17.705771125120723,
+          34.13408280933418,
+          4.519243148259707
+        ],
+        "zeta": [
+          0.1039190525971669,
+          0.20022357425663484,
+          0.22669143109891435
+        ],
+        "amplitude_limits": [
+          0.04863340014789936,
+          0.019508310117527565,
+          0.0008061813115636241
+        ],
+        "delay_s": 0.004,
+        "angle_offset_rad": 0.002014757893173211,
+        "position_noise_m": 0.005546887656202822,
+        "angle_noise_deg": 0.9850567545900796,
+        "encoder_offset_deg": 1.2682192014022737,
+        "encoder_lost_count_probability": 0.00025496517115842376,
+        "lost_step_fraction": 0.016750190475047277
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.97533333823688,
+      "max_cart_x_m": 0.21688310509234923,
+      "first_upright_s": null
+    },
+    {
+      "seed": 1004,
+      "reward": 241.40840095021034,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": -28721.360397338867,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": -0.4285526762316449,
+      "cart_x": 0.06843196358337345,
+      "angle_deg": 119.92042889899,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": 0.017253185248196787,
+      "disturbance_torque_nm": 0.0002922677289599011,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          0.9916458245863066,
+          1.0084471663400592
+        ],
+        "damping_scales": [
+          1.0589912343852974,
+          0.9344611595104253
+        ],
+        "motor_gain_scale": 1.0063500500810365,
+        "frequencies_hz": [
+          10.742495749428059,
+          36.499739896607934,
+          7.492251662861286
+        ],
+        "zeta": [
+          0.11650046985908107,
+          0.08688598565049857,
+          0.16356296989449381
+        ],
+        "amplitude_limits": [
+          0.046364114989437336,
+          0.03439239879729613,
+          0.0009342773839767079
+        ],
+        "delay_s": 0.004,
+        "angle_offset_rad": 0.0030345426854152023,
+        "position_noise_m": 0.008852318473420186,
+        "angle_noise_deg": 0.8769513322751046,
+        "encoder_offset_deg": 0.01590724428324619,
+        "encoder_lost_count_probability": 0.0011692880890189794,
+        "lost_step_fraction": 0.001749857368794787
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.97882677693372,
+      "max_cart_x_m": 0.17435565108451911,
+      "first_upright_s": null
+    },
+    {
+      "seed": 1005,
+      "reward": 242.40275442513877,
+      "duration_s": 60.00000000002736,
+      "terminated": false,
+      "motor_frequency_hz": 0.0,
+      "step_frequency_hz": 0.0,
+      "direction": 0,
+      "requested_frequency_hz": -5303.135108947754,
+      "command_velocity_m_s": 0.0,
+      "cart_velocity_m_s": -0.07257955467364079,
+      "cart_x": 0.05131261851445344,
+      "angle_deg": 103.1719435633583,
+      "termination_reason": "",
+      "left_limit": false,
+      "right_limit": false,
+      "stable_seconds": 0.0,
+      "final_stable_seconds": 0.0,
+      "is_success": false,
+      "disturbance_force_n": -0.04411886106235459,
+      "disturbance_torque_nm": 4.799908962833469e-05,
+      "disturbance_parameters": {
+        "intensita": 0.35,
+        "mass_scales": [
+          1.0096990634034348,
+          1.023435490718086
+        ],
+        "damping_scales": [
+          1.083426350604282,
+          0.9408910732157776
+        ],
+        "motor_gain_scale": 0.9996644887517647,
+        "frequencies_hz": [
+          15.168271350015637,
+          26.800073797998415,
+          9.6121441960025
+        ],
+        "zeta": [
+          0.10899987826892775,
+          0.1935240799255785,
+          0.16435236203767178
+        ],
+        "amplitude_limits": [
+          0.05064719574871488,
+          0.03419192968778526,
+          0.0009156984639692186
+        ],
+        "delay_s": 0.002,
+        "angle_offset_rad": 0.0017746606806422532,
+        "position_noise_m": 0.00915950413863693,
+        "angle_noise_deg": 0.7566289778363469,
+        "encoder_offset_deg": -2.8657738448627654,
+        "encoder_lost_count_probability": 0.0025703154568243033,
+        "lost_step_fraction": 0.015845748790662577
+      },
+      "three_second_success": false,
+      "max_angle_deg": 179.99932777576385,
+      "max_cart_x_m": 0.16670724604069534,
+      "first_upright_s": null
+    }
+  ],
+  "selection_score": 0.0,
+  "selection_reward": 218.05321046107224,
+  "nominal": {
+    "episodes": 6,
+    "mean_reward": 218.05321046107224,
+    "success_rate": 0.0,
+    "worst_stable_seconds": 0.0,
+    "mean_stable_seconds": 0.0,
+    "stable_metric": "final_stable_seconds",
+    "details": [
+      {
+        "seed": 1000,
+        "reward": 218.20606843811058,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": 7524.417877197266,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": 0.11202496340399745,
+        "cart_x": -0.02015009737982379,
+        "angle_deg": -109.96820981868981,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.9902666068832,
+        "max_cart_x_m": 0.205892176716356,
+        "first_upright_s": null
+      },
+      {
+        "seed": 1001,
+        "reward": 219.21651269832137,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": -12233.101463317871,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": -0.18205626360019286,
+        "cart_x": 0.014263436301177598,
+        "angle_deg": 108.43882904942807,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.8426071110276,
+        "max_cart_x_m": 0.17160892581764625,
+        "first_upright_s": null
+      },
+      {
+        "seed": 1002,
+        "reward": 217.55778923413214,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": 6871.174240112305,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": 0.10213688286882086,
+        "cart_x": -0.023442658557311265,
+        "angle_deg": -111.75087290979783,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.90479070304082,
+        "max_cart_x_m": 0.20970076697530818,
+        "first_upright_s": null
+      },
+      {
+        "seed": 1003,
+        "reward": 217.44666951460863,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": 7347.016143798828,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": 0.1091914090104089,
+        "cart_x": -0.02668864589292805,
+        "angle_deg": -112.72273515079597,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.91149564571558,
+        "max_cart_x_m": 0.2001540469668363,
+        "first_upright_s": null
+      },
+      {
+        "seed": 1004,
+        "reward": 217.11946083089927,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": 6949.252700805664,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": 0.10329187644775761,
+        "cart_x": -0.023234472567075472,
+        "angle_deg": -112.00497649174079,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.98327429048078,
+        "max_cart_x_m": 0.19044435591129655,
+        "first_upright_s": null
+      },
+      {
+        "seed": 1005,
+        "reward": 218.7727620503614,
+        "duration_s": 60.00000000002736,
+        "terminated": false,
+        "motor_frequency_hz": 0.0,
+        "step_frequency_hz": 0.0,
+        "direction": 0,
+        "requested_frequency_hz": 7349.920654296875,
+        "command_velocity_m_s": 0.0,
+        "cart_velocity_m_s": 0.10949286742987788,
+        "cart_x": -0.016849002706316066,
+        "angle_deg": -109.81320169697337,
+        "termination_reason": "",
+        "left_limit": false,
+        "right_limit": false,
+        "stable_seconds": 0.0,
+        "final_stable_seconds": 0.0,
+        "is_success": false,
+        "three_second_success": false,
+        "max_angle_deg": 179.98107150148604,
+        "max_cart_x_m": 0.17983433436194068,
+        "first_upright_s": null
+      }
+    ]
+  },
+  "disturbi": {
+    "intensita": 0.35,
+    "massa_rel": 0.1,
+    "smorzamento_rel": 0.25,
+    "guadagno_motore_rel": 0.15,
+    "ritardo_max_s": 0.012,
+    "frequenze_min_hz": [
+      8.0,
+      20.0,
+      3.0
+    ],
+    "frequenze_max_hz": [
+      18.0,
+      40.0,
+      10.0
+    ],
+    "zeta_min": 0.08,
+    "zeta_max": 0.25,
+    "forza_cinghia_n": 0.2,
+    "forza_motore_n": 0.1,
+    "coppia_asta_nm": 0.003,
+    "accelerazione_scala_m_s2": 10.0,
+    "eccitazione_casuale": 0.25,
+    "correlazione_s": 0.04,
+    "rumore_posizione_m": [
+      0.005,
+      0.01
+    ],
+    "rumore_angolo_gradi": [
+      0.5,
+      1.0
+    ],
+    "offset_angolo_rad": 0.00872664626,
+    "encoder_conteggi_giro": 2400
+  },
+  "selection_version": 5,
+  "timesteps": 480000,
+  "elapsed_seconds_this_run": 1152.9891333749983
+}

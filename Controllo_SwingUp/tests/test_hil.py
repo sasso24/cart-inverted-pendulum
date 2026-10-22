@@ -70,10 +70,19 @@ MAIN = r'''
 int main(int argc, char **argv) {
     uart_fd = atoi(argv[1]);
     htim2.Instance=&timer2; htim3.Instance=&timer3; htim3.Channel=HAL_TIM_ACTIVE_CHANNEL_1;
+    /* Rete 0: i guadagni dello stimatore sono quelli di config_controllo.h. */
+    reti_candidate_stima[0] = (GuadagniStima){ STIMA_L_THETA, STIMA_L_OMEGA, STIMA_L_B, STIMA_L_X };
     assert(Rete_Init());
     Hil_Esegui();
 }
 '''
+
+
+def opzione_offset():
+    """Header esportato con --stimatore-offset: lo stesso stimatore anche sul PC."""
+    trovato = re.search(r'Stimatore dell offset aggiunto all esportazione \(polo (\S+)/s\)',
+                        (ROOT / 'Core/Inc/config_controllo.h').read_text())
+    return ['--stimatore-offset', trovato[1]] if trovato else []
 
 
 def modello_firmware():
@@ -113,7 +122,7 @@ def main():
             out = tmp / 'risultati'
             # La rete nel firmware: quella indicata in config_controllo.h.
             subprocess.run([sys.executable, str(PY / 'hil.py'), '--porta', porta,
-                            '--model', str(modello_firmware()),
+                            '--model', str(modello_firmware()), *opzione_offset(),
                             '--episodi', '3', '--secondi', '20', '--output', str(out)],
                            check=True, cwd=PY, timeout=900)
             riepilogo = json.loads(next(out.glob('hil_*.json')).read_text())

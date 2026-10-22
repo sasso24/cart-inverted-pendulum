@@ -23,6 +23,10 @@ class ParametriStepper:
     rapporto_trasmissione: float = 1.0
     zona_morta: float = 0.0
     rampa_hz_s: float = 64000.0
+    # Inversione di verso: passi della rampa (2 ms) in cui la frequenza resta a
+    # zero quando cambierebbe segno, come il firmware (arresto al fronte STEP,
+    # cambio DIR, ripartenza da zero). 0 = la rampa attraversa lo zero (storico).
+    tick_fermo_inversione: int = 0
 
     def __post_init__(self):
         for name, value in vars(self).items():
@@ -34,6 +38,8 @@ class ParametriStepper:
             raise ValueError('zona_morta deve essere in [0, 1).')
         if self.rampa_hz_s <= 0:
             raise ValueError('rampa_hz_s deve essere positiva.')
+        if type(self.tick_fermo_inversione) is not int or self.tick_fermo_inversione < 0:
+            raise ValueError('tick_fermo_inversione: serve un intero >= 0.')
         for name in ('passi_per_giro', 'microstepping', 'denti_puleggia'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f'{name}: serve un intero positivo.')
@@ -88,7 +94,15 @@ class ControlloStepper:
     def reset(self):
         """Azzeramento immediato per reset, finecorsa e fine episodio."""
         self.frequenza_hz = 0.
+        self._fermo = 0
         return self.comando(0.)
+
+    def imposta(self, frequenza_hz):
+        """Stato della rampa a una frequenza data (partenza con carrello in moto)."""
+        limite = self.p.frequenza_max_hz
+        self.frequenza_hz = max(-limite, min(limite, float(frequenza_hz)))
+        self._fermo = 0
+        return ComandoMotore(self.frequenza_hz, self.frequenza_hz * self.p.metri_per_impulso)
 
     def azione_a_hz(self, azione):
         u = float(azione)
@@ -114,7 +128,15 @@ class ControlloStepper:
         delta_max = self.p.rampa_hz_s * dt
         delta = richiesta - self.frequenza_hz
         if abs(delta) <= delta_max:
-            self.frequenza_hz = richiesta
+            nuova = richiesta
         else:
-            self.frequenza_hz += math.copysign(delta_max, delta)
+            nuova = self.frequenza_hz + math.copysign(delta_max, delta)
+        if self.p.tick_fermo_inversione:
+            # Stessa logica di Controllo_MotorTick (firmware): un cambio di segno
+            # ferma la rampa a zero per tick_fermo_inversione passi.
+            if nuova*self.frequenza_hz < 0:
+                nuova, self._fermo = 0., self.p.tick_fermo_inversione - 1
+            elif self._fermo > 0:
+                nuova, self._fermo = 0., self._fermo - 1
+        self.frequenza_hz = nuova
         return ComandoMotore(self.frequenza_hz, self.frequenza_hz * self.p.metri_per_impulso)

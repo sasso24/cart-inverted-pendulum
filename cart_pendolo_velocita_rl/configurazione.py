@@ -66,11 +66,26 @@ class ParametriEpisodio:
     tempo_max_salita_s: float = 0.0
     # Normalizzazione della velocita angolare nel 5o ingresso (uguale nel firmware).
     scala_omega_rad_s: float = 10.0
+    # Periodo della rete (una decisione ogni periodo). Deve essere un multiplo del
+    # passo fisico dell'XML (2 ms); 0.02 = comportamento storico (50 Hz).
+    periodo_controllo_s: float = 0.02
+    # Solo addestramento: quota di episodi che parte da uno stato casuale su tutto
+    # il giro (angolo uniforme, omega, x e velocita del carrello entro questi limiti),
+    # per allenare l'aggancio in alto da arrivi diversi da quelli del proprio swing-up.
+    # Si somma a frazione_partenza_alto (se la somma supera 1 resta la quota rimanente).
+    frazione_partenza_casuale: float = 0.0
+    casuale_x_m: float = 0.25
+    casuale_velocita_m_s: float = 0.3
+    casuale_omega_rad_s: float = 4.0
 
     def __post_init__(self):
         _numeri(self, {f.name for f in fields(self)} - {'angolo_iniziale_gradi'})
         if not 0 <= self.frazione_partenza_alto <= 1:
             raise ValueError('frazione_partenza_alto deve essere in [0, 1].')
+        if not 0 <= self.frazione_partenza_casuale <= 1:
+            raise ValueError('frazione_partenza_casuale deve essere in [0, 1].')
+        if self.periodo_controllo_s <= 0:
+            raise ValueError('periodo_controllo_s deve essere positivo.')
         if self.durata_s <= 0 or self.scala_omega_rad_s <= 0:
             raise ValueError('durata_s e scala_omega_rad_s devono essere positive.')
         if self.tempo_max_salita_s >= self.durata_s:
@@ -91,6 +106,10 @@ class ParametriRicompensa:
     alto = (1+cos(angolo))/2 ; ogni F = minimo + (1-minimo)*exp(-(valore/scala)^2):
     minimo = 1 spegne il termine, minimo vicino a 0 lo rende decisivo.
     E = cos(angolo) + omega^2/(2*k_g) vale 1 col pendolo fermo in alto.
+
+    Con periodo_controllo_s diverso da 0.02 la ricompensa di ogni passo (non la
+    penalita di finecorsa, che e una tantum) e moltiplicata per periodo/0.02:
+    ricompensa al secondo e scala dei valori restano quelle dei 50 Hz.
     """
     esponente_alto: float = 1.0
     minimo_x: float = 0.6
@@ -197,7 +216,7 @@ class ParametriFirmware:
     angolo_max_avvio_gradi: float = 10.0
     # Senza swing-up: arresto se durante il controllo |angolo| la supera.
     angolo_max_controllo_gradi: float = 45.0
-    # Lettura encoder scartata come guasto se in 20 ms implica piu di questo.
+    # Lettura encoder scartata come guasto se in un periodo implica piu di questo.
     omega_max_plausibile_rad_s: float = 25.0
 
 

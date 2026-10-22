@@ -1,7 +1,7 @@
 # Prova hardware-in-the-loop (HIL)
 
 La simulazione MuJoCo gira sul Mac; **stimatore (`stima.c`) e rete X-CUBE-AI
-girano sulla STM32**. Ogni 20 ms il Mac manda alla scheda posizione e angolo
+girano sulla STM32**. A ogni periodo della rete (20 o 10 ms) il Mac manda alla scheda posizione e angolo
 simulati (con rumore e disturbi di `disturbi.toml`) e le velocità della rampa;
 la scheda risponde con il comando, che pilota la simulazione. In parallelo il
 Mac calcola `stima.py` e la rete PyTorch e confronta i risultati passo per passo.
@@ -70,7 +70,7 @@ Episodio 1/5 seed 7000: OK | stabile 20.0 s | angolo max 2.5 deg | diff obs 1.0e
 - **diff azione**: uscita X-CUBE-AI contro PyTorch sugli stessi ingressi
   (atteso < 1e-4; valori grandi = pesi non aggiornati o rete sbagliata).
 - **rete**: tempo di `ai_network_run` misurato sulla scheda (deve stare
-  molto sotto i 20 ms del periodo di controllo).
+  molto sotto i 10 ms del periodo di controllo).
 
 I risultati finiscono in `cart_pendolo_velocita_rl/risultati/hil/`:
 `hil_<data>.csv` (ogni passo) e `hil_<data>.json` (riepilogo). Dimmi quando ci

@@ -1,7 +1,7 @@
 """Hardware-in-the-loop: simulazione MuJoCo sul PC, stimatore e rete sulla STM32.
 
 La scheda deve avere il firmware compilato con HIL_MODE 1 (vedi HIL.md).
-A ogni passo da 20 ms il PC manda alla scheda le misure simulate (rumorose,
+A ogni passo (periodo della rete, 20 o 10 ms) il PC manda alla scheda le misure simulate (rumorose,
 con i disturbi di disturbi.toml) e le velocita' applicate dalla rampa; la
 scheda esegue stima.c e la rete X-CUBE-AI e restituisce il comando, che
 pilota la simulazione. In parallelo il PC calcola stima.py e la rete PyTorch
@@ -180,6 +180,8 @@ def main():
     parser.add_argument('--intensita', type=float, help='Sovrascrive intensita del profilo')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati/hil')
     parser.add_argument('--ping', action='store_true', help='Verifica solo la connessione')
+    parser.add_argument('--stimatore-offset', type=float, metavar='POLO_1_S',
+                        help='Come esporta_firmware.py --stimatore-offset: stesso stimatore della scheda')
     args = parser.parse_args()
 
     porta = args.porta or trova_porta()
@@ -205,6 +207,11 @@ def main():
         from addestra import profilo_salvato
         from configurazione import configurazione_ambiente
         cfg = configurazione_ambiente(args.model.parent)
+        if args.stimatore_offset is not None:
+            from confronta import con_offset
+            if cfg is None:
+                raise SystemExit('--stimatore-offset richiede una rete con config.json completo.')
+            cfg = con_offset(cfg, args.stimatore_offset)
         if args.disturbi is not None:
             profilo = ParametriDisturbi.carica(args.disturbi)
         else:

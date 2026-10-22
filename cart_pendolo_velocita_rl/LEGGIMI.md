@@ -1,3 +1,83 @@
+# Asta spostata (braccio corto 0,20 m) — 21 ottobre 2026
+
+Stessa asta spostata nel mozzo: **0,78 m / 0,20 m** (prima 0,82 / 0,16).
+Firmware: `../Controllo_SwingUp_Asta20` (vedi il suo `LEGGIMI.md`), tre reti
+`modelli_asta20_20s`, `modelli_asta20_20s_s7`, `modelli_asta20_60s_s3`.
+
+```sh
+./Addestra.command --config config_asta20_20s.toml          # XML cart_pendolo_asta20.xml
+./Avvia_RL.command --model modelli_asta20_20s/migliore.zip
+python confronta.py --model modelli_asta20_20s/migliore.zip --durata 60
+```
+
+Con 0,30-0,35 m (`config_asta30/33/35_*.toml`) le reti non riescono a fare lo
+swing-up: con lo smorzamento del perno del modello (0,01 N·m·s, non misurato) e
+0,48 m/s il carrello non dà abbastanza energia. Dettagli e numeri in `TEST_ESEGUITI.md`.
+Per cambiare l'asta: copiare `cart_pendolo_asta20.xml` cambiando i due `fromto`
+dell'asta, ricalcolare k_g/k_a/k_d (`stima.coefficienti_da_modello`) e i guadagni
+(`stima.guadagni_con_offset`) e metterli in `[stimatore]`.
+
+---
+
+# Stimatore dell'offset dell'encoder — 16 ottobre 2026
+
+**Problema visto sul banco**: lo swing-up riesce ma l'aggancio no; aiutato a
+mano il pendolo sta su con un angolo letto diverso da 0. L'encoder perde
+conteggi durante lo swing-up, quindi l'angolo letto ha un **offset** che la
+rete (senza memoria) non può correggere.
+
+**Soluzione**: lo stimatore (`stima.py` e `Controllo_SwingUp/Core/Src/stima.c`)
+ha un terzo stato, l'offset dell'encoder. È osservabile grazie alla gravità:
+un angolo letto spostato fa prevedere una caduta che le letture successive non
+confermano. Si aggiorna solo nella metà alta (peso `max(cos θ, 0)`), con un
+limite di ±15° (`b_max_rad`). La rete riceve l'angolo vero stimato. Guadagni da
+`stima.guadagni_con_offset` (stessi poli di prima e polo dell'offset a -1/s).
+Con `l_b = 0` lo stimatore è identico a quello storico.
+
+La **rete del 14/10** con il nuovo stimatore, senza riaddestramento, è già nel
+firmware:
+
+```sh
+python esporta_firmware.py --model modelli_swingup/migliore.zip --stimatore-offset -1
+python confronta.py --model modelli_swingup/migliore.zip --stimatore-offset -1
+python hil.py --model modelli_swingup/migliore.zip --stimatore-offset -1   # HIL
+```
+
+Sul banco guardare `stima.offset` (rad) nel debugger: è l'errore dell'encoder stimato.
+
+**Più reti in un solo firmware (17/10)**: la rete di `--model` è la 0, ogni
+`--candidato` aggiunge la 1, 2, ... (stessa configurazione del firmware; i
+guadagni dello stimatore possono essere diversi). Al banco si sceglie con
+`rete_scelta` (vedi `Controllo_SwingUp/LEGGIMI.md`). Firmware del 17/10:
+
+```sh
+python esporta_firmware.py --model modelli_swingup/migliore.zip --stimatore-offset -1 \
+    --candidato modelli_60s_1200k/migliore.zip --candidato modelli_swingup/migliore.zip
+```
+
+Configurazioni delle prove del 17/10: `config_60s.toml` (episodi da 60 s),
+`config_60s_casuali.toml` e `config_60s_casuali15.toml` (con partenze casuali).
+
+**Altre novità del 16/10** (in `config.toml`):
+
+- `[episodio] periodo_controllo_s`: periodo della rete (20 ms; 10 ms provato, vedi
+  sotto). Con un periodo diverso da 20 ms la ricompensa per passo è riscalata.
+- `frazione_partenza_casuale` (solo addestramento): episodi da uno stato
+  casuale (angolo su tutto il giro, carrello in moto, pendolo che ruota).
+- `[stepper] tick_fermo_inversione = 1`: al cambio di verso la rampa resta
+  ferma a zero 2 ms, esattamente come il firmware (verificato da
+  `Controllo_SwingUp/tests/test_controllo.py`).
+- `[sensori]` più duri: offset fino a ±3°, conteggi persi fino allo 0,3%.
+- `addestra.py` salva il buffer ogni 200 k passi: dopo un'interruzione
+  `--resume` riparte con le esperienze. **Non riprendere mai senza buffer**:
+  le reti si degradano in poche centinaia di migliaia di passi.
+- `confronta.py`: confronto di più reti sugli stessi semi in sei condizioni.
+- Test: `python -m unittest test_versione test_disturbi test_stima test_configurazione test_periodo`.
+
+Risultati in `TEST_ESEGUITI.md`.
+
+---
+
 # Swing-up e configurazione unica — 14 ottobre 2026
 
 **Tutto si regola da `config.toml`**: swing-up sì/no e angolo di partenza,

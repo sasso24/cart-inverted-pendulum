@@ -86,7 +86,15 @@ class CartPendoloEnv(gym.Env):
         self.limite_corsa = self.ep.limite_corsa_m or self.limite
         if self.limite_corsa > self.limite:
             raise ValueError('limite_corsa_m oltre il finecorsa dell XML.')
-        if self.ep.durata_s != 20.0:
+        # Periodo della rete: multiplo intero del passo fisico (storico 10 x 2 ms).
+        passi = self.ep.periodo_controllo_s / self.model.opt.timestep
+        if abs(passi - round(passi)) > 1e-6 or round(passi) < 1:
+            raise ValueError('periodo_controllo_s deve essere un multiplo del passo dell XML.')
+        if round(passi) != type(self).frame_skip:
+            self.frame_skip = int(round(passi))
+        # Ricompensa per passo riscalata sul periodo storico di 20 ms (1 se invariato).
+        self.scala_ricompensa = self.dt / 0.02 if self.frame_skip != 10 else 1.
+        if self.ep.durata_s != 20.0 or self.frame_skip != 10:
             self.max_steps = int(round(self.ep.durata_s / self.dt))
         self.action_space = spaces.Box(-1., 1., (1,), dtype=np.float32)
         self.observation_space = spaces.Box(-np.inf, np.inf, (6,), dtype=np.float32)
@@ -96,6 +104,7 @@ class CartPendoloEnv(gym.Env):
         self.comando_motore = self.controllo.comando(0.)
         self.frequenza_richiesta_hz = 0.
         self.angolo_iniziale = 0.
+        self.partenza_casuale = False
         self._episode_done = True
 
     @property
@@ -139,24 +148,36 @@ class CartPendoloEnv(gym.Env):
         self.data.ctrl[0] = 0.
 
     def _stato_iniziale(self, exact):
+        """(x, angolo, omega, velocita del carrello) all'inizio dell'episodio."""
         ep, rng = self.ep, self.np_random
         centro = 0.
+        self.partenza_casuale = False
         if ep.swing_up:
             centro = math.radians(ep.angolo_iniziale_gradi)
             if self.addestramento and ep.frazione_partenza_alto > 0 \
                     and rng.random() < ep.frazione_partenza_alto:
                 centro = 0.
+            # Estrazione separata: con frazione_partenza_casuale = 0 la sequenza
+            # casuale resta quella storica.
+            elif (self.addestramento and not exact and ep.frazione_partenza_casuale > 0
+                  and rng.random() < ep.frazione_partenza_casuale / max(1. - ep.frazione_partenza_alto, 1e-9)):
+                self.partenza_casuale = True
+                x = rng.uniform(-ep.casuale_x_m, ep.casuale_x_m)
+                angolo = rng.uniform(-math.pi, math.pi)
+                omega = rng.uniform(-ep.casuale_omega_rad_s, ep.casuale_omega_rad_s)
+                v = rng.uniform(-ep.casuale_velocita_m_s, ep.casuale_velocita_m_s)
+                return x, angolo, omega, v
         x = 0. if exact else rng.uniform(-ep.dispersione_x_m, ep.dispersione_x_m)
         angolo = centro + (0. if exact else rng.uniform(-ep.dispersione_angolo_rad,
                                                          ep.dispersione_angolo_rad))
         omega = 0. if exact else rng.uniform(-ep.dispersione_omega_rad_s, ep.dispersione_omega_rad_s)
-        return x, angolo, omega
+        return x, angolo, omega, 0.
 
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
         mujoco.mj_resetData(self.model, self.data)
         exact = (options or {}).get('exact', False)
-        x, angolo, omega = self._stato_iniziale(exact)
+        x, angolo, omega, v = self._stato_iniziale(exact)
         self.data.qpos[:] = [x, angolo]
         self.data.qvel[1] = omega
         self.angolo_iniziale = angolo
@@ -165,6 +186,10 @@ class CartPendoloEnv(gym.Env):
         self.motivo = ''
         self.frequenza_richiesta_hz = 0.
         self._stop()
+        if v:
+            # Carrello gia in moto: rampa e servo di velocita partono da v.
+            self.comando_motore = self.controllo.imposta(v / self.controllo.p.metri_per_impulso)
+            self.data.qvel[0] = self.data.ctrl[0] = self.comando_motore.velocita_carrello_m_s
         self._episode_done = False
         mujoco.mj_forward(self.model, self.data)
         return self.observation(), self.info()
@@ -193,7 +218,7 @@ class CartPendoloEnv(gym.Env):
             self._stop()
         x, angle = self.data.qpos
         vx, omega = self.data.qvel
-        reward = self._ricompensa(u)
+        reward = self._ricompensa(u) * self.scala_ricompensa
         self.u_precedente = u
         ep = self.ep
         stable = (math.cos(angle) > math.cos(math.radians(ep.stabile_angolo_gradi))

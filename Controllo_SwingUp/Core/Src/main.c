@@ -26,6 +26,7 @@
 #include "network_data.h"
 #include "stima.h"
 #include "config_controllo.h"  /* generato da esporta_firmware.py */
+#include "reti_candidate.h"    /* generato da esporta_firmware.py (pesi delle reti) */
 #include <string.h>
 
 /* USER CODE END Includes */
@@ -60,9 +61,23 @@
 #define THETA_STABILE_MS    1000U
 #define THETA_TIMEOUT_MS   30000U
 
-#define CONTROL_PERIOD_MS       20U
+/* Periodo della rete da config_controllo.h ([episodio].periodo_controllo_s):
+ * 20 ms per le reti fino al 14/10, 10 ms per quelle addestrate a 100 Hz. */
+#ifndef CFG_PERIODO_CONTROLLO_MS
+#define CFG_PERIODO_CONTROLLO_MS 20U
+#endif
+#ifndef CFG_TICK_FERMO_INVERSIONE
+#define CFG_TICK_FERMO_INVERSIONE 0U
+#endif
+/* Attesa attiva dopo un cambio di DIR a motore fermo: ~300 iterazioni
+ * volatili >= 6 us a 180 MHz (TB6600 e simili chiedono 5 us di setup). */
+#define DIR_SETUP_CICLI          300U
+#define CONTROL_PERIOD_MS        CFG_PERIODO_CONTROLLO_MS
 #define MOTOR_PERIOD_MS          2U
-#define CONTROL_TIMEOUT_MS      40U
+#define CONTROL_TIMEOUT_MS       (2U * CONTROL_PERIOD_MS)
+#if CONTROL_PERIOD_MS < 4U || (CONTROL_PERIOD_MS % MOTOR_PERIOD_MS) != 0U
+#error "Il periodo della rete deve essere un multiplo di 2 ms (almeno 4 ms)"
+#endif
 #define METRI_PER_STEP           CFG_METRI_PER_STEP
 #define POSIZIONE_SCALA_M        CFG_POSIZIONE_SCALA_M
 #define VELOCITA_SCALA_M_S       CFG_VELOCITA_SCALA_M_S
@@ -108,7 +123,7 @@ UART_HandleTypeDef huart2;
 #define PI_F         3.14159265358979323846f
 
 // Metti -1 se vuoi invertire il verso positivo dell'angolo.
-#define ENCODER_SIGN  1
+#define ENCODER_SIGN  -1
 
 static uint32_t conteggio_precedente = 0;
 static int32_t posizione = HALF_CPR;
@@ -166,12 +181,22 @@ volatile float velocita_angolare_rad_s = 0.0f;
 volatile uint32_t rete_inferenze = 0;
 volatile uint32_t rete_durata_ms = 0;
 static ai_handle rete = AI_HANDLE_NULL;
+/* Piu' reti nello stesso firmware (reti_candidate.c), stessa configurazione.
+ * Per cambiarla: a controllo fermo scrivere rete_scelta in Live Expressions;
+ * il cambio avviene subito nel ciclo principale e rete_attiva lo conferma.
+ * reti_candidate_nomi[rete_attiva] dice quale rete e'. */
+volatile uint32_t rete_scelta = 0;
+volatile uint32_t rete_attiva = 0;
 AI_ALIGNED(4) static ai_u8 rete_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
 static ai_buffer *rete_input;
 static ai_buffer *rete_output;
 volatile ai_error rete_ultimo_errore;
 static volatile float frequenza_rampa_hz = 0.0f;
 static volatile uint8_t stop_al_fronte_step = 0;
+/* Verso da impostare nell'ISR appena il timer si ferma al fronte STEP. */
+static volatile GPIO_PinState direzione_dopo_arresto = DIR_FORWARD;
+/* Periodi di rampa rimasti con frequenza ferma a zero dopo un'inversione. */
+static volatile uint32_t tick_fermo_inversione = 0;
 static volatile uint32_t ultimo_comando_ms = 0;
 static uint32_t ultimo_motore_ms = 0;
 static uint32_t ultimo_campione_ms = 0;
@@ -179,7 +204,7 @@ static int32_t ultimo_carrello_steps = 0;
 static float ultimo_theta_rad = PI_F;
 
 /* Stimatore dello stato (stima.c), lo stesso usato in addestramento.
- * Predizione in SysTick ogni 2 ms, correzione in Rete_Process ogni 20 ms.
+ * Predizione in SysTick ogni 2 ms, correzione in Rete_Process ogni CONTROL_PERIOD_MS.
  * La rete riceve x, theta, v, omega STIMATI, non derivati dalle letture.
  */
 Stima stima;                         /* osservabile dal debugger */
@@ -190,7 +215,7 @@ static uint32_t ultimo_stima_ms = 0;
  * gli stessi dell'addestramento (prima coincidevano con i finecorsa). */
 volatile int32_t limite_controllo_min_steps = 0;
 volatile int32_t limite_controllo_max_steps = 0;
-/* Encoder: variazione dell'ultima lettura e tempo di quiete (letture ogni 20 ms). */
+/* Encoder: variazione dell'ultima lettura e tempo di quiete (una lettura per periodo). */
 volatile int32_t encoder_ultimo_delta = 0;
 volatile uint32_t encoder_quiete_ms = 0;
 volatile uint32_t encoder_salti = 0;          /* salti scartati, per il debugger */
@@ -208,6 +233,7 @@ static void MX_CRC_Init(void);
 /* USER CODE BEGIN PFP */
 static void Controllo_Fault(uint32_t errore);
 static void Rete_Process(void);
+static void Rete_CambiaSeRichiesto(void);
 void Controllo_StimaTick(void);
 
 /* USER CODE END PFP */
@@ -466,6 +492,7 @@ static void Controllo_AccettaAvvio(void)
                 arresto_finecorsa = 0;
                 frequenza_richiesta_hz = 0.0f;
                 frequenza_rampa_hz = 0.0f;
+                tick_fermo_inversione = 0U;
                 /* Stimatore ripartito dalla lettura attuale: pendolo e carrello fermi,
                  * come al reset dell'episodio in addestramento. */
                 float x = ((float)posizione_carrello_steps - 0.5f * (float)corsa_totale_steps)
@@ -764,7 +791,13 @@ static void Controllo_Fault(uint32_t errore)
 static uint8_t Rete_Init(void)
 {
     const ai_handle activations[] = { AI_HANDLE_PTR(rete_activations) };
-    rete_ultimo_errore = ai_network_create_and_init(&rete, activations, NULL);
+    const ai_handle pesi[] = { reti_candidate_pesi[rete_attiva] };
+    /* Ogni rete ha i guadagni dello stimatore con cui e' stata provata. */
+    stima_l_theta = reti_candidate_stima[rete_attiva].l_theta;
+    stima_l_omega = reti_candidate_stima[rete_attiva].l_omega;
+    stima_l_b = reti_candidate_stima[rete_attiva].l_b;
+    stima_l_x = reti_candidate_stima[rete_attiva].l_x;
+    rete_ultimo_errore = ai_network_create_and_init(&rete, activations, pesi);
     if (rete_ultimo_errore.type != AI_ERROR_NONE)
         return 0;
     rete_input = ai_network_inputs_get(rete, NULL);
@@ -775,6 +808,21 @@ static uint8_t Rete_Init(void)
         return 0;
     rete_pronta = 1;
     return 1;
+}
+
+/* Solo dal main e a controllo fermo: distrugge la rete attuale e la ricrea
+ * con i pesi di rete_scelta (stessa struttura X-CUBE-AI, cambia solo l'array). */
+static void Rete_CambiaSeRichiesto(void)
+{
+    uint32_t scelta = rete_scelta;
+    if (controllo_abilitato || scelta == rete_attiva || scelta >= RETI_CANDIDATE_N)
+        return;
+    rete_pronta = 0;
+    if (rete != AI_HANDLE_NULL)
+        rete = ai_network_destroy(rete);
+    rete_attiva = scelta;
+    if (!Rete_Init())
+        controllo_errore = 1;
 }
 
 /* Eseguita da SysTick: rampa indipendente dal tempo di inferenza.
@@ -808,27 +856,54 @@ void Controllo_MotorTick(void)
         goto done;
     ultimo_motore_ms = now;
 
-    /* Un solo passo da 2 ms; nessun salto di accelerazione dopo un ritardo. */
+    /* Un solo passo da 2 ms; nessun salto di accelerazione dopo un ritardo.
+     * Stessa logica di ControlloStepper.avanza (stepper.py). */
     float delta_max = STEPPER_ACCELERATION_HZ_PER_S * MOTOR_PERIOD_MS / 1000.0f;
     float delta = frequenza_richiesta_hz - frequenza_rampa_hz;
-    frequenza_rampa_hz += fmaxf(-delta_max, fminf(delta, delta_max));
-    float hz = fabsf(frequenza_rampa_hz);
-    GPIO_PinState dir = frequenza_rampa_hz > 0.0f ? DIR_BACKWARD : DIR_FORWARD;
-
-    /* TIM3 a 16 bit: sotto la frequenza rappresentabile non emettere STEP. */
-    if (hz < stepper_counter_clock / 65536.0f
-        || (stepper_running && dir != stepper_direction))
+    float nuova = frequenza_rampa_hz + fmaxf(-delta_max, fminf(delta, delta_max));
+#if CFG_TICK_FERMO_INVERSIONE > 0
+    /* Inversione: la rampa si ferma a zero (arresto al fronte STEP e cambio DIR)
+     * per CFG_TICK_FERMO_INVERSIONE periodi, poi riparte da zero nel nuovo verso. */
+    if (nuova * frequenza_rampa_hz < 0.0f)
     {
-        if (stepper_running)
-            stop_al_fronte_step = 1;
+        nuova = 0.0f;
+        tick_fermo_inversione = CFG_TICK_FERMO_INVERSIONE - 1U;
+    }
+    else if (tick_fermo_inversione > 0U)
+    {
+        nuova = 0.0f;
+        --tick_fermo_inversione;
+    }
+#endif
+    float hz = fabsf(nuova);
+    /* Verso del movimento: quello della rampa o, a rampa ferma, della richiesta. */
+    float verso = (nuova != 0.0f) ? nuova : frequenza_richiesta_hz;
+    GPIO_PinState dir = verso > 0.0f ? DIR_BACKWARD : DIR_FORWARD;
+    uint8_t sotto_minimo = hz < stepper_counter_clock / 65536.0f;
+
+    /* TIM3 a 16 bit: sotto la frequenza rappresentabile non emettere STEP.
+     * Fermata o cambio di verso: arresto al prossimo fronte di discesa, l'ISR
+     * imposta subito il nuovo DIR. Intanto la rampa resta a zero: alla
+     * ripartenza nessun salto di frequenza. */
+    if (stepper_running && (sotto_minimo || dir != stepper_direction || stop_al_fronte_step))
+    {
+        direzione_dopo_arresto = dir;
+        stop_al_fronte_step = 1;
+        frequenza_rampa_hz = 0.0f;
         goto done;
     }
-    if (stop_al_fronte_step)
+    frequenza_rampa_hz = nuova;
+    if (sotto_minimo)
         goto done;
     if (!stepper_running && dir != stepper_direction)
     {
+        /* Motore fermo nel verso opposto (partenza, o richiesta cambiata durante
+         * l'arresto): nuovo DIR e attesa del tempo di setup del driver (>= 5 us)
+         * prima del primo impulso, nello stesso periodo come in stepper.py. */
         Stepper_SetDirection(dir);
-        goto done;
+        for (volatile uint32_t k = 0; k < DIR_SETUP_CICLI; ++k)
+        {
+        }
     }
     Stepper_ApplyFrequency(hz);
     if (!stepper_running)
@@ -920,7 +995,7 @@ static void Rete_Process(void)
         encoder_quiete_ms = 0;
     if ((uint32_t)(delta_encoder < 0 ? -delta_encoder : delta_encoder) > salto_max)
     {
-        /* Piu' di CFG_SALTO_ENCODER_MAX conteggi in 20 ms: disturbo, non moto. */
+        /* Piu' di CFG_SALTO_ENCODER_MAX conteggi in un periodo: disturbo, non moto. */
         ++encoder_salti;
         if (controllo_abilitato)
         {
@@ -1022,7 +1097,7 @@ static void Rete_Process(void)
  *   PC -> scheda: A5 5A | HilRichiesta (58 byte) | checksum
  *   scheda -> PC: A5 5A | HilRisposta  (60 byte) | checksum
  * checksum = complemento a due della somma dei byte del corpo.
- * comando 0 = inizio episodio (Stima_Reset), 1 = passo da 20 ms
+ * comando 0 = inizio episodio (Stima_Reset), 1 = passo di CONTROL_PERIOD_MS
  * (n predizioni da 2 ms con le velocita' v[], poi correzione), 2 = ping.
  * Una richiesta con lo stesso seq della precedente non viene rieseguita:
  * si rispedisce la risposta precedente (ritrasmissione dopo un timeout).
@@ -1283,7 +1358,10 @@ int main(void)
   while (1)
   {
       if (!controllo_abilitato)
+      {
+          Rete_CambiaSeRichiesto();
           Controllo_AccettaAvvio();
+      }
       Rete_Process();
       HAL_Delay(1);
     /* USER CODE END WHILE */
@@ -1623,7 +1701,10 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
     }
     if (stop_al_fronte_step)
     {
+        GPIO_PinState dir = direzione_dopo_arresto;
         Stepper_Stop();
+        /* DIR cambia a fine impulso: almeno un periodo di rampa prima del successivo. */
+        Stepper_SetDirection(dir);
         return;
     }
 

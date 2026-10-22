@@ -3,7 +3,7 @@
 [stepper]
 frequenza_min_hz = 3200.0 # minimo richiesto; la rampa puo attraversare valori inferiori
 frequenza_max_hz = 32000.0
-rampa_hz_s = 1600000.0 # salita/discesa: 0 -> 32000 Hz in 0.5 s; valore da tarare
+rampa_hz_s = 1600000.0 # salita/discesa: 0 -> 32000 Hz in 0.02 s; valore da tarare
 zona_morta = 0.0 # azioni con |u| <= questa soglia comandano arresto
 passi_per_giro = 200 # passi interi, prima del microstepping
 angolo_passo_gradi = 1.8 # deve essere 360 / passi_per_giro

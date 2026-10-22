@@ -39,9 +39,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   00011f6d  00000000  00000000  0005522d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000de6f9  00000000  00000000  0006719a  2**0
+ 18 .debug_str    000de6fa  00000000  00000000  0006719a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  00145893  2**0
+ 19 .comment      00000043  00000000  00000000  00145894  2**0
                   CONTENTS, READONLY
  20 .debug_frame  000043e0  00000000  00000000  001458d8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -639,9 +639,9 @@ void Leggi_theta(){
  8000702:	461c      	mov	r4, r3
  8000704:	4615      	mov	r5, r2
  8000706:	e9d7 230e 	ldrd	r2, r3, [r7, #56]	@ 0x38
- 800070a:	18a1      	adds	r1, r4, r2
+ 800070a:	1aa1      	subs	r1, r4, r2
  800070c:	61b9      	str	r1, [r7, #24]
- 800070e:	eb45 0303 	adc.w	r3, r5, r3
+ 800070e:	eb65 0303 	sbc.w	r3, r5, r3
  8000712:	61fb      	str	r3, [r7, #28]
 	int64_t nuova_posizione =
  8000714:	f44f 6216 	mov.w	r2, #2400	@ 0x960

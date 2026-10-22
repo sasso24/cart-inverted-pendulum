@@ -1,6 +1,9 @@
 /* GENERATO da cart_pendolo_velocita_rl/esporta_firmware.py: NON modificare a mano.
- * Rete: modelli_swingup/migliore.zip (2026-10-14)
+ * Rete: modelli_swingup/migliore.zip (2026-10-17)
  * sha256 ed5882032e04edeb489e8e6d1246358237d7ed656f7b486f2c16ea57afd4e26a
+ * Stimatore dell offset aggiunto all esportazione (polo -1/s):
+ * la rete e stata addestrata con lo stimatore a due stati.
+ * Altre reti nello stesso firmware: Core/Src/reti_candidate.c.
  * Per cambiare un valore: config.toml -> nuovo addestramento -> esporta_firmware.py.
  */
 #ifndef CONFIG_CONTROLLO_H
@@ -9,6 +12,9 @@
 #define CFG_SWING_UP              1
 #define CFG_ANGOLO_INIZIALE_RAD   (-3.141592653589793f)
 
+/* Periodo della rete ([episodio].periodo_controllo_s): letture, stimatore, inferenza. */
+#define CFG_PERIODO_CONTROLLO_MS  20U
+
 /* Motore: stessi valori di [stepper] (stepper.py). */
 #define CFG_MICROSTEP             32
 #define CFG_FREQ_MIN_HZ           3200.0f
@@ -16,6 +22,8 @@
 #define CFG_RAMPA_HZ_S            1600000.0f
 #define CFG_ZONA_MORTA            0.0f
 #define CFG_METRI_PER_STEP        1.5e-05f
+/* Inversione: periodi di rampa (2 ms) con frequenza ferma a zero (stepper.py). */
+#define CFG_TICK_FERMO_INVERSIONE 1U
 
 /* Scale dei sei ingressi della rete (come l ambiente Python). */
 #define CFG_POSIZIONE_SCALA_M     0.462f
@@ -38,8 +46,11 @@
 #define STIMA_K_G      17.1317f
 #define STIMA_K_A      1.74635f
 #define STIMA_K_D      0.35034f
-#define STIMA_L_THETA  0.2f
-#define STIMA_L_OMEGA  1.0f
+#define STIMA_L_THETA  0.26005097177150094f
+#define STIMA_L_OMEGA  1.1872225007000268f
 #define STIMA_L_X      0.05f
+/* Offset dell encoder stimato (0 = stimatore a due stati). */
+#define STIMA_L_B      (-0.044209910416905196f)
+#define STIMA_B_MAX_RAD 0.2617993877991494f
 
 #endif

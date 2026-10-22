@@ -1,0 +1,55 @@
+Disturbi attivi: intensita 0.35; selezione su nominale e disturbato.
+Guasti sensori attivi: offset_max_gradi=3, prob_conteggio_perso_max=0.003, salti_al_s=0.5, salto_max_conteggi=4, passi_persi_max=0.02
+Periodo di controllo 20 ms (10 passi fisici), gamma 0.99
+Swing-up: episodi dal basso -> /Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/cart_pendolo_velocita_rl/modelli_asta20_60s_s3. Ctrl+C salva ed esce.
+Passi 40,000 | ricompensa 147.3 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 0.9 min
+Passi 80,000 | ricompensa 716.6 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 2.0 min
+Passi 120,000 | ricompensa 430.1 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 3.2 min
+Passi 160,000 | ricompensa 345.9 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 4.3 min
+Passi 200,000 | ricompensa 941.6 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 5.4 min
+Passi 240,000 | ricompensa 1511.3 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 6.7 min
+Passi 280,000 | ricompensa 1872.1 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 7.9 min
+Passi 320,000 | ricompensa 1341.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 9.1 min
+Passi 360,000 | ricompensa 929.7 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 10.3 min
+Passi 400,000 | ricompensa 1495.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 11.4 min
+Passi 440,000 | ricompensa 2042.1 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 12.6 min
+Passi 480,000 | ricompensa 916.6 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 13.8 min
+Passi 520,000 | ricompensa 159.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 15.0 min
+Passi 560,000 | ricompensa 626.6 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 16.1 min
+Passi 600,000 | ricompensa 2208.3 | successi 0% (nominale 0%) | peggiore 17.2 s | tempo 17.2 min
+Passi 640,000 | ricompensa 1696.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 18.3 min
+Passi 680,000 | ricompensa 2079.7 | successi 0% (nominale 0%) | peggiore 37.2 s | tempo 19.4 min
+Passi 720,000 | ricompensa 2242.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 20.5 min
+Passi 760,000 | ricompensa 2200.1 | successi 0% (nominale 0%) | peggiore 6.2 s | tempo 21.5 min
+Passi 800,000 | ricompensa 2244.9 | successi 0% (nominale 0%) | peggiore 14.2 s | tempo 22.6 min
+Passi 840,000 | ricompensa 2242.1 | successi 0% (nominale 0%) | peggiore 13.7 s | tempo 23.7 min
+Passi 880,000 | ricompensa 2134.8 | successi 0% (nominale 0%) | peggiore 4.2 s | tempo 24.8 min
+Passi 920,000 | ricompensa 2346.9 | successi 0% (nominale 0%) | peggiore 24.2 s | tempo 25.8 min
+Passi 960,000 | ricompensa 2391.2 | successi 17% (nominale 0%) | peggiore 44.3 s | tempo 26.9 min
+Passi 1,000,000 | ricompensa 2409.7 | successi 0% (nominale 0%) | peggiore 45.1 s | tempo 28.0 min
+Passi 1,040,000 | ricompensa 2355.7 | successi 0% (nominale 0%) | peggiore 43.9 s | tempo 29.0 min
+Passi 1,080,000 | ricompensa 2428.3 | successi 17% (nominale 0%) | peggiore 20.1 s | tempo 30.1 min
+Passi 1,120,000 | ricompensa 2395.0 | successi 17% (nominale 0%) | peggiore 41.0 s | tempo 31.2 min
+Passi 1,160,000 | ricompensa 2289.5 | successi 0% (nominale 0%) | peggiore 41.5 s | tempo 32.2 min
+Passi 1,200,000 | ricompensa 2363.3 | successi 17% (nominale 17%) | peggiore 46.3 s | tempo 33.3 min
+Passi 1,240,000 | ricompensa 2369.4 | successi 17% (nominale 100%) | peggiore 11.3 s | tempo 34.3 min
+Passi 1,280,000 | ricompensa 2362.5 | successi 17% (nominale 0%) | peggiore 41.3 s | tempo 35.4 min
+Passi 1,320,000 | ricompensa 2378.6 | successi 33% (nominale 0%) | peggiore 37.8 s | tempo 36.4 min
+Passi 1,360,000 | ricompensa 303.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 37.5 min
+Passi 1,400,000 | ricompensa 2524.9 | successi 83% (nominale 100%) | peggiore 47.3 s | tempo 38.5 min
+Passi 1,440,000 | ricompensa 2491.2 | successi 50% (nominale 33%) | peggiore 44.8 s | tempo 39.5 min
+Passi 1,480,000 | ricompensa 2342.2 | successi 17% (nominale 0%) | peggiore 33.7 s | tempo 40.5 min
+Passi 1,520,000 | ricompensa 1963.1 | successi 17% (nominale 17%) | peggiore 0.0 s | tempo 41.4 min
+Passi 1,560,000 | ricompensa 2498.3 | successi 67% (nominale 83%) | peggiore 43.8 s | tempo 42.4 min
+Passi 1,600,000 | ricompensa 2464.2 | successi 50% (nominale 100%) | peggiore 45.7 s | tempo 43.4 min
+Passi 1,640,000 | ricompensa 305.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 44.3 min
+Passi 1,680,000 | ricompensa 2551.3 | successi 67% (nominale 100%) | peggiore 47.7 s | tempo 45.4 min
+Passi 1,720,000 | ricompensa 2463.8 | successi 50% (nominale 0%) | peggiore 43.5 s | tempo 46.4 min
+Passi 1,760,000 | ricompensa 2399.1 | successi 33% (nominale 50%) | peggiore 43.6 s | tempo 47.4 min
+Passi 1,800,000 | ricompensa 1755.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 48.4 min
+Passi 1,840,000 | ricompensa 2388.4 | successi 0% (nominale 0%) | peggiore 41.3 s | tempo 49.4 min
+Passi 1,880,000 | ricompensa 995.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 50.4 min
+Passi 1,920,000 | ricompensa 2501.2 | successi 67% (nominale 50%) | peggiore 43.7 s | tempo 51.3 min
+Passi 1,960,000 | ricompensa 1593.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 52.3 min
+Passi 2,000,000 | ricompensa 2509.7 | successi 50% (nominale 100%) | peggiore 18.9 s | tempo 53.2 min
+Salvataggio completato.

@@ -1,3 +1,120 @@
+# Asta spostata nel mozzo: braccio corto 0,30-0,35 m e 0,20 m — 21 ottobre 2026
+
+Stessa asta (0,98 m, acciaio 5 mm) con un braccio corto più lungo: XML
+`cart_pendolo_asta20/30/33/35.xml` (cambiano solo i due `fromto` dell'asta),
+k_g / k_a / k_d da `stima.coefficienti_da_modello`, guadagni da
+`stima.guadagni_con_offset` (calcolati in numpy: scipy manca nel venv, stessi valori
+di prima sulla geometria storica fino a 1e-12). Ricette: `config_60s.toml` con
+episodi da 60 s (2 M passi) o da 20 s (1,5 M passi), stimatore dell'offset in addestramento.
+
+| braccio corto | k_g (1/s²) | k_a (rad/m) | k_d (1/s) | inerzia (g·m²) | m·d (g·m) | energia max pompaggio |
+|---|---:|---:|---:|---:|---:|---:|
+| 0,16 (storico) | 17,13 | 1,746 | 0,350 | 28,5 | 49,9 | 10,7 |
+| 0,20 | 17,33 | 1,767 | 0,403 | 24,8 | 43,8 | 1,20 |
+| 0,30 | 16,05 | 1,636 | 0,570 | 17,6 | 28,7 | 0,30 (bang-bang) |
+| 0,33 | 14,85 | 1,514 | 0,627 | 16,0 | 24,2 | 0,02 (bang-bang) |
+| 0,35 | 13,78 | 1,405 | 0,664 | 15,1 | 21,2 | −0,17 (bang-bang) |
+
+- **0,30 / 0,33 / 0,35 m**: 9 addestramenti (60 s seed 42 e 7, 20 s seed 42), fermati a
+  0,7-1,0 M passi con 0% di successi: le reti pompano fino a ~110° e non salgono.
+  Causa fisica: lo smorzamento del perno (0,01 N·m·s nell'XML, non identificato) pesa
+  1,6-1,9 volte di più con l'inerzia minore e k_a cala, quindi il carrello a 0,48 m/s
+  non dà abbastanza energia (energia massima < 1 anche col pompaggio ideale). Con
+  smorzamento 0,0025 o carrello a 0,72 m/s lo swing-up a 0,30-0,33 m tornerebbe possibile.
+- **0,20 m** (scelto, margine di energia 20%): 5 addestramenti. Confronto
+  `confronta.py --durata 60`, 40 semi, "successo / su e mai caduta":
+
+| Rete | nominale | disturbi | sensori 16/10 | offset 4° | inversione | aggancio | totale "su" |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `modelli_asta20_20s` (rete 0) | 38/40 | 31/40 | 27/40 | 18/40 | 31/40 | 40/40 | 240/240 |
+| `modelli_asta20_20s_s7` (rete 1) | 37/40 | 30/40 | 30/40 | 8/40 | 30/40 | 40/40 | 240/240 |
+| `modelli_asta20_60s_s3` (rete 2) | 40/40 | 23/40 | 18/38 | 3/39 | 23/40 | 39/39 | 236/240 |
+| `modelli_asta20_60s` | 40/40 | 34/38 | 28/39 | 13/36 | 34/38 | 37/37 | 228/240 |
+| `modelli_asta20_60s_s7` | 13/40 | 11/34 | 11/36 | 0/31 | 11/34 | 35/35 | 210/240 |
+| rif. 0,16 m `modelli_60s_1200k` | 40/40 | 39/40 | 40/40 | 28/38 | 39/40 | 40/40 | 238/240 |
+
+  La salita a 0,20 m dura ~11 s (mediana) contro ~10 s: il criterio "su a 12 s" penalizza.
+- Firmware `Controllo_SwingUp_Asta20` (copia di `Controllo_SwingUp`, che resta intatto):
+  reti 0-2 qui sopra. Compilato con il gcc 12.3 di STM32CubeIDE e le opzioni del
+  progetto: 0 warning nel codice del progetto, 247 KB di flash (anche `HIL_MODE 1`).
+  `test_candidati` OK, `test_controllo` OK, `test_stima` OK (1,2e-6, eseguito con un
+  sostituto numpy di `scipy.signal.place_poles`), `test_hil` 3/3 swing-up,
+  diff. ingressi 9e-7, azione 2e-6.
+- Non provato: scheda e banco con l'asta spostata; smorzamento reale del perno.
+
+Dati: `risultati/confronto_asta20_*.json`, log in `log_asta/`.
+
+---
+
+# Episodi da 60 s, partenze casuali e firmware con più reti — 17 ottobre 2026
+
+Tutte le reti a 20 ms con lo stimatore dell'offset (anche in addestramento),
+sensori 16/10 (offset ±3°, conteggi persi ≤0,3%), 2 M passi.
+
+| Addestramento | esito |
+|---|---|
+| episodi 60 s, senza partenze casuali (`config_60s.toml`) | migliore a 1,2 M passi (100% nominale e disturbato sui 6 semi di selezione), poi oscilla |
+| episodi 60 s, 30% partenze casuali (`config_60s_casuali.toml`) | crollato dopo ~750 k passi (ricompensa negativa per >300 k), fermato |
+| episodi 60 s, 15% partenze casuali, seed 7 (`config_60s_casuali15.toml`) | crolli dopo ~450 k passi |
+
+Confronto (`confronta.py --durata 60`, 40 semi; "su" = arrivato in alto entro
+20 s e in equilibrio fino alla fine):
+
+| Rete | nominale | disturbi | sensori 16/10 | offset 4° | aggancio | inversioni/s (nom. / dist.) |
+|---|---:|---:|---:|---:|---:|---:|
+| 14/10 + stimatore offset | 40 (su 40) | 39 (40) | 37 (40) | 38 (40) | 40 (40) | 41 / 11 |
+| 60 s, 1,2 M passi (`modelli_60s_1200k`) | 40 (40) | 39 (40) | 40 (40) | 28 (38) | 40 (40) | 20 / 8 |
+| 60 s, 1,0 M passi | 34 (40) | 29 (40) | 23 (40) | 9 (40) | 39 (39) | 20 / 8 |
+
+- La durata degli episodi in valutazione non cambia niente per la rete 14/10 +
+  offset (stessi risultati a 20 s e a 60 s): in simulazione, una volta su, non cade.
+- La rete a 60 s sale più lentamente (13-14 s contro 9-10 s): il criterio "su
+  entro 12 s" la penalizza, ma una volta su non cade quasi mai; inverte il
+  verso del motore la metà delle volte.
+- Le partenze casuali, in questa forma, rendono instabile l'addestramento
+  (due semi su due). Restano utili come prova (`aggancio`).
+- Firmware `Controllo_SwingUp` con tre reti selezionabili (`rete_scelta`):
+  compilato con arm-none-eabi-gcc 13.2 con le opzioni di CubeIDE (0 warning nel
+  codice del progetto, 248 KB di flash su 512); test PC: `test_controllo`
+  (anche cambio di rete), `test_stima`, `test_candidati` (pesi e guadagni
+  identici ai checkpoint), `test_hil` 3/3.
+
+---
+
+# Stimatore dell'offset e prove a 10 ms — 16 ottobre 2026
+
+Confronto con `confronta.py`, 40 semi (2000-2039), stesse condizioni per tutte le reti:
+*disturbi* = profilo della rete + guasti sensori del 14/10 (offset ±2°, conteggi
+persi ≤0,2%); *sensori 16/10* = offset ±3°, ≤0,3%; *offset 4°* = encoder spostato
+di 4° fissi; *inversione* = rampa ferma 2 ms al cambio di verso come il firmware;
+*aggancio* = partenza da stato casuale, successo se in equilibrio negli ultimi 8 s.
+
+| Rete | nominale | disturbi | sensori 16/10 | offset 4° | inversione | aggancio | inversioni/s (nom.) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 14/10, 20 ms (sulla scheda fino al 16/10) | 40 | 29 | 18 | 0 | 29 | 24 | 22 |
+| **14/10 + stimatore dell'offset** (firmware dal 16/10) | **40** | **39** | **37** | **38** | **39** | **40** | 22 |
+| 10 ms, seed 7, 2,68 M passi | 40 | 11 | 12 | 2 | 11 | 13 | 15 |
+| 10 ms + stimatore dell'offset, seed 42, 0,96 M | 35 | 25 | 26 | 11 | 25 | 40 | 23 |
+
+- Lo stimatore dell'offset da solo, senza riaddestrare, porta la rete del 14/10
+  quasi a 40/40 in tutte le condizioni. Test `test_periodo.OffsetTest`: con 4°
+  di offset l'offset stimato a fine episodio è entro 1° da quello vero.
+- **10 ms non conviene, per ora**: addestramenti a 10 ms (gamma 0,995,
+  ricompensa riscalata, 3 M passi) instabili, con crolli della ricompensa
+  anche dopo il 100% di successi; le reti migliori restano sotto quella del
+  14/10. Prova a 20 ms con sensori 16/10 e partenze casuali ma stimatore a due
+  stati: 0% di successi in 1,5 M passi, quindi il problema principale era
+  l'offset dell'encoder, non il periodo.
+- Firmware `Controllo_SwingUp` (test su PC): `test_controllo.py` OK (rampa C =
+  `stepper.py` su 2000 passi casuali), `test_stima.py` OK (C = Python anche con
+  offset, differenza < 2e-6), `test_hil.py` 3/3 swing-up, diff. ingressi 9e-7.
+  Da compilare in STM32CubeIDE e provare sul banco.
+
+Dati: `risultati/confronto_swingup.json`, `confronto_swingup_offset.json`,
+`confronto_10ms.json`, `confronto_offset_960k.json`.
+
+---
+
 # Swing-up da -180° e configurazione unica — 14 ottobre 2026
 
 **Rete** `modelli_swingup/migliore.zip` (6-128-128-1, SAC, seed 42, scelta a

@@ -1,0 +1,24 @@
+Disturbi attivi: intensita 0.35; selezione su nominale e disturbato.
+Guasti sensori attivi: offset_max_gradi=3, prob_conteggio_perso_max=0.003, salti_al_s=0.5, salto_max_conteggi=4, passi_persi_max=0.02
+Periodo di controllo 20 ms (10 passi fisici), gamma 0.99
+Swing-up: episodi dal basso -> /Users/salvo/Desktop/Prog Embedded/cart-inverted-pendulum/cart_pendolo_velocita_rl/modelli_asta35_60s_s7. Ctrl+C salva ed esce.
+Passi 40,000 | ricompensa 75.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 1.3 min
+Passi 80,000 | ricompensa 96.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 3.0 min
+Passi 120,000 | ricompensa 107.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 4.5 min
+Passi 160,000 | ricompensa 125.8 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 6.0 min
+Passi 200,000 | ricompensa 125.1 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 7.6 min
+Passi 240,000 | ricompensa 146.8 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 9.4 min
+Passi 280,000 | ricompensa 153.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 12.0 min
+Passi 320,000 | ricompensa 148.7 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 13.5 min
+Passi 360,000 | ricompensa 156.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 14.9 min
+Passi 400,000 | ricompensa 144.7 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 16.4 min
+Passi 440,000 | ricompensa 146.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 17.8 min
+Passi 480,000 | ricompensa 146.9 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 19.2 min
+Passi 520,000 | ricompensa 149.3 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 20.7 min
+Passi 560,000 | ricompensa 144.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 22.3 min
+Passi 600,000 | ricompensa 139.2 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 24.2 min
+Passi 640,000 | ricompensa 138.8 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 25.9 min
+Passi 680,000 | ricompensa 130.0 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 27.5 min
+Passi 720,000 | ricompensa 146.5 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 29.2 min
+Passi 760,000 | ricompensa 143.4 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 31.0 min
+Passi 800,000 | ricompensa 142.3 | successi 0% (nominale 0%) | peggiore 0.0 s | tempo 32.9 min

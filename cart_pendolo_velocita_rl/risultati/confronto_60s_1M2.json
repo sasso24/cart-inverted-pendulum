@@ -1,0 +1,2458 @@
+{
+  "modelli_60s_1M2/migliore.zip": {
+    "nominale": {
+      "successi": 40,
+      "episodi": 40,
+      "su_alla_fine": 40,
+      "inversioni_al_s": 19.7925,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.45,
+          "ricompensa": 2726.291800718433
+        },
+        {
+          "seed": 2001,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.466666666666665,
+          "ricompensa": 2731.2304484286524
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.383333333333333,
+          "ricompensa": 2721.5326039010765
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.25,
+          "ricompensa": 2733.8135483503715
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.483333333333334,
+          "ricompensa": 2729.5979102761235
+        },
+        {
+          "seed": 2005,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.416666666666668,
+          "ricompensa": 2727.2091718558927
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.216666666666665,
+          "ricompensa": 2719.9878538411326
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.3,
+          "ricompensa": 2721.2759077524693
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.92,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.333333333333332,
+          "ricompensa": 2723.601623227443
+        },
+        {
+          "seed": 2009,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.233333333333334,
+          "ricompensa": 2729.872391732075
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.65,
+          "ricompensa": 2739.828746288516
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.25,
+          "ricompensa": 2723.1854402618615
+        },
+        {
+          "seed": 2012,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.566666666666666,
+          "ricompensa": 2736.5641453626913
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.22,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.4,
+          "ricompensa": 2735.7602268166365
+        },
+        {
+          "seed": 2014,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.266666666666666,
+          "ricompensa": 2719.6940381815675
+        },
+        {
+          "seed": 2015,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.06,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.4,
+          "ricompensa": 2731.172670374856
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.7,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.216666666666665,
+          "ricompensa": 2717.745612086293
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.25,
+          "ricompensa": 2720.181224157079
+        },
+        {
+          "seed": 2018,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.433333333333334,
+          "ricompensa": 2731.7887888971964
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.38,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.816666666666666,
+          "ricompensa": 2741.3217709458995
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.22,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.6,
+          "ricompensa": 2735.493375468323
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.980000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.4,
+          "ricompensa": 2725.1826289149963
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.466666666666665,
+          "ricompensa": 2736.187898131211
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.8,
+          "ricompensa": 2741.7297698478037
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.84,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.233333333333334,
+          "ricompensa": 2722.946051737893
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.74,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.216666666666665,
+          "ricompensa": 2719.153681839768
+        },
+        {
+          "seed": 2026,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.4,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.65,
+          "ricompensa": 2740.9863912441215
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.65,
+          "ricompensa": 2741.883827387382
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.7,
+          "ricompensa": 2738.0030719438214
+        },
+        {
+          "seed": 2029,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.620000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.166666666666668,
+          "ricompensa": 2717.8335483309825
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.283333333333335,
+          "ricompensa": 2733.69871706535
+        },
+        {
+          "seed": 2031,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.6,
+          "ricompensa": 2737.1736359971496
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.466666666666665,
+          "ricompensa": 2731.1288069453594
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.980000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.216666666666665,
+          "ricompensa": 2729.7610461964377
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.9,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.183333333333334,
+          "ricompensa": 2727.9950151861754
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.316666666666666,
+          "ricompensa": 2731.234102410712
+        },
+        {
+          "seed": 2036,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.7,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.2,
+          "ricompensa": 2718.0342435510424
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.84,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 19.25,
+          "ricompensa": 2723.2605212519156
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.32,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.25,
+          "ricompensa": 2741.2591227911716
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 21.266666666666666,
+          "ricompensa": 2737.300158588922
+        }
+      ]
+    },
+    "disturbi": {
+      "successi": 39,
+      "episodi": 40,
+      "su_alla_fine": 40,
+      "inversioni_al_s": 8.0375,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2570.9878385461266
+        },
+        {
+          "seed": 2001,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.166666666666667,
+          "ricompensa": 2507.923492459731
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.95,
+          "ricompensa": 2640.127071258017
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.45,
+          "ricompensa": 2600.032136067318
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.466666666666667,
+          "ricompensa": 2578.98805112597
+        },
+        {
+          "seed": 2005,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2613.5757141284057
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.916666666666667,
+          "ricompensa": 2639.490446365709
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.983333333333333,
+          "ricompensa": 2637.6492377902123
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2615.7559776178887
+        },
+        {
+          "seed": 2009,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.766666666666667,
+          "ricompensa": 2588.123659768973
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.18,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 2655.973180418903
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.633333333333334,
+          "ricompensa": 2548.189687670637
+        },
+        {
+          "seed": 2012,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.26,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.383333333333334,
+          "ricompensa": 2652.0785793250843
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.866666666666667,
+          "ricompensa": 2654.252386351484
+        },
+        {
+          "seed": 2014,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.78,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.533333333333333,
+          "ricompensa": 2581.6817710736627
+        },
+        {
+          "seed": 2015,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.683333333333334,
+          "ricompensa": 2590.330885195258
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 10.05,
+          "ricompensa": 2653.1267341537464
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.94,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.583333333333334,
+          "ricompensa": 2616.1817162013367
+        },
+        {
+          "seed": 2018,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2591.771800273272
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.033333333333333,
+          "ricompensa": 2584.333242064957
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2609.3458266542775
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2660.507553063557
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.32,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.55,
+          "ricompensa": 2663.5261093454365
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.366666666666666,
+          "ricompensa": 2586.267838153704
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.516666666666667,
+          "ricompensa": 2681.051199042497
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.92,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.266666666666667,
+          "ricompensa": 2659.2795528504685
+        },
+        {
+          "seed": 2026,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.816666666666666,
+          "ricompensa": 2540.529562141589
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.8,
+          "ricompensa": 2560.1437786026327
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.016666666666667,
+          "ricompensa": 2619.1732756288293
+        },
+        {
+          "seed": 2029,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.06,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.9,
+          "ricompensa": 2670.6501026589185
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.64,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2600.8019273196965
+        },
+        {
+          "seed": 2031,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.22,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.483333333333333,
+          "ricompensa": 2582.2910691635193
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.52,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.566666666666666,
+          "ricompensa": 2602.7965631948773
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.216666666666667,
+          "ricompensa": 2546.0157079176793
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.216666666666667,
+          "ricompensa": 2530.6067077418215
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.78,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2601.168304824633
+        },
+        {
+          "seed": 2036,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.616666666666667,
+          "ricompensa": 2663.2552117120645
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.366666666666666,
+          "ricompensa": 2588.890936931895
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2615.8376444245496
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.55,
+          "ricompensa": 2707.969004709116
+        }
+      ]
+    },
+    "sensori_16_10": {
+      "successi": 40,
+      "episodi": 40,
+      "su_alla_fine": 40,
+      "inversioni_al_s": 8.097916666666666,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.76,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.983333333333333,
+          "ricompensa": 2573.041082304671
+        },
+        {
+          "seed": 2001,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.2,
+          "ricompensa": 2539.3681244076033
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.516666666666667,
+          "ricompensa": 2632.3728030565917
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.94,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.266666666666667,
+          "ricompensa": 2605.9408545086612
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.85,
+          "ricompensa": 2600.5728932049715
+        },
+        {
+          "seed": 2005,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.616666666666666,
+          "ricompensa": 2612.0181427685966
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.5,
+          "ricompensa": 2656.688315331902
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.033333333333333,
+          "ricompensa": 2603.2470074179837
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.4,
+          "ricompensa": 2622.507919365971
+        },
+        {
+          "seed": 2009,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.160000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.5,
+          "ricompensa": 2612.343109230235
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.18,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.2,
+          "ricompensa": 2631.45938465163
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.016666666666667,
+          "ricompensa": 2585.48423847167
+        },
+        {
+          "seed": 2012,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.24,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.466666666666667,
+          "ricompensa": 2659.3862742000347
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.15,
+          "ricompensa": 2655.211293906406
+        },
+        {
+          "seed": 2014,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.0,
+          "ricompensa": 2594.6738559612713
+        },
+        {
+          "seed": 2015,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.160000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.366666666666666,
+          "ricompensa": 2498.1527954600956
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.533333333333333,
+          "ricompensa": 2659.3559260569236
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.35,
+          "ricompensa": 2600.2985966935767
+        },
+        {
+          "seed": 2018,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.933333333333334,
+          "ricompensa": 2577.010580115017
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.566666666666666,
+          "ricompensa": 2585.1252206878175
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.216666666666667,
+          "ricompensa": 2590.636479291516
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.833333333333333,
+          "ricompensa": 2649.094879556381
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.94,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.916666666666666,
+          "ricompensa": 2618.6796024736122
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.133333333333333,
+          "ricompensa": 2594.372186272795
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.75,
+          "ricompensa": 2662.2912591703825
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.9,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.516666666666667,
+          "ricompensa": 2696.0684946684255
+        },
+        {
+          "seed": 2026,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.84,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.816666666666666,
+          "ricompensa": 2578.560519199086
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.466666666666667,
+          "ricompensa": 2614.8856972577414
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.033333333333333,
+          "ricompensa": 2627.2139925982756
+        },
+        {
+          "seed": 2029,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.966666666666667,
+          "ricompensa": 2661.1807868779856
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.54,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.016666666666667,
+          "ricompensa": 2606.3822119745864
+        },
+        {
+          "seed": 2031,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.95,
+          "ricompensa": 2577.0198268320264
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.583333333333333,
+          "ricompensa": 2615.2730420936555
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.4,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.716666666666667,
+          "ricompensa": 2545.232204444552
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.6,
+          "ricompensa": 2523.538027100184
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.64,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.533333333333333,
+          "ricompensa": 2586.1419149953886
+        },
+        {
+          "seed": 2036,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.78,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.483333333333333,
+          "ricompensa": 2643.1165768225437
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.76,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.716666666666667,
+          "ricompensa": 2599.4356096614883
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.92,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.416666666666666,
+          "ricompensa": 2640.378690020763
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.8,
+          "ricompensa": 2710.057654586276
+        }
+      ]
+    },
+    "offset_4": {
+      "successi": 28,
+      "episodi": 40,
+      "su_alla_fine": 38,
+      "inversioni_al_s": 7.586287866360456,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 46.44,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.9,
+          "ricompensa": 2465.680958180884
+        },
+        {
+          "seed": 2001,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.44,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.9,
+          "ricompensa": 2459.465506536493
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.44,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.566666666666666,
+          "ricompensa": 2596.3816855879368
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.4,
+          "ricompensa": 2542.370117180449
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.160000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.733333333333333,
+          "ricompensa": 2541.228408718313
+        },
+        {
+          "seed": 2005,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.1,
+          "ricompensa": 2538.9212073777944
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.74,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.55,
+          "ricompensa": 2575.7600362259363
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.620000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.5,
+          "ricompensa": 2572.7728581188526
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.066666666666666,
+          "ricompensa": 2555.077878216324
+        },
+        {
+          "seed": 2009,
+          "successo": false,
+          "su_alla_fine": false,
+          "stabile_finale_s": 0.0,
+          "terminato": true,
+          "motivo": "finecorsa",
+          "inversioni_al_s": 1.996527777777778,
+          "ricompensa": 92.46707588906744
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.9,
+          "ricompensa": 2564.5323314081934
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.660000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.083333333333333,
+          "ricompensa": 2549.155880505733
+        },
+        {
+          "seed": 2012,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.6,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.2,
+          "ricompensa": 2520.8204885597756
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.45,
+          "ricompensa": 2571.10094994404
+        },
+        {
+          "seed": 2014,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.116666666666667,
+          "ricompensa": 2490.339264231048
+        },
+        {
+          "seed": 2015,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.616666666666666,
+          "ricompensa": 2525.5159999826606
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.620000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 10.233333333333333,
+          "ricompensa": 2602.365555662635
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.26,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.066666666666666,
+          "ricompensa": 2575.5895189646308
+        },
+        {
+          "seed": 2018,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.44,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.483333333333333,
+          "ricompensa": 2498.2041696727315
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.816666666666666,
+          "ricompensa": 2594.452670766427
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.233333333333333,
+          "ricompensa": 2554.537333878729
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.44,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.666666666666666,
+          "ricompensa": 2618.4412312735712
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.216666666666667,
+          "ricompensa": 2612.136408839386
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.2,
+          "ricompensa": 2563.7830364436363
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.783333333333333,
+          "ricompensa": 2606.3465997581093
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.083333333333334,
+          "ricompensa": 2650.0986025866905
+        },
+        {
+          "seed": 2026,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.983333333333333,
+          "ricompensa": 2502.6386445425323
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.75,
+          "ricompensa": 2550.8652644213735
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.74,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.933333333333334,
+          "ricompensa": 2580.035842862424
+        },
+        {
+          "seed": 2029,
+          "successo": false,
+          "su_alla_fine": false,
+          "stabile_finale_s": 0.0,
+          "terminato": true,
+          "motivo": "finecorsa",
+          "inversioni_al_s": 1.7716535433070866,
+          "ricompensa": 71.42955704773735
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.683333333333334,
+          "ricompensa": 2559.7102626763544
+        },
+        {
+          "seed": 2031,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.55,
+          "ricompensa": 2543.373959760512
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.72,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.55,
+          "ricompensa": 2583.19202331642
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.15,
+          "ricompensa": 2535.911988331849
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.816666666666666,
+          "ricompensa": 2550.319712434914
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.32,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.683333333333334,
+          "ricompensa": 2578.1842626084895
+        },
+        {
+          "seed": 2036,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 45.76,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.983333333333333,
+          "ricompensa": 2530.1933232921733
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.54,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.466666666666667,
+          "ricompensa": 2566.145853704837
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.7,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.4,
+          "ricompensa": 2598.996386512855
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2628.336104734894
+        }
+      ]
+    },
+    "inversione": {
+      "successi": 39,
+      "episodi": 40,
+      "su_alla_fine": 40,
+      "inversioni_al_s": 8.0375,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.800000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2570.9878385461266
+        },
+        {
+          "seed": 2001,
+          "successo": false,
+          "su_alla_fine": true,
+          "stabile_finale_s": 47.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.166666666666667,
+          "ricompensa": 2507.923492459731
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.95,
+          "ricompensa": 2640.127071258017
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.45,
+          "ricompensa": 2600.032136067318
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 6.466666666666667,
+          "ricompensa": 2578.98805112597
+        },
+        {
+          "seed": 2005,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2613.5757141284057
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.916666666666667,
+          "ricompensa": 2639.490446365709
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.983333333333333,
+          "ricompensa": 2637.6492377902123
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2615.7559776178887
+        },
+        {
+          "seed": 2009,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.766666666666667,
+          "ricompensa": 2588.123659768973
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.18,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 2655.973180418903
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.633333333333334,
+          "ricompensa": 2548.189687670637
+        },
+        {
+          "seed": 2012,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.26,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.383333333333334,
+          "ricompensa": 2652.0785793250843
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.866666666666667,
+          "ricompensa": 2654.252386351484
+        },
+        {
+          "seed": 2014,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.78,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.533333333333333,
+          "ricompensa": 2581.6817710736627
+        },
+        {
+          "seed": 2015,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.683333333333334,
+          "ricompensa": 2590.330885195258
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.04,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 10.05,
+          "ricompensa": 2653.1267341537464
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.94,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.583333333333334,
+          "ricompensa": 2616.1817162013367
+        },
+        {
+          "seed": 2018,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.14,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2591.771800273272
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.033333333333333,
+          "ricompensa": 2584.333242064957
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.883333333333334,
+          "ricompensa": 2609.3458266542775
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.1,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.866666666666666,
+          "ricompensa": 2660.507553063557
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.32,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.55,
+          "ricompensa": 2663.5261093454365
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.120000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.366666666666666,
+          "ricompensa": 2586.267838153704
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.516666666666667,
+          "ricompensa": 2681.051199042497
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.92,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.266666666666667,
+          "ricompensa": 2659.2795528504685
+        },
+        {
+          "seed": 2026,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 48.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.816666666666666,
+          "ricompensa": 2540.529562141589
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.8,
+          "ricompensa": 2560.1437786026327
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.300000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.016666666666667,
+          "ricompensa": 2619.1732756288293
+        },
+        {
+          "seed": 2029,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.06,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.9,
+          "ricompensa": 2670.6501026589185
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.64,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2600.8019273196965
+        },
+        {
+          "seed": 2031,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.22,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.483333333333333,
+          "ricompensa": 2582.2910691635193
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.52,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.566666666666666,
+          "ricompensa": 2602.7965631948773
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.216666666666667,
+          "ricompensa": 2546.0157079176793
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.216666666666667,
+          "ricompensa": 2530.6067077418215
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.78,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2601.168304824633
+        },
+        {
+          "seed": 2036,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.616666666666667,
+          "ricompensa": 2663.2552117120645
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.366666666666666,
+          "ricompensa": 2588.890936931895
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.25,
+          "ricompensa": 2615.8376444245496
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.55,
+          "ricompensa": 2707.969004709116
+        }
+      ]
+    },
+    "aggancio": {
+      "successi": 40,
+      "episodi": 40,
+      "su_alla_fine": 40,
+      "inversioni_al_s": 8.796666666666667,
+      "periodo_s": 0.02,
+      "dettagli": [
+        {
+          "seed": 2000,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 49.980000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.566666666666666,
+          "ricompensa": 2588.9394664653923
+        },
+        {
+          "seed": 2001,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.68,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.833333333333334,
+          "ricompensa": 3006.447474085227
+        },
+        {
+          "seed": 2002,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 57.02,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.016666666666667,
+          "ricompensa": 2920.4554132695307
+        },
+        {
+          "seed": 2003,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 59.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.316666666666666,
+          "ricompensa": 3008.4025526656724
+        },
+        {
+          "seed": 2004,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 52.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 2796.98412896102
+        },
+        {
+          "seed": 2005,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 55.54,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.783333333333333,
+          "ricompensa": 2919.1516268787836
+        },
+        {
+          "seed": 2006,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 56.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.983333333333333,
+          "ricompensa": 2863.2782218159937
+        },
+        {
+          "seed": 2007,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 54.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.533333333333333,
+          "ricompensa": 2816.064751827179
+        },
+        {
+          "seed": 2008,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 55.58,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 2909.712002060872
+        },
+        {
+          "seed": 2009,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.96,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.8,
+          "ricompensa": 2626.6389494666655
+        },
+        {
+          "seed": 2010,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 57.68,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.8,
+          "ricompensa": 2961.3854170189834
+        },
+        {
+          "seed": 2011,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.58,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.383333333333333,
+          "ricompensa": 2981.824634096931
+        },
+        {
+          "seed": 2012,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.86,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.65,
+          "ricompensa": 3040.970061453952
+        },
+        {
+          "seed": 2013,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 55.46,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.866666666666667,
+          "ricompensa": 2877.735525432741
+        },
+        {
+          "seed": 2014,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 55.28,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.4,
+          "ricompensa": 2928.5066383143394
+        },
+        {
+          "seed": 2015,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 56.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.016666666666667,
+          "ricompensa": 2926.5584392574756
+        },
+        {
+          "seed": 2016,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 56.76,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.316666666666666,
+          "ricompensa": 2935.2089492246114
+        },
+        {
+          "seed": 2017,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 53.7,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.666666666666666,
+          "ricompensa": 2806.680494250403
+        },
+        {
+          "seed": 2018,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 54.0,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.566666666666666,
+          "ricompensa": 2780.542857648673
+        },
+        {
+          "seed": 2019,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.32,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.0,
+          "ricompensa": 3000.8464608330237
+        },
+        {
+          "seed": 2020,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 53.36,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.083333333333334,
+          "ricompensa": 2754.3006614128653
+        },
+        {
+          "seed": 2021,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.5,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.3,
+          "ricompensa": 3028.5116783809203
+        },
+        {
+          "seed": 2022,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 59.6,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.616666666666667,
+          "ricompensa": 2990.875770957148
+        },
+        {
+          "seed": 2023,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.916666666666667,
+          "ricompensa": 2672.619493533258
+        },
+        {
+          "seed": 2024,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 57.2,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.45,
+          "ricompensa": 2983.10045371895
+        },
+        {
+          "seed": 2025,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 54.08,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.916666666666667,
+          "ricompensa": 2813.762860298852
+        },
+        {
+          "seed": 2026,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.56,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.75,
+          "ricompensa": 2991.8733954117374
+        },
+        {
+          "seed": 2027,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 51.38,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.833333333333333,
+          "ricompensa": 2712.5754503789417
+        },
+        {
+          "seed": 2028,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 57.620000000000005,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.083333333333334,
+          "ricompensa": 3024.56342976588
+        },
+        {
+          "seed": 2029,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.26,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 3004.9846133777096
+        },
+        {
+          "seed": 2030,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 52.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.2,
+          "ricompensa": 2751.4452389579606
+        },
+        {
+          "seed": 2031,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 52.88,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.683333333333334,
+          "ricompensa": 2744.5233664556395
+        },
+        {
+          "seed": 2032,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.46,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.6,
+          "ricompensa": 3045.526267934193
+        },
+        {
+          "seed": 2033,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.82,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.783333333333333,
+          "ricompensa": 3002.424945770522
+        },
+        {
+          "seed": 2034,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 57.5,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.866666666666667,
+          "ricompensa": 2986.455418690334
+        },
+        {
+          "seed": 2035,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.480000000000004,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 10.733333333333333,
+          "ricompensa": 3050.3143530341645
+        },
+        {
+          "seed": 2036,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 58.42,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 8.083333333333334,
+          "ricompensa": 2941.5891094253047
+        },
+        {
+          "seed": 2037,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 50.92,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.65,
+          "ricompensa": 2736.539383196272
+        },
+        {
+          "seed": 2038,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 56.9,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 9.683333333333334,
+          "ricompensa": 2923.5557652088605
+        },
+        {
+          "seed": 2039,
+          "successo": true,
+          "su_alla_fine": true,
+          "stabile_finale_s": 54.26,
+          "terminato": false,
+          "motivo": "",
+          "inversioni_al_s": 7.783333333333333,
+          "ricompensa": 2856.8572065934964
+        }
+      ]
+    }
+  }
+}
