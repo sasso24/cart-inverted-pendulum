@@ -4,7 +4,8 @@ Un solo comando, sempre dalla configurazione SALVATA col modello:
   1. Core/Inc/config_controllo.h: motore, rampa, scale degli ingressi, limite
      di corsa, stimatore, swing-up, controlli dell'encoder;
   2. X-CUBE-AI/App/network_data_params.c: pesi della rete (stessa forma
-     6-128-128-1 del codice X-CUBE-AI gia generato);
+     del codice X-CUBE-AI gia generato; con un numero di ingressi diverso,
+     per esempio con la storia, X-CUBE-AI/App viene rigenerato con stedgeai);
   3. export_<cartella>/pendolo_actor.onnx con la verifica PyTorch/ONNX.
 
     python esporta_firmware.py --model modelli_swingup/migliore.zip
@@ -99,7 +100,14 @@ def header(cfg, modello):
         '/* Offset dell encoder stimato (0 = stimatore a due stati). */',
         f'#define STIMA_L_B      {_f(st.l_b)}',
         f'#define STIMA_B_MAX_RAD {_f(st.b_max_rad)}', '',
-        '#endif', '']
+        '/* Storia degli ingressi ([storia], storia.py): per ogni ritardo (in periodi)',
+        ' * i sei ingressi di allora e l azione decisa, dopo i sei ingressi attuali. */',
+        f'#define CFG_STORIA_N              {len(cfg.storia.ritardi)}U',
+        f'#define CFG_STORIA_INGRESSI       {cfg.storia.ingressi}U']
+    if cfg.storia.ritardi:
+        righe += [f'#define CFG_STORIA_MAX            {max(cfg.storia.ritardi)}U',
+                  '#define CFG_STORIA_RITARDI        { ' + ', '.join(f'{k}U' for k in cfg.storia.ritardi) + ' }']
+    righe += ['', '#endif', '']
     return '\n'.join(righe)
 
 
@@ -191,6 +199,45 @@ def scrivi_candidati(progetto, nomi, pesi_extra, stimatori):
     (progetto / 'Core/Src/reti_candidate.c').write_text('\n'.join(righe))
 
 
+def ingressi_xcubeai(progetto):
+    """Ingressi della rete per cui e generato il codice X-CUBE-AI del progetto."""
+    import re
+    testo = (progetto / 'X-CUBE-AI/App/network.h').read_text()
+    return int(re.search(r'#define AI_NETWORK_IN_1_SIZE\s+\((\d+)\)', testo)[1])
+
+
+def stedgeai():
+    """Percorso di stedgeai (X-CUBE-AI): variabile STEDGEAI o pacchetto in ~/STM32Cube."""
+    import os
+    if os.environ.get('STEDGEAI'):
+        return Path(os.environ['STEDGEAI'])
+    trovati = sorted(Path.home().glob('STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/*/Utilities/*/stedgeai'))
+    if not trovati:
+        raise SystemExit('stedgeai non trovato: installare X-CUBE-AI o impostare STEDGEAI.')
+    return trovati[-1]
+
+
+FILE_XCUBEAI = ('network.c', 'network.h', 'network_config.h', 'network_data.c', 'network_data.h',
+                'network_data_params.c', 'network_data_params.h', 'network_generate_report.txt')
+
+
+def genera_xcubeai(onnx, progetto):
+    """Rigenera X-CUBE-AI/App con le stesse opzioni del progetto (29/09):
+    generate --target stm32f4 --name network --compression none."""
+    import shutil
+    import subprocess
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='stedgeai-') as tmp:
+        tmp = Path(tmp)
+        subprocess.run([str(stedgeai()), 'generate', '--target', 'stm32f4', '--name', 'network',
+                        '-m', str(onnx), '--compression', 'none', '--verbosity', '1',
+                        '--workspace', str(tmp / 'ws'), '--output', str(tmp / 'out')],
+                       check=True, stdout=subprocess.DEVNULL)
+        for nome in FILE_XCUBEAI:
+            shutil.copyfile(tmp / 'out' / nome, progetto / 'X-CUBE-AI/App' / nome)
+    print(f'Rigenerato X-CUBE-AI/App da {onnx}')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -238,6 +285,14 @@ def main():
                               ' * Per cambiare un valore:', 1)
     destinazione.write_text(testo)
     print(f'Scritto {destinazione}')
+    onnx_esportati = set()
+    if ingressi_xcubeai(progetto) != cfg.storia.ingressi:
+        # Numero di ingressi diverso (storia): il codice X-CUBE-AI va rigenerato dall ONNX.
+        import esporta_onnx
+        uscita = ROOT / f'export_{Path(args.model).parent.name}'
+        esporta_onnx.main(['--model', str(args.model), '--output', str(uscita)])
+        onnx_esportati.add(Path(args.model))
+        genera_xcubeai(uscita / 'pendolo_actor.onnx', progetto)
     import aggiorna_pesi_xcubeai
     aggiorna_pesi_xcubeai.main(['--model', str(args.model),
                                 '--params', str(progetto / 'X-CUBE-AI/App/network_data_params.c')])
@@ -257,6 +312,8 @@ def main():
     if not args.senza_onnx:
         import esporta_onnx
         for percorso in [args.model] + [p for p, _ in candidati]:
+            if Path(percorso) in onnx_esportati:
+                continue
             esporta_onnx.main(['--model', str(percorso),
                                '--output', str(ROOT / f'export_{Path(percorso).parent.name}')])
     print('Fatto. In STM32CubeIDE: Project > Build Project, poi Run.')

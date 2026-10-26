@@ -227,6 +227,8 @@ def run(env, agent, seed=None):
             text = (status + f" | t: {data.time:.1f} s | equilibrio: {env.stable_steps * env.dt:.1f} s\n"
                     + f"x: {data.qpos[0]:.2f} m | STEP: {info['motor_frequency_hz']:+.0f} Hz | "
                     + f"angolo: {info['angle_deg']:.1f} deg | v: {float(env.data.qvel[0]):.2f} m/s\n"
+                    + f"perno: smorzamento {model.dof_damping[1]:.4f} N*m*s | "
+                    + f"attrito {model.dof_frictionloss[1]:.4f} N*m\n"
                     + "Frecce: +/-10 cm  C: policy  R: reset  A/D: spinta  Spazio: pausa  Esc: esci\n"
                     + "Mouse: ruota / zoom | " + commands.last)
             if end_message:

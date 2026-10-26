@@ -1,4 +1,5 @@
 "./Core/Src/main.o"
+"./Core/Src/reti_candidate.o"
 "./Core/Src/stima.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"

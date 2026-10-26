@@ -1,6 +1,7 @@
 """Simula il pendolo con la rete SAC (o in manuale): swing-up o equilibrio
 secondo la configurazione salvata con il modello."""
 import argparse
+from dataclasses import replace
 from pathlib import Path
 import json
 import torch
@@ -22,6 +23,11 @@ def main():
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--config', type=Path, default=CONFIG_DEFAULT,
                         help='Solo con --manual: episodio e motore da questo file')
+    parser.add_argument('--smorzamento', type=float, metavar='N_M_S',
+                        help='Smorzamento viscoso del perno fisso in N*m*s/rad '
+                             '(default: XML, o estratto a ogni reset con i disturbi della rete)')
+    parser.add_argument('--attrito', type=float, metavar='N_M',
+                        help='Attrito coulombiano del perno fisso in N*m (default come sopra)')
     args = parser.parse_args()
     if not args.manual and not args.model.is_file():
         parser.error("Modello non trovato. Avvia prima Addestra.command o specifica --model.")
@@ -40,7 +46,18 @@ def main():
         disturbi = None
     else:
         disturbi = profilo_salvato(args.model.parent)
+    # Perno fisso: niente estrazione per episodio di quel valore (disturbi.py, _perno).
+    if disturbi is not None and args.smorzamento is not None:
+        disturbi = replace(disturbi, smorzamento_perno_min_nms=args.smorzamento,
+                           smorzamento_perno_max_nms=args.smorzamento)
+    if disturbi is not None and args.attrito is not None:
+        disturbi = replace(disturbi, attrito_perno_max_nm=0.)
     env = crea_ambiente(disturbi, configurazione=cfg)
+    for nome, valore in (('dof_damping', args.smorzamento), ('dof_frictionloss', args.attrito)):
+        if valore is not None:
+            getattr(env.model, nome)[1] = valore
+            if hasattr(env, '_nominale'):
+                env._nominale[nome][1] = valore   # ripristinato a ogni reset
     if args.headless:
         obs, initial = env.reset(seed=args.seed)
         total = 0.

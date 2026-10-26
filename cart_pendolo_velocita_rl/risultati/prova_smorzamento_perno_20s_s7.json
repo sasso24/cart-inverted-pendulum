@@ -1,0 +1,1830 @@
+{
+  "attrito_nm": 0.0,
+  "aria_nms2": 0.0,
+  "risultati": [
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.012,
+      "successi": 0,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 15.860000000001957,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.680000000001906,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.660000000001899,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 14.660000000001565,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.240000000001878,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.340000000001822,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.240000000001878,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.22000000000189,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.180000000001739,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.40000000000179,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.700000000001912,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.04000000000199,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 14.900000000001645,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.660000000001899,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.22000000000189,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 14.800000000001612,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.260000000001867,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.020000000002,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 16.660000000001645,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.380000000001806,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 15.240000000001759,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.012,
+      "successi": 0,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": null,
+      "mai_in_alto": 20,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.01,
+      "successi": 19,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 11.000000000000343,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.54000000000019,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 12.22000000000075,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.820000000000283,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.760000000000263,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.120000000000383,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.740000000000256,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.860000000000296,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.280000000000436,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.160000000000396,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.580000000000203,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.700000000000243,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.160000000000396,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.92000000000065,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.84000000000029,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.08000000000037,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.880000000000303,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 10.920000000000316,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.220000000000416,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.68000000000057,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 11.360000000000463,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.01,
+      "successi": 0,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 13.560000000001198,
+      "mai_in_alto": 18,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 12.260000000000764,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 14.860000000001632,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": null,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.005,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 7.389999999999408,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.999999999999451,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.439999999999488,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.999999999999451,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.439999999999403,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.479999999999501,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.139999999999388,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.379999999999409,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.039999999999447,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.399999999999407,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.139999999999388,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.619999999999383,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.005,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 7.319999999999416,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.219999999999427,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.3599999999994115,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.119999999999381,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.999999999999451,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.139999999999388,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.339999999999455,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.639999999999381,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.079999999999442,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.999999999999451,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.4599999999994,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.639999999999381,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.539999999999392,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.0025,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 6.719999999999482,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.579999999999497,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.179999999999541,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.079999999999368,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.599999999999495,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.5599999999995,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.079999999999442,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.439999999999513,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.579999999999387,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.419999999999515,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.999999999999341,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.599999999999385,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.839999999999469,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0025,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.1,
+      "primo_arrivo_mediano_s": 6.679999999999486,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.459999999999511,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.5599999999995,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.159999999999544,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.2599999999994225,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.139999999999546,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.539999999999392,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.379999999999409,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.039999999999557,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.379999999999409,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.719999999999482,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.539999999999392,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.539999999999502,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.439999999999403,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.499999999999506,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.4599999999994,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.819999999999471,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.001,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.05,
+      "primo_arrivo_mediano_s": 6.379999999999519,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.399999999999517,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.539999999999502,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.119999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.27999999999953,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.879999999999464,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.119999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.599999999999495,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.999999999999451,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.359999999999522,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.119999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.079999999999552,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.09999999999955,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.839999999999469,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.159999999999544,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.579999999999497,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.5599999999995,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.27999999999953,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.001,
+      "successi": 17,
+      "episodi": 20,
+      "passaggi_medi": 1.45,
+      "primo_arrivo_mediano_s": 6.119999999999548,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.399999999999517,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.459999999999511,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.059999999999555,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.339999999999524,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 3,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.059999999999555,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.179999999999541,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.039999999999447,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.019999999999559,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.659999999999599,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.419999999999515,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.059999999999555,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.599999999999605,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 2,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.979999999999563,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 5,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "nominale",
+      "smorzamento_nms": 0.0003,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.2,
+      "primo_arrivo_mediano_s": 6.27999999999953,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.579999999999497,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.719999999999482,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.639999999999601,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.219999999999537,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.819999999999581,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.519999999999504,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.699999999999594,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.939999999999568,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.639999999999601,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.319999999999526,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.819999999999471,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.699999999999484,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.379999999999519,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.899999999999462,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_perno_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0003,
+      "successi": 1,
+      "episodi": 20,
+      "passaggi_medi": 6.1,
+      "primo_arrivo_mediano_s": 6.09999999999955,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.679999999999486,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.479999999999508,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 5,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.039999999999557,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.119999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 5.639999999999601,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.219999999999537,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 5.979999999999563,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 5.5799999999996075,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.499999999999506,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.079999999999552,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 5.439999999999623,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 5,
+          "primo_arrivo_s": 6.039999999999557,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 5.599999999999605,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": "finecorsa"
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 10,
+          "primo_arrivo_s": 5.959999999999566,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 6.799999999999473,
+          "motivo": "finecorsa"
+        }
+      ]
+    }
+  ]
+}

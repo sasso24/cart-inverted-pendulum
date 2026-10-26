@@ -129,9 +129,12 @@ def episodio(scheda, env, policy, seed, passi, scrittore, indice):
     for k in range(passi):
         if r['errore']:
             raise RuntimeError(f"Errore della scheda {r['errore']}: {ERRORI.get(r['errore'])}")
-        obs_pc = env.observation()
-        azione_pc_su_obs_scheda = float(policy(r['obs']))
-        azione_pc = float(policy(obs_pc))
+        ingressi_pc = env.observation()
+        # Con la storia ([storia]) la scheda rimanda solo i sei ingressi attuali: la
+        # storia e quella del PC, uguale alla sua (stessi ingressi e stessi comandi).
+        obs_pc = ingressi_pc[:6]
+        azione_pc_su_obs_scheda = float(policy(np.concatenate([r['obs'], ingressi_pc[6:]])))
+        azione_pc = float(policy(ingressi_pc))
         diff_obs = float(np.max(np.abs(r['obs'] - obs_pc)))
         diff_az = abs(r['azione'] - azione_pc_su_obs_scheda)
         stat['diff_obs_max'] = max(stat['diff_obs_max'], diff_obs)

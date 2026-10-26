@@ -39,6 +39,16 @@ class ParametriDisturbi:
     rumore_angolo_gradi: tuple = (0.5, 1.0)
     offset_angolo_rad: float = math.radians(0.5)
     encoder_conteggi_giro: int = 2400
+    # Perno del pendolo (24/10): valori ASSOLUTI per episodio, NON scalati da intensita.
+    # Con smorzamento_perno_max_nms > 0 lo smorzamento viscoso del perno e
+    # log-uniforme in [min, max] N*m*s/rad al posto del damping dell'XML (x smorzamento_rel);
+    # attrito coulombiano (frictionloss) uniforme in [0, attrito_perno_max_nm];
+    # resistenza dell'aria -c*omega*|omega| con c uniforme in [0, resistenza_aria_max_nms2].
+    # Tutto a 0 = comportamento e sequenza casuale di prima.
+    smorzamento_perno_min_nms: float = 0.
+    smorzamento_perno_max_nms: float = 0.
+    attrito_perno_max_nm: float = 0.
+    resistenza_aria_max_nms2: float = 0.
 
     def __post_init__(self):
         for name, value in vars(self).items():
@@ -71,6 +81,9 @@ class ParametriDisturbi:
             raise ValueError('encoder_conteggi_giro deve essere un intero positivo.')
         if self.ritardo_max_s > 0.1:
             raise ValueError('ritardo_max_s deve essere <= 0.1 s.')
+        if self.smorzamento_perno_max_nms and \
+                not 0 < self.smorzamento_perno_min_nms <= self.smorzamento_perno_max_nms:
+            raise ValueError('Smorzamento del perno: serve 0 < minimo <= massimo.')
 
     @classmethod
     def carica(cls, path):
@@ -113,12 +126,13 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         if max(disturbi.frequenze_max_hz) * self.model.opt.timestep > 0.1:
             raise ValueError('Servono almeno 10 passi fisici per periodo dei modi.')
         self._nominale = {n: getattr(self.model, n).copy() for n in
-                          ('body_mass', 'body_inertia', 'dof_damping',
+                          ('body_mass', 'body_inertia', 'dof_damping', 'dof_frictionloss',
                            'actuator_gainprm', 'actuator_biasprm')}
         self._obs = None
         self.stimatore = StimatoreStato(self.cfg.stimatore if self.cfg is not None else None)
         self.parametri_episodio = {}
         self.forza_disturbo_n = self.coppia_disturbo_nm = 0.
+        self.resistenza_aria = 0.
 
     def observation(self):
         return super().observation() if self._obs is None else self._obs.copy()
@@ -150,7 +164,8 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             self.model.body_inertia[bid] *= scale
         damping = rng.uniform(1-s*p.smorzamento_rel, 1+s*p.smorzamento_rel, 2)
         self.model.dof_damping[:] *= damping
-        gain = rng.uniform(1-s*p.guadagno_motore_rel, 1+s*p.guadagno_motore_rel)
+        perno = self._perno()
+        gain =rng.uniform(1-s*p.guadagno_motore_rel, 1+s*p.guadagno_motore_rel)
         self.model.actuator_gainprm[0, 0] *= gain
         self.model.actuator_biasprm[0, 2] *= gain
         # mj_setConst puo usare qpos0: preservare lo stato estratto dal reset.
@@ -179,10 +194,29 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
             'motor_gain_scale': gain, 'frequencies_hz': freq.tolist(), 'zeta': zeta.tolist(),
             'amplitude_limits': self._ampiezze.tolist(),
             'delay_s': delay*self.model.opt.timestep, 'angle_offset_rad': self._offset,
-            'position_noise_m': self._sigma_x, 'angle_noise_deg': math.degrees(self._sigma_theta)}
+            'position_noise_m': self._sigma_x, 'angle_noise_deg': math.degrees(self._sigma_theta),
+            **perno}
         self._guasti_iniziali()
         self._misura(iniziale=True)
         return self.observation(), self.info()
+
+    def _perno(self):
+        """Attriti del perno del pendolo (dof 1), estratti solo se configurati:
+        con i tre massimi a zero nessuna estrazione, sequenza casuale invariata."""
+        p, rng = self.disturbi, self.np_random
+        self.resistenza_aria = 0.
+        if not (p.smorzamento_perno_max_nms or p.attrito_perno_max_nm or p.resistenza_aria_max_nms2):
+            return {}
+        if p.smorzamento_perno_max_nms:
+            self.model.dof_damping[1] = math.exp(rng.uniform(
+                math.log(p.smorzamento_perno_min_nms), math.log(p.smorzamento_perno_max_nms)))
+        if p.attrito_perno_max_nm:
+            self.model.dof_frictionloss[1] = rng.uniform(0., p.attrito_perno_max_nm)
+        if p.resistenza_aria_max_nms2:
+            self.resistenza_aria = rng.uniform(0., p.resistenza_aria_max_nms2)
+        return {'pivot_damping_nms': float(self.model.dof_damping[1]),
+                'pivot_friction_nm': float(self.model.dof_frictionloss[1]),
+                'air_drag_nms2': self.resistenza_aria}
 
     def _guasti_iniziali(self):
         """Guasti di config.toml [sensori], estratti per episodio dopo i disturbi
@@ -265,7 +299,11 @@ class CartPendoloDisturbatoEnv(CartPendoloEnv):
         loads = self._ampiezze*np.tanh(response)
         self.forza_disturbo_n = float(loads[0]+loads[1])
         self.coppia_disturbo_nm = float(loads[2])
-        self.data.qfrc_applied[:] = [push+self.forza_disturbo_n, self.coppia_disturbo_nm]
+        coppia = self.coppia_disturbo_nm
+        if self.resistenza_aria:
+            omega = float(self.data.qvel[1])
+            coppia -= self.resistenza_aria*omega*abs(omega)
+        self.data.qfrc_applied[:] = [push+self.forza_disturbo_n, coppia]
 
     def step(self, action, *, push=0.):
         # Stesso ciclo/ricompensa del nominale, con ritardo e forze a 500 Hz.
@@ -313,6 +351,10 @@ def crea_ambiente(disturbi=None, *, configurazione=None, **kwargs):
     """
     if configurazione is not None:
         kwargs['configurazione'] = configurazione
-    if disturbi is None or disturbi.intensita == 0:
-        return CartPendoloEnv(**kwargs)
-    return CartPendoloDisturbatoEnv(disturbi, **kwargs)
+    nominale = disturbi is None or disturbi.intensita == 0
+    classe = CartPendoloEnv if nominale else CartPendoloDisturbatoEnv
+    if configurazione is not None and configurazione.storia.ritardi:
+        # Ingressi passati in osservazione (storia.py); senza ritardi l'ambiente storico.
+        from storia import con_storia
+        classe = con_storia(classe)
+    return classe(**kwargs) if nominale else classe(disturbi, **kwargs)

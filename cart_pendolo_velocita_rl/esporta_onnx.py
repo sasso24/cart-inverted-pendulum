@@ -23,10 +23,14 @@ ROOT = Path(__file__).resolve().parent
 
 
 def strati_attore(model):
-    """Strati lineari dell'attore deterministico: 6 -> (ReLU)* -> 1 tanh."""
+    """Strati lineari dell'attore deterministico: n -> (ReLU)* -> 1 tanh.
+
+    n = 6 ingressi attuali + 7 per ogni ritardo della storia ([storia], storia.py).
+    """
     actor = model.actor
     tipi = [type(layer) for layer in actor.latent_pi]
-    if (model.observation_space.shape != (6,)
+    n = model.observation_space.shape[0] if len(model.observation_space.shape) == 1 else 0
+    if (n < 6 or (n - 6) % 7
             or model.action_space.shape != (1,)
             or not np.all(model.action_space.low == -1)
             or not np.all(model.action_space.high == 1)
@@ -34,9 +38,9 @@ def strati_attore(model):
             or not isinstance(actor.features_extractor, FlattenExtractor)
             or tipi != [torch.nn.Linear, torch.nn.ReLU] * (len(tipi) // 2)
             or not isinstance(actor.mu, torch.nn.Linear)):
-        raise ValueError('Attore incompatibile: serve 6 -> Linear/ReLU ... -> 1 tanh.')
+        raise ValueError('Attore incompatibile: serve 6 (+7*k) -> Linear/ReLU ... -> 1 tanh.')
     layers = list(actor.latent_pi[::2]) + [actor.mu]
-    if layers[0].in_features != 6 or layers[-1].out_features != 1 or any(
+    if layers[0].in_features != n or layers[-1].out_features != 1 or any(
             a.out_features != b.in_features for a, b in zip(layers, layers[1:])):
         raise ValueError('Dimensioni degli strati inattese.')
     return layers
@@ -54,6 +58,10 @@ def main(argv=None):
     model = SAC.load(args.model, device='cpu')
     model.policy.set_training_mode(False)
     layers = strati_attore(model)
+    n = layers[0].in_features
+    ritardi = configurazione_modello(args.model.parent).storia.ritardi
+    if n != 6 + 7*len(ritardi):
+        raise ValueError(f'Rete con {n} ingressi, [storia] salvata con {len(ritardi)} ritardi.')
     # Grafo esplicito: evita operatori di campionamento SAC e dimensioni dinamiche.
     nodes, weights = [], []
     previous = 'observation'
@@ -73,15 +81,16 @@ def main(argv=None):
         previous = output
     graph = helper.make_graph(
         nodes, 'pendolo_sac_actor',
-        [helper.make_tensor_value_info('observation', TensorProto.FLOAT, [1, 6])],
+        [helper.make_tensor_value_info('observation', TensorProto.FLOAT, [1, n])],
         [helper.make_tensor_value_info('action', TensorProto.FLOAT, [1, 1])], weights)
     exported = helper.make_model(graph, producer_name='cart_pendolo_velocita_rl',
                                  opset_imports=[helper.make_opsetid('', 13)], ir_version=7)
     helper.set_model_props(exported, {
         'checkpoint_sha256': source_hash,
         'policy': 'SAC deterministic: tanh(mu), no sampling',
-        'inputs': f'x/limite,sin(theta),cos(theta),vx/vmax,omega/{scala_omega:g},f_applied/fmax',
-        'architecture': '-'.join(str(n) for n in [6] + [l.out_features for l in layers]),
+        'inputs': f'x/limite,sin(theta),cos(theta),vx/vmax,omega/{scala_omega:g},f_applied/fmax'
+                  + (f'; poi per i ritardi {list(ritardi)}: stessi sei ingressi + azione' if ritardi else ''),
+        'architecture': '-'.join(str(k) for k in [n] + [l.out_features for l in layers]),
         'output': 'normalized signed STEP frequency request [-1,1]',
         'control_hz': f'{1. / periodo:g}',
     })
@@ -100,6 +109,17 @@ def main(argv=None):
     observations[:, 5] = rng.uniform(-1, 1, 4096)
     boundaries = np.array([[0, 0, 1, 0, 0, 0], [0, 0, -1, 0, 0, 0],
                            [1, 0, 1, 1, 1, 1], [-1, 0, 1, -1, -1, -1]], dtype=np.float32)
+    if ritardi:
+        # Storia sintetica: per ogni ritardo sei ingressi come sopra e un'azione in [-1, 1].
+        blocchi = []
+        for _ in ritardi:
+            b = rng.uniform(-2, 2, (4096, 7)).astype(np.float32)
+            a = rng.uniform(-np.pi, np.pi, 4096)
+            b[:, 1], b[:, 2] = np.sin(a), np.cos(a)
+            b[:, 5:7] = rng.uniform(-1, 1, (4096, 2))
+            blocchi.append(b)
+        observations = np.concatenate([observations] + blocchi, axis=1)
+        boundaries = np.concatenate([boundaries] + [np.c_[boundaries, boundaries[:, 5:6]]]*len(ritardi), axis=1)
     # Rollout con lo stesso profilo dell'addestramento: ingressi stimati da stima.py.
     cfg = configurazione_ambiente(args.model.parent)
     env = crea_ambiente(profilo_salvato(args.model.parent), configurazione=cfg)
@@ -119,8 +139,11 @@ def main(argv=None):
     expected = np.asarray([model.predict(x, deterministic=True)[0] for x in observations])
     actual = np.concatenate([session.run(['action'], {'observation': x[None]})[0]
                              for x in observations])
-    # I kernel float32 PyTorch/ORT accumulano i prodotti in ordini diversi.
-    np.testing.assert_allclose(actual, expected, atol=1e-5, rtol=2e-5)
+    # I kernel float32 PyTorch/ORT accumulano i prodotti in ordini diversi: l'errore
+    # cresce circa con la radice del numero di ingressi (tolleranze storiche a 6).
+    scala = max(1., n / 6.)**0.5
+    atol, rtol = 1e-5*scala, 2e-5*scala
+    np.testing.assert_allclose(actual, expected, atol=atol, rtol=rtol)
     # La tanh SIMD può superare 1 di un ulp per arrotondamento float32.
     if not np.isfinite(actual).all() or np.any(np.abs(actual) > 1 + 2 * np.finfo(np.float32).eps):
         raise ValueError('Uscite ONNX non valide.')
@@ -137,7 +160,7 @@ def main(argv=None):
         'checkpoint': str(args.model.resolve()), 'checkpoint_sha256': source_hash,
         'onnx_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
         'opset': 13, 'ir_version': 7, 'dtype': 'float32',
-        'input': {'name': 'observation', 'shape': [1, 6]},
+        'input': {'name': 'observation', 'shape': [1, n], 'storia_ritardi': list(ritardi)},
         'output': {'name': 'action', 'shape': [1, 1], 'range': [-1, 1]},
         'operators': [node.op_type for node in nodes],
         'parameters': sum(layer.weight.numel() + layer.bias.numel() for layer in layers),
@@ -146,7 +169,7 @@ def main(argv=None):
         'max_absolute_error': float(np.max(np.abs(actual - expected))),
         'mean_absolute_error': float(np.mean(np.abs(actual - expected))),
         'observed_output_min': float(actual.min()), 'observed_output_max': float(actual.max()),
-        'atol': 1e-5, 'rtol': 2e-5, 'validation_passed': True,
+        'atol': atol, 'rtol': rtol, 'validation_passed': True,
         'xcubeai_validation': 'Not run; import and Analyze/Validate in X-CUBE-AI.',
         'versions': {'torch': torch.__version__, 'onnx': onnx.__version__,
                      'onnxruntime': ort.__version__},

@@ -185,7 +185,7 @@ static ai_handle rete = AI_HANDLE_NULL;
  * Per cambiarla: a controllo fermo scrivere rete_scelta in Live Expressions;
  * il cambio avviene subito nel ciclo principale e rete_attiva lo conferma.
  * reti_candidate_nomi[rete_attiva] dice quale rete e'. */
-volatile uint32_t rete_scelta = 0;
+volatile uint32_t rete_scelta = 1;
 volatile uint32_t rete_attiva = 0;
 AI_ALIGNED(4) static ai_u8 rete_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
 static ai_buffer *rete_input;

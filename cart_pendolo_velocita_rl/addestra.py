@@ -24,7 +24,7 @@ from configurazione import CONFIG_DEFAULT, Configurazione, configurazione_modell
 from disturbi import ParametriDisturbi, crea_ambiente
 from stepper import ParametriStepper
 
-CODICE = ('ambiente.py', 'stepper.py', 'disturbi.py', 'stima.py', 'configurazione.py')
+CODICE = ('ambiente.py', 'stepper.py', 'disturbi.py', 'stima.py', 'configurazione.py', 'storia.py')
 
 
 def _sha(name):
@@ -46,7 +46,7 @@ def contract(disturbi=None):
 
 def firma(cfg):
     """Firma dei nuovi checkpoint: configurazione completa + impronte di XML e codice."""
-    return {'observation_size': 6, 'action': 'signed_normalized_step_frequency',
+    return {'observation_size': cfg.storia.ingressi, 'action': 'signed_normalized_step_frequency',
             'control_hz': round(1. / cfg.episodio.periodo_controllo_s, 6), 'xml_sha256': _sha(cfg.modello.file_xml),
             'codice_sha256': {name: _sha(name) for name in CODICE}}
 

@@ -220,10 +220,34 @@ class ParametriFirmware:
     omega_max_plausibile_rad_s: float = 25.0
 
 
+@dataclass(frozen=True)
+class ParametriStoria:
+    """Storia degli ingressi passati (storia.py), anche nel firmware.
+
+    ritardi: periodi di controllo nel passato (1 = il periodo precedente).
+    Per ogni ritardo k la rete riceve i sei ingressi di k periodi fa e l'azione
+    decisa allora, dopo i sei ingressi attuali: 6 + 7*len(ritardi) ingressi.
+    Vuoto = solo i sei ingressi attuali (reti fino al 21/10).
+    """
+    ritardi: tuple = ()
+
+    def __post_init__(self):
+        object.__setattr__(self, 'ritardi', tuple(self.ritardi))
+        if any(type(k) is not int or k < 1 for k in self.ritardi):
+            raise ValueError('[storia] ritardi: servono interi >= 1.')
+        if list(self.ritardi) != sorted(set(self.ritardi)):
+            raise ValueError('[storia] ritardi: crescenti e senza ripetizioni.')
+
+    @property
+    def ingressi(self):
+        return 6 + 7*len(self.ritardi)
+
+
 SEZIONI = {'modello': ParametriModello, 'episodio': ParametriEpisodio,
            'ricompensa': ParametriRicompensa, 'sensori': ParametriSensori,
            'addestramento': ParametriAddestramento, 'firmware': ParametriFirmware,
-           'stepper': ParametriStepper, 'stimatore': ParametriStimatore}
+           'stepper': ParametriStepper, 'stimatore': ParametriStimatore,
+           'storia': ParametriStoria}
 
 
 @dataclass(frozen=True)
@@ -236,6 +260,7 @@ class Configurazione:
     firmware: ParametriFirmware = field(default_factory=ParametriFirmware)
     stepper: ParametriStepper = field(default_factory=ParametriStepper.carica)
     stimatore: ParametriStimatore = field(default_factory=ParametriStimatore.carica)
+    storia: ParametriStoria = field(default_factory=ParametriStoria)
     disturbi: object = None   # ParametriDisturbi oppure None (ambiente nominale)
 
     @classmethod

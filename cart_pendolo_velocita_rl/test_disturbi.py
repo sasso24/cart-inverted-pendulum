@@ -159,6 +159,37 @@ class DisturbiTest(unittest.TestCase):
         finally:
             env.close()
 
+    def test_perno_randomizzato_e_sequenza_invariata_senza(self):
+        p = replace(ParametriDisturbi(), smorzamento_perno_min_nms=0.0003,
+                    smorzamento_perno_max_nms=0.012, attrito_perno_max_nm=0.003,
+                    resistenza_aria_max_nms2=0.00066)
+        env, storico = crea_ambiente(p), crea_ambiente(ParametriDisturbi())
+        try:
+            smorzamenti = []
+            for seed in range(30):
+                _, info = env.reset(seed=seed)
+                d = info['disturbance_parameters']
+                smorzamenti.append(d['pivot_damping_nms'])
+                self.assertEqual(env.model.dof_damping[1], d['pivot_damping_nms'])
+                self.assertLessEqual(env.model.dof_frictionloss[1], 0.003)
+                self.assertLessEqual(env.resistenza_aria, 0.00066)
+            self.assertTrue(all(0.0003 <= s <= 0.012 for s in smorzamenti))
+            self.assertLess(min(smorzamenti), 0.001)
+            self.assertGreater(max(smorzamenti), 0.005)
+            env.data.qvel[1] = 5.
+            env.step([0.])
+            self.assertLess(env.data.qfrc_applied[1], env.coppia_disturbo_nm)
+            # Senza perno: nessuna estrazione in piu, attriti dell'XML ripristinati.
+            _, info = storico.reset(seed=3)
+            self.assertNotIn('pivot_damping_nms', info['disturbance_parameters'])
+            self.assertEqual(storico.resistenza_aria, 0.)
+            self.assertEqual(storico.model.dof_frictionloss[1], 0.)
+        finally:
+            env.close()
+            storico.close()
+        with self.assertRaises(ValueError):
+            replace(ParametriDisturbi(), smorzamento_perno_max_nms=0.01)
+
     def test_contratti_nominali_e_disturbati(self):
         from addestra import check_contract, contract, profilo_salvato
         with tempfile.TemporaryDirectory() as folder:

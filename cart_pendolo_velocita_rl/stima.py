@@ -72,6 +72,9 @@ class ParametriStimatore:
 def coefficienti_da_modello(model):
     """K_G, K_A, K_D del modello MuJoCo, per controllare il TOML dopo modifiche all'XML."""
     data = mujoco.MjData(model)
+    # L'attrito coulombiano (frictionloss) entrerebbe in mj_inverse e falserebbe k_g.
+    attrito = model.dof_frictionloss.copy()
+    model.dof_frictionloss[:] = 0.
 
     def forza(theta, qacc):
         mujoco.mj_resetData(model, data)
@@ -85,6 +88,7 @@ def coefficienti_da_modello(model):
     accoppiamento = forza(0., [1., 0.]) - zero
     theta = 0.3
     gravita = -forza(theta, [0., 0.]) / (inerzia * math.sin(theta))
+    model.dof_frictionloss[:] = attrito
     return {'k_g': gravita, 'k_a': accoppiamento / inerzia,
             'k_d': float(model.dof_damping[1]) / inerzia}
 

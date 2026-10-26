@@ -1,3 +1,83 @@
+# Baseline vecchia + perno randomizzato largo — 24 ottobre 2026
+
+Stesse reti del 21-23/10 come configurazione (XML `cart_pendolo_asta20.xml`, stimatore k_d 0,403),
+addestrate da zero con il perno randomizzato su un intervallo largo (viscoso 0,0003-0,015,
+coulombiano 0-0,006 N·m). Firmware: `../Controllo_SwingUp_Asta20_BaseVecchia` (reti 1 e 2) e
+`../Controllo_SwingUp_Asta20_Storia_BaseVecchia`. Risultati in `TEST_ESEGUITI.md`.
+
+```sh
+./Addestra.command --config config_asta20_basevecchia_20s_s7.toml    # anche _20s, _20s_s3, _storia1s_20s
+python esporta_firmware.py --model modelli_asta20_basevecchia_20s_s7/migliore.zip \
+    --candidato modelli_asta20_basevecchia_20s_s7/migliore.zip --candidato modelli_asta20_basevecchia_20s_s3/ultimo.zip \
+    --progetto ../Controllo_SwingUp_Asta20_BaseVecchia
+python esporta_firmware.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip \
+    --progetto ../Controllo_SwingUp_Asta20_Storia_BaseVecchia
+```
+
+`--progetto` è obbligatorio (il `nome_progetto` salvato è quello dei progetti del 21-23/10).
+`prova_perno.py`: pendolo libero da 90° col carrello fermo, smorzamento e attrito regolabili
+dalla finestra (Q/A, W/S, E/D), per confrontare il perno simulato con il banco.
+
+---
+
+# Perno del pendolo randomizzato (mancato aggancio) — 24 ottobre 2026
+
+Sintomo sul banco: lo swing-up riesce, il pendolo passa sopra la verticale e continua
+a girare, non aggancia. Causa probabile: lo smorzamento del perno del modello
+(0,01 N·m·s, mai misurato) è troppo alto; con quello le reti non passavano mai sopra
+la verticale e non hanno imparato a frenare. Con 0,0025 le reti del 21-23/10 agganciano
+0-4 volte su 20 con disturbi (`prova_smorzamento.py`).
+
+Cosa cambia (le reti precedenti restano identiche: tutto a zero = comportamento di prima):
+- `[disturbi]`: `smorzamento_perno_min_nms`/`max_nms` (viscoso, log-uniforme, valori
+  assoluti), `attrito_perno_max_nm` (coulombiano, `frictionloss`), `resistenza_aria_max_nms2`
+  (coppia -c·ω|ω|). Nelle nuove reti 0,0003-0,012 N·m·s, 0-0,003 N·m, 0-6,6e-4 N·m·s².
+- `cart_pendolo_asta20_perno.xml`: perno nominale 0,002 N·m·s + 0,001 N·m (prima 0,01).
+- Stimatore: `k_d` 0,0807 (= 0,002 / J, centro dell'intervallo) invece di 0,403, guadagni
+  ricalcolati (`stima.guadagni_con_offset`). `stima.coefficienti_da_modello` ignora il `frictionloss`.
+- `prova_smorzamento.py`: sweep dello smorzamento del perno (successi, passaggi sopra la
+  verticale, primo arrivo in alto), con `--attrito` e `--aria` fissi.
+
+```sh
+./Addestra.command --config config_asta20_perno_20s_s3.toml     # anche _s7, storia: config_asta20_perno_storia1s_20s.toml
+python prova_smorzamento.py --model modelli_asta20_perno_20s_s3/migliore.zip
+python prova_smorzamento.py --model modelli_asta20_perno_20s_s3/migliore.zip --attrito 0.0005 --aria 0.00033
+python esporta_firmware.py --model modelli_asta20_perno_20s_s3/migliore.zip \
+    --candidato modelli_asta20_perno_20s_s3/migliore.zip --candidato modelli_asta20_perno_20s_s7/migliore.zip \
+    --progetto ../Controllo_SwingUp_Asta20_Perno
+python esporta_firmware.py --model modelli_asta20_perno_storia1s_20s/migliore.zip --progetto ../Controllo_SwingUp_Asta20_Storia_Perno
+```
+
+Firmware: progetti nuovi `../Controllo_SwingUp_Asta20_Perno` (reti 1 = s3, 2 = s7; la 0 è una
+copia della 1) e `../Controllo_SwingUp_Asta20_Storia_Perno` (una rete). `--progetto` è obbligatorio:
+il `nome_progetto` salvato con queste reti è quello dei progetti vecchi (`Controllo_SwingUp_Asta20`,
+`_Storia`), che restano con le reti del 21 e 23/10 per confrontarle sul banco. Risultati in `TEST_ESEGUITI.md`.
+**Da fare al banco**: misurare lo smorzamento del perno (decadimento delle oscillazioni da
+appeso: lineare = coulombiano, esponenziale = viscoso) e metterlo nell'XML.
+
+---
+
+# Storia degli ingressi — 23 ottobre 2026
+
+Sezione `[storia]` in config: `ritardi = [1, 2, ...]` (periodi di controllo nel passato).
+Per ogni ritardo la rete riceve anche i sei ingressi di allora e l'azione decisa
+(6 + 7 x ritardi ingressi). Vuota o assente = sei ingressi, comportamento di prima.
+Firmware: `../Controllo_SwingUp_Asta20_Storia` (asta 0,20 m, storia di 1 s, 132 ingressi).
+
+```sh
+./Addestra.command --config config_asta20_storia1s_20s.toml
+./Avvia_RL.command --model modelli_asta20_storia1s_20s/migliore.zip
+python esporta_firmware.py --model modelli_asta20_storia1s_20s/migliore.zip \
+    --candidato modelli_asta20_storia1s_20s_s7/migliore.zip --progetto ../Controllo_SwingUp_Asta20_Storia
+```
+
+Con un numero di ingressi diverso da quello del progetto `esporta_firmware.py` rigenera
+`X-CUBE-AI/App` con `stedgeai` (X-CUBE-AI in `~/STM32Cube`, o variabile `STEDGEAI`).
+Il buffer di esperienze cresce con gli ingressi (1 GB per 132 ingressi e 1 M passi).
+Risultati in `TEST_ESEGUITI.md`.
+
+---
+
 # Asta spostata (braccio corto 0,20 m) — 21 ottobre 2026
 
 Stessa asta spostata nel mozzo: **0,78 m / 0,20 m** (prima 0,82 / 0,16).

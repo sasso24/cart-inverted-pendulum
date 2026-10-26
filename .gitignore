@@ -1,2 +1,7 @@
 cart_pendolo_stepper_rl/.venv
-cart_pendolo_stepper_rl/__pycache__/
+__pycache__/
+.DS_Store
+export*
+modelli*
+esperienze*.pkl
+.metadata/

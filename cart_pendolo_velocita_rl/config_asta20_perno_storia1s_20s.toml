@@ -1,0 +1,192 @@
+# =============================================================================
+#  CONFIGURAZIONE UNICA del pendolo inverso (addestramento SAC + firmware)
+# =============================================================================
+# Tutto si cambia da qui. Uso:
+#     python addestra.py                       (o ./Addestra.command)
+#     python addestra.py --config altra.toml --output modelli_prova
+# Ogni addestramento copia questa configurazione in <cartella>/config.json:
+# simula, valuta, grafici, hil ed esporta_firmware usano quella copia, quindi
+# cambiare questo file non altera le reti gia addestrate.
+# Angoli: 0 = pendolo in alto, -180 (= +180) = pendolo appeso in basso.
+
+[modello]
+file_xml = "cart_pendolo_asta20_perno.xml"   # asta 0.78 / 0.2 m, perno nominale del 24/10
+
+# -----------------------------------------------------------------------------
+[episodio]
+swing_up = true                # true: parte appeso e deve salire; false: parte dall'alto
+angolo_iniziale_gradi = -180.0 # solo con swing_up
+dispersione_x_m = 0.05         # posizione iniziale casuale del carrello (+/-)
+dispersione_angolo_rad = 0.05  # (+/-) intorno all'angolo iniziale
+dispersione_omega_rad_s = 0.1
+frazione_partenza_alto = 0.2   # solo addestramento: quota di episodi che partono in alto
+frazione_partenza_casuale = 0.0 # solo addestramento: quota da stato casuale su tutto il giro
+casuale_x_m = 0.25             #   (angolo uniforme, carrello entro +/-0,25 m,
+casuale_velocita_m_s = 0.3     #    carrello gia in moto fino a 0,3 m/s,
+casuale_omega_rad_s = 4.0      #    pendolo che ruota fino a 4 rad/s)
+                               # la valutazione parte sempre da -180 (appeso e fermo)
+durata_s = 20.0
+limite_corsa_m = 0.40          # arresto (anche nel firmware); 0 = finecorsa XML 0.462 m
+penalita_finecorsa = 10.0
+giri_max = 0.0                 # 0 = nessun limite ai giri completi del pendolo
+stabile_angolo_gradi = 12.0    # "in equilibrio" = entro queste tre soglie
+stabile_omega_rad_s = 1.0
+stabile_velocita_m_s = 0.75
+tempo_max_salita_s = 12.0      # successo = in equilibrio senza interruzioni da qui alla fine
+                               # (con 0,48 m/s di velocita massima la salita richiede 8-11 s)
+scala_omega_rad_s = 10.0       # normalizzazione dell'ingresso omega (anche nel firmware)
+periodo_controllo_s = 0.02     # 20 ms = 50 Hz. 0.01 provato il 16/10: addestramento instabile e reti
+                               # peggiori sotto disturbi (vedi TEST_ESEGUITI.md); per riprovarlo vedere i
+                               # valori 10 ms indicati nei commenti di [ricompensa], [stimatore], [addestramento]
+
+# -----------------------------------------------------------------------------
+[ricompensa]
+# r = alto^esponente_alto * F_x * F_omega * F_angolo * F_v
+#     + peso_energia * exp(-((E-1)/scala_energia)^2)
+#     - G*(peso_azione*u^2 + peso_variazione*(u-u_prec)^2 + peso_inversione*[cambio di verso])
+#     - peso_bordo*(ingresso nella fascia di bordo)^2
+# G = alto^esponente_penalita_alto: 0 = penalita sul comando sempre attive;
+# 2 = solo vicino all'alto, cosi lo swing-up puo usare tutto il motore.
+# alto = (1+cos(angolo))/2.  Ogni F = minimo + (1-minimo)*exp(-(valore/scala)^2):
+# minimo = 1 spegne il termine, minimo vicino a 0 lo rende decisivo.
+#
+# Con periodo_controllo_s = 0.01 la ricompensa di ogni passo e moltiplicata per 0,5
+# (stessa ricompensa al secondo dei 50 Hz); in quel caso raddoppiare peso_variazione
+# e peso_inversione (0.04), cosi ogni salto o inversione del comando costa come a 50 Hz.
+#
+# Priorita alla velocita angolare: il termine di angolo e largo (basta "stare su"),
+# mentre F_omega e stretto e pesa molto. Cosi un errore di qualche grado
+# dell'encoder costa poco, un pendolo che si muove costa molto.
+esponente_alto = 1.0
+minimo_omega = 0.2
+scala_omega_rad_s = 1.5
+minimo_angolo = 1.0           # 1 = nessun premio extra per l'angolo esatto
+scala_angolo_gradi = 10.0
+minimo_x = 0.7                # carrello vicino al centro (meno importante)
+scala_x_m = 0.2
+minimo_velocita = 0.8         # carrello fermo
+scala_velocita_m_s = 0.2
+peso_energia = 0.1            # aiuto per lo swing-up: energia vicina a quella "fermo in alto"
+scala_energia = 0.3
+peso_azione = 0.005
+peso_variazione = 0.02        # 0.04 a 10 ms
+peso_inversione = 0.02        # contro i continui cambi di verso del motore (0.04 a 10 ms)
+esponente_penalita_alto = 0.0   # 2.0 provato il 14/10: nessun miglioramento
+peso_bordo = 0.5
+inizio_bordo_m = 0.28         # da qui a limite_corsa_m la penalita cresce
+
+# -----------------------------------------------------------------------------
+[disturbi]
+attivi = true                 # false = addestramento nominale (sensori ideali)
+intensita = 0.35              # scala ampiezze, variazioni dei parametri, offset base, ritardo
+massa_rel = 0.10
+smorzamento_rel = 0.25
+guadagno_motore_rel = 0.15
+ritardo_max_s = 0.012         # con intensita 0.35: ritardo 0, 2 o 4 ms
+frequenze_min_hz = [8.0, 20.0, 3.0]   # modi: cinghia, motore, asta
+frequenze_max_hz = [18.0, 40.0, 10.0]
+zeta_min = 0.08
+zeta_max = 0.25
+forza_cinghia_n = 0.20
+forza_motore_n = 0.10
+coppia_asta_nm = 0.003
+accelerazione_scala_m_s2 = 10.0
+eccitazione_casuale = 0.25
+correlazione_s = 0.04
+rumore_posizione_m = [0.005, 0.010]   # 1 sigma per lettura, estratta per episodio
+rumore_angolo_gradi = [0.5, 1.0]
+offset_angolo_rad = 0.00872664626     # offset base (+/-0.5 gradi a intensita 1)
+encoder_conteggi_giro = 2400
+# Perno del pendolo (24/10, diagnosi del mancato aggancio): valori assoluti per episodio,
+# non scalati da intensita. Lo smorzamento 0.01 dell'XML storico non e mai stato misurato
+# e con quello la rete non impara a frenare un pendolo che gira sopra la verticale.
+smorzamento_perno_min_nms = 0.0003    # viscoso, log-uniforme in [min, max] N*m*s/rad
+smorzamento_perno_max_nms = 0.012
+attrito_perno_max_nm = 0.003          # coulombiano (frictionloss), uniforme in [0, max]
+resistenza_aria_max_nms2 = 0.00066    # coppia -c*omega*|omega|, c in [0, max] (stima asta 3.3e-4)
+
+# -----------------------------------------------------------------------------
+[sensori]
+# Guasti dell'encoder e del conteggio STEP (solo con disturbi attivi; non scalati).
+offset_max_gradi = 3.0          # offset iniziale casuale in +/- questo valore (2.0 fino al 14/10)
+prob_conteggio_perso_max = 0.003 # per episodio in [0, max]: ogni conteggio puo andare perso -> deriva
+                                 # (0.002 fino al 14/10; sul banco l'encoder perde conteggi)
+salti_al_s = 0.5                # impulsi spuri (rumore elettrico) al secondo, in media
+salto_max_conteggi = 4          # ampiezza di ogni impulso spurio, 1..max conteggi
+passi_persi_max = 0.02          # frazione di passi persi del motore -> deriva della posizione
+
+# -----------------------------------------------------------------------------
+[stepper]
+# Da tarare sull'hardware. Hz = impulsi STEP/secondo.
+frequenza_min_hz = 3200.0
+frequenza_max_hz = 32000.0
+rampa_hz_s = 1600000.0          # 0 -> 32000 Hz in 0.02 s
+zona_morta = 0.0
+tick_fermo_inversione = 1       # inversione: 1 passo di rampa (2 ms) a zero, come il firmware
+passi_per_giro = 200
+angolo_passo_gradi = 1.8
+microstepping = 32
+passo_cinghia_m = 0.002
+denti_puleggia = 48
+rapporto_trasmissione = 1.0
+
+# -----------------------------------------------------------------------------
+[stimatore]
+# k_g, k_a, k_d da stima.coefficienti_da_modello(cart_pendolo_asta20_perno.xml).
+# k_d (24/10) = smorzamento nominale 0.002 N*m*s / J, centro (log) dell'intervallo
+# randomizzato in [disturbi]: prima 0.403 (damping 0.01), 5 volte quello di un cuscinetto.
+k_g = 17.3295
+k_a = 1.76651
+k_d = 0.0806534
+# Stimatore a tre stati: angolo, velocita angolare e OFFSET dell'encoder (16/10).
+# Guadagni a 20 ms da stima.guadagni_con_offset(parametri, 0.02, -1.0) con i k di questa asta: stessi due
+# poli dello stimatore storico (0.2 / 1.0 a 20 ms) + polo dell'offset a -1/s.
+# l_b = 0 torna allo stimatore a due stati (l_theta 0.2, l_omega 1.0).
+l_theta = 0.256295
+l_omega = 1.187233
+l_b = -0.040454
+b_max_rad = 0.261799          # offset stimato limitato a +/-15 gradi
+l_x = 0.05
+
+# -----------------------------------------------------------------------------
+[storia]
+# Ingressi passati (storia.py): per ogni ritardo k (in periodi di controllo) la rete
+# riceve i sei ingressi di k periodi fa e l azione decisa allora.
+# 1 s ridotta: ogni 20 ms fino a 0,2 s, poi ogni 100 ms fino a 1 s (132 ingressi). [] = solo i sei ingressi attuali.
+ritardi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+
+# -----------------------------------------------------------------------------
+[addestramento]
+cartella = "modelli_asta20_perno_storia1s_20s"
+passi = 2500000
+seed = 42
+valuta_ogni = 20000
+episodi_selezione = 6
+usa_disturbi = true
+strati = [128, 128]           # [128, 128] = compatibile col progetto X-CUBE-AI esistente
+learning_rate = 0.0003
+buffer = 1000000
+learning_starts = 10000       # 20000 a 10 ms
+batch = 256
+gamma = 0.99                  # orizzonte 2 s; 0.995 a 10 ms
+tau = 0.005
+train_freq = 4
+gradient_steps = 1
+ent_coef = "auto_0.1"
+
+# -----------------------------------------------------------------------------
+[firmware]
+# Usati da esporta_firmware.py per scrivere Core/Inc/config_controllo.h.
+nome_progetto = "Controllo_SwingUp_Asta20_Storia"
+# Partenza con B1, in base all'angolo letto dall'encoder:
+#  - entro angolo_ricalibrazione_gradi da -180 -> pendolo appeso: se fermo da
+#    tempo_quiete_ms l'angolo torna esattamente a -180 (ricalibrazione), poi swing-up;
+#  - entro angolo_max_avvio_gradi da 0 -> pendolo portato su a mano: niente
+#    ricalibrazione, solo equilibrio;
+#  - altrimenti avvio rifiutato (controllo_errore = 11).
+ricalibra_theta_all_avvio = true
+angolo_ricalibrazione_gradi = 20.0
+tempo_quiete_ms = 1000
+angolo_max_avvio_gradi = 10.0
+angolo_max_controllo_gradi = 45.0  # solo senza swing-up: arresto oltre questo angolo
+omega_max_plausibile_rad_s = 25.0  # salto dell'encoder piu grande in 20 ms = guasto

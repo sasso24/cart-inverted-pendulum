@@ -1,0 +1,1830 @@
+{
+  "attrito_nm": 0.0,
+  "aria_nms2": 0.0,
+  "risultati": [
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.005,
+      "successi": 19,
+      "episodi": 20,
+      "passaggi_medi": 0.1,
+      "primo_arrivo_mediano_s": 7.169999999999432,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.09999999999944,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.899999999999462,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.119999999999438,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.239999999999425,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.2599999999994225,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.139999999999436,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.199999999999429,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.91999999999946,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.899999999999642,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.1599999999994335,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.679999999999376,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.1599999999994335,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.179999999999431,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.399999999999475,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.179999999999431,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.879999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.0599999999994445,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0025,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.45,
+      "primo_arrivo_mediano_s": 6.349999999999523,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.539999999999502,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.139999999999546,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.359999999999522,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.479999999999508,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.879999999999464,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.439999999999513,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.819999999999361,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.459999999999511,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.179999999999541,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.779999999999365,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.339999999999524,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.139999999999546,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.001,
+      "successi": 16,
+      "episodi": 20,
+      "passaggi_medi": 2.0,
+      "primo_arrivo_mediano_s": 6.379999999999519,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.799999999999473,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.139999999999546,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.339999999999634,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.819999999999581,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.439999999999513,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.359999999999632,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.27999999999953,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.679999999999486,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.499999999999506,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.959999999999566,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.319999999999526,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 7.439999999999403,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.159999999999544,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.439999999999513,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s7/migliore.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0003,
+      "successi": 5,
+      "episodi": 20,
+      "passaggi_medi": 6.05,
+      "primo_arrivo_mediano_s": 6.2699999999995315,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.299999999999638,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 10,
+          "primo_arrivo_s": 5.259999999999643,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 5.759999999999588,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.3799999999996295,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.719999999999482,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 10,
+          "primo_arrivo_s": 5.239999999999645,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.539999999999502,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.879999999999464,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 5.499999999999616,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 5.8799999999995745,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.479999999999508,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.519999999999504,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.379999999999519,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.359999999999632,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.299999999999528,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.319999999999526,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.359999999999632,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.005,
+      "successi": 19,
+      "episodi": 20,
+      "passaggi_medi": 0.0,
+      "primo_arrivo_mediano_s": 8.459999999999495,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.999999999999675,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.459999999999829,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.239999999999421,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.339999999999455,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.979999999999343,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.579999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.579999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.739999999999588,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.999999999999675,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.039999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.619999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.879999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.079999999999702,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.679999999999568,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.799999999999363,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.579999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.779999999999365,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.319999999999448,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.939999999999348,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.959999999999345,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0025,
+      "successi": 19,
+      "episodi": 20,
+      "passaggi_medi": 0.25,
+      "primo_arrivo_mediano_s": 7.319999999999416,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.139999999999436,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.619999999999383,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.779999999999365,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.019999999999449,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.779999999999365,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.859999999999356,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.719999999999372,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.939999999999458,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.139999999999436,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.859999999999356,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.239999999999425,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.799999999999473,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.839999999999359,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.179999999999431,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.779999999999365,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.4599999999994,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.2599999999994225,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.3599999999994115,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.001,
+      "successi": 7,
+      "episodi": 20,
+      "passaggi_medi": 3.65,
+      "primo_arrivo_mediano_s": 6.6599999999994886,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.8599999999994665,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 7.479999999999398,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 8.039999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.119999999999548,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 5,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.679999999999486,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 6.619999999999493,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 7.199999999999429,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 6.039999999999557,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.73999999999948,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.079999999999552,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 7.0599999999994445,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 5.899999999999572,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.799999999999473,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.039999999999557,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.379999999999519,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 6.339999999999524,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 7.499999999999396,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0003,
+      "successi": 5,
+      "episodi": 20,
+      "passaggi_medi": 6.65,
+      "primo_arrivo_mediano_s": 6.349999999999523,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 10,
+          "primo_arrivo_s": 7.2599999999994225,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 5.91999999999957,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.5599999999995,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.09999999999955,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.599999999999495,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 10,
+          "primo_arrivo_s": 6.7599999999994775,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.939999999999568,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.019999999999559,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.91999999999946,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 2,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 5.8799999999995745,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.639999999999491,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 5.91999999999957,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 6.6599999999994886,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 5.959999999999566,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.419999999999515,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.27999999999953,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.199999999999539,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s3/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.005,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.1,
+      "primo_arrivo_mediano_s": 8.119999999999381,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.639999999999381,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.039999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.639999999999889,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.539999999999392,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 7.639999999999381,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.299999999999441,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.139999999999388,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.379999999999802,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.999999999999675,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 8.459999999999495,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.479999999999835,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.799999999999363,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.839999999999359,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.099999999999374,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.839999999999359,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.199999999999742,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.0599999999994445,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.419999999999481,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 9.079999999999702,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s3/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0025,
+      "successi": 20,
+      "episodi": 20,
+      "passaggi_medi": 0.1,
+      "primo_arrivo_mediano_s": 7.469999999999399,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.799999999999473,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.739999999999588,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.639999999999555,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.779999999999475,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.979999999999453,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.439999999999403,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.4599999999994,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.599999999999541,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 8.299999999999441,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.479999999999501,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.379999999999409,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.119999999999438,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.039999999999354,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.479999999999398,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.3599999999994115,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.539999999999392,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.159999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.019999999999449,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 8.519999999999515,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s3/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.001,
+      "successi": 11,
+      "episodi": 20,
+      "passaggi_medi": 2.2,
+      "primo_arrivo_mediano_s": 6.909999999999461,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 2,
+          "primo_arrivo_s": 7.1599999999994335,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 7.379999999999409,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.619999999999383,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.899999999999462,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.2599999999994225,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 5.979999999999563,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.359999999999522,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 7.579999999999387,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.27999999999942,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.359999999999522,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 3,
+          "primo_arrivo_s": 7.3599999999994115,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.319999999999526,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.91999999999946,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.259999999999533,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": true,
+          "passaggi": 3,
+          "primo_arrivo_s": 6.139999999999546,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": false,
+          "passaggi": 4,
+          "primo_arrivo_s": 7.1599999999994335,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.939999999999568,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 5.799999999999583,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.879999999999354,
+          "motivo": ""
+        }
+      ]
+    },
+    {
+      "modello": "modelli_asta20_basevecchia_20s_s3/ultimo.zip",
+      "condizione": "disturbi",
+      "smorzamento_nms": 0.0003,
+      "successi": 6,
+      "episodi": 20,
+      "passaggi_medi": 5.1,
+      "primo_arrivo_mediano_s": 6.439999999999513,
+      "mai_in_alto": 0,
+      "dettagli": [
+        {
+          "seed": 3000,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 7.239999999999425,
+          "motivo": ""
+        },
+        {
+          "seed": 3001,
+          "successo": false,
+          "passaggi": 5,
+          "primo_arrivo_s": 7.319999999999416,
+          "motivo": ""
+        },
+        {
+          "seed": 3002,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 7.4599999999994,
+          "motivo": ""
+        },
+        {
+          "seed": 3003,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 7.239999999999425,
+          "motivo": ""
+        },
+        {
+          "seed": 3004,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.8799999999995745,
+          "motivo": ""
+        },
+        {
+          "seed": 3005,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 5.999999999999561,
+          "motivo": ""
+        },
+        {
+          "seed": 3006,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.219999999999537,
+          "motivo": ""
+        },
+        {
+          "seed": 3007,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 7.519999999999394,
+          "motivo": ""
+        },
+        {
+          "seed": 3008,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.559999999999389,
+          "motivo": ""
+        },
+        {
+          "seed": 3009,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.219999999999537,
+          "motivo": ""
+        },
+        {
+          "seed": 3010,
+          "successo": false,
+          "passaggi": 8,
+          "primo_arrivo_s": 7.559999999999389,
+          "motivo": ""
+        },
+        {
+          "seed": 3011,
+          "successo": false,
+          "passaggi": 7,
+          "primo_arrivo_s": 6.339999999999524,
+          "motivo": ""
+        },
+        {
+          "seed": 3012,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.9599999999994555,
+          "motivo": ""
+        },
+        {
+          "seed": 3013,
+          "successo": false,
+          "passaggi": 6,
+          "primo_arrivo_s": 6.219999999999537,
+          "motivo": ""
+        },
+        {
+          "seed": 3014,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3015,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 6.239999999999535,
+          "motivo": ""
+        },
+        {
+          "seed": 3016,
+          "successo": true,
+          "passaggi": 0,
+          "primo_arrivo_s": 7.299999999999418,
+          "motivo": ""
+        },
+        {
+          "seed": 3017,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.939999999999568,
+          "motivo": ""
+        },
+        {
+          "seed": 3018,
+          "successo": true,
+          "passaggi": 1,
+          "primo_arrivo_s": 5.819999999999581,
+          "motivo": ""
+        },
+        {
+          "seed": 3019,
+          "successo": false,
+          "passaggi": 9,
+          "primo_arrivo_s": 6.539999999999502,
+          "motivo": ""
+        }
+      ]
+    }
+  ]
+}

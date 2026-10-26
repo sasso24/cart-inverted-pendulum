@@ -1,3 +1,152 @@
+# Baseline vecchia + perno randomizzato largo, da zero — 24 ottobre 2026
+
+Configurazione delle reti del 21-23/10 (`cart_pendolo_asta20.xml` con perno 0,01 N·m·s, stimatore
+con k_d 0,403, stessa ricompensa) + perno randomizzato per episodio su un intervallo largo:
+viscoso log-uniforme 0,0003-0,015 N·m·s, coulombiano 0-0,006 N·m (comprende la stima a memoria
+del banco, 0,0095 + 0,006), aria 0-6,6e-4 N·m·s². Da zero, 2 M passi senza storia (seed 42, 7, 3),
+2,5 M con storia (`config_asta20_basevecchia_*.toml`).
+
+Senza storia la selezione automatica non funziona: in nominale (perno dell'XML, 0,01) nessuna
+rete sale in tempo, il minimo tra nominale e disturbato resta 0 e `migliore.zip` è casuale
+(s3: 140 k passi). Valutati sia `migliore.zip` sia `ultimo.zip` con `prova_smorzamento.py`
+(20 semi per valore, disturbi):
+
+| Rete | 0,0003-0,005, attrito 0,0005 (su 80) | 0,0003-0,005, senza coulombiano (su 80) | 0,01 + 0,0005 | stima banco 0,0095 + 0,006 |
+|---|---:|---:|---:|---:|
+| **basevecchia s7 `migliore`** (1,6 M) | 80 | 60 | 0 | 0 |
+| **basevecchia s3 `ultimo`** (2 M) | 73 | 57 | 0 | 0 |
+| basevecchia s42 `ultimo` | 74 | 50 | 0 | 0 |
+| basevecchia s7 `ultimo` | 71 | | 0 | 0 |
+| basevecchia s42 `migliore` (1,32 M) | 52 | | 0 | 0 |
+| basevecchia s3 `migliore` (140 k) | 30 | | 0 | 0 |
+| **basevecchia storia `migliore`** (1,78 M) | **80** | **80** | 0 (su a 13,1 s) | **16** (nominale 18) |
+| basevecchia storia `ultimo` (2,5 M) | 80 | 68 | 1 | 11 (nominale 14) |
+| rif. storia 23/10 | 11 | 3 | | 17 (nominale 18) |
+| rif. perno storia (24/10, baseline 0,002) | 80 | 79 | | 0 (nominale 3) |
+
+La rete con storia è l'unica che regge sia un perno che frena poco sia la stima del banco.
+Le reti senza storia non arrivano in alto entro 20 s con perni molto frenati (meno di un
+episodio su cinque in addestramento ha viscoso ≥ 0,007).
+
+Firmware (copie, i progetti esistenti non cambiano): `Controllo_SwingUp_Asta20_BaseVecchia`
+(rete 1 = s7 `migliore`, 2 = s3 `ultimo`, 0 = copia della 1) e `Controllo_SwingUp_Asta20_Storia_BaseVecchia`
+(una rete). Test `test_candidati`, `test_controllo`, `test_hil` OK (HIL senza storia: 2 swing-up su 3
+nei semi del test, con perno estratto a caso; con storia 3/3). Verifica ONNX di riferimento fallita per
+1,4e-5 (tolleranza 1e-5) su una rete senza storia: riguarda solo il file ONNX.
+
+---
+
+# Perno randomizzato e stimatore con k_d coerente — 24 ottobre 2026
+
+Ricetta delle reti `modelli_asta20_20s*` / `storia1s_20s` (episodi 20 s, stimatore
+dell'offset, sensori 16/10) con: XML `cart_pendolo_asta20_perno.xml` (perno nominale
+0,002 N·m·s + 0,001 N·m), perno randomizzato per episodio (viscoso log-uniforme
+0,0003-0,012 N·m·s, coulombiano 0-0,003 N·m, aria 0-6,6e-4 N·m·s²), stimatore con
+`k_d` 0,0807 (prima 0,403). 2 M passi senza storia, 2,5 M con storia.
+
+| Addestramento | miglior checkpoint | note |
+|---|---|---|
+| `modelli_asta20_perno_20s_s3` (seed 3) | 1,94 M, selezione 6/6 + 6/6 | **`Controllo_SwingUp_Asta20_Perno`, rete 1 (e 0)** |
+| `modelli_asta20_perno_20s_s7` (seed 7) | 1,88 M, 6/6 + 6/6 | **`Controllo_SwingUp_Asta20_Perno`, rete 2** |
+| `modelli_asta20_perno_20s` (seed 42) | 2,36 M (ripreso +1 M da 2 M: fino a 2 M mai sopra 5/6) | scartata |
+| `modelli_asta20_perno_storia1s_20s` (seed 42) | 1,84 M, 6/6 + 6/6 | **`Controllo_SwingUp_Asta20_Storia_Perno`**; dopo 1,9 M crollo a 0% fino alla fine |
+
+**Sweep dello smorzamento** (`prova_smorzamento.py`, 20 semi, 20 s; smorzamento del perno
+fisso, stimatore della rete). Successi con disturbi, senza attrito coulombiano né aria
+(caso più difficile: in addestramento c'è sempre un po' di attrito):
+
+| damping perno (N·m·s) | 0,012 | 0,01 | 0,005 | 0,0025 | 0,001 | 0,0003 |
+|---|---:|---:|---:|---:|---:|---:|
+| `modelli_asta20_storia1s_20s` (23/10) | 1 | 20 | 3 | 0 | 0 | 0 |
+| `modelli_asta20_20s` (21/10) | 0 | 13 | 2 | 0 | 0 | 2 |
+| **perno s3** | 0 | 1 | 20 | 20 | 20 | 17 |
+| **perno s7** | 0 | 0 | 20 | 20 | 17 | 1 |
+| perno s42 | 0 | 3 | 19 | 20 | 9 | 4 |
+| **perno storia** | 0 | 11 | 20 | 20 | 20 | 19 |
+
+Passaggi sopra la verticale (media, con disturbi) da 0,005 a 0,0003: reti del 21-23/10
+5-16; nuove s3 e storia 0-1,6 (s7 6,1 a 0,0003). Primo arrivo in alto 6-7,5 s (prima 9 s con 0,01).
+In nominale (stato vero) le nuove s3, s7, storia: 20/20 da 0,005 a 0,0003, 16-19/20 a 0,01.
+
+Con attrito realistico (`--attrito 0.0005 --aria 0.00033`), disturbi, 0,005 / 0,0025 / 0,001 / 0,0003:
+s3 20/20/20/20, s7 19/20/20/19, storia 20/20/20/20, s42 19/20/20/19; rete storia del 23/10 8/0/1/2.
+
+**Limite**: con perno a 0,01-0,012 e disturbi le nuove reti spesso non arrivano in alto in
+20 s (le vecchie sì). Il banco (salita facile, pendolo che gira) indica un perno meno
+smorzato, ma va misurato.
+
+**Stima del perno a memoria (24/10, dopo `prova_perno.py`)**: smorzamento 0,0095 N·m·s,
+attrito 0,006 N·m, aria 1e-5 (da 90° si ferma in ~11 s, 6,5 oscillazioni; XML vecchio 25 s,
+nuovo nominale 55 s). Con questo perno (`prova_smorzamento.py --smorzamenti 0.00954
+--attrito 0.00596 --aria 0.00001`, nominale / disturbi su 20): storia 23/10 18/17, 20s 21/10 3/3,
+perno s3 2/0, s7 0/0, storia 3/0; nessuna supera la verticale. Se la stima è giusta il
+sintomo del banco (pendolo che gira) non viene dal perno. Progetti firmware vecchi riportati
+alle reti del 21 e 23/10 (per provarle con un altro encoder), nuove reti nei progetti `_Perno`.
+
+`confronta.py`, 40 semi, episodi da 20 s (successo = su da 12 s alla fine; tra parentesi
+"arrivato su e mai caduto"). Le condizioni disturbate usano il perno randomizzato della rete:
+
+| Rete | nominale | disturbi | sensori 16/10 | offset 4° | inversione | aggancio | inversioni/s nom. / dist. |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| perno s3 | 40 (40) | 35 (40) | 36 (40) | 34 (40) | 35 (40) | 36 (36) | 10,6 / 7,0 |
+| perno s7 | 40 (40) | 33 (40) | 33 (40) | 32 (39) | 33 (40) | 34 (34) | 28,6 / 7,1 |
+| perno storia | 40 (40) | 36 (40) | 35 (40) | 35 (40) | 36 (40) | 32 (32) | 26,0 / 13,0 |
+
+Firmware: test `test_candidati`, `test_controllo`, `test_hil` (3/3 swing-up con il codice C)
+OK in entrambi i progetti. L'ONNX di riferimento di s7 non è stato scritto: la verifica di
+`esporta_onnx.py` fallisce per 1,3e-5 su 1 ingresso di 5100 (tolleranza 1e-5). Riguarda solo
+il file ONNX: i pesi del firmware sono scritti prima e sono identici al checkpoint.
+
+---
+
+# Storia degli ingressi, asta 0,20 m — 23 ottobre 2026
+
+Nuova sezione `[storia]` (`configurazione.py`, `storia.py`): per ogni ritardo k la rete
+riceve i sei ingressi di k periodi fa e l'azione decisa allora; vuota = sei ingressi come
+prima. Ricetta delle reti `modelli_asta20_20s*` (episodi 20 s, stimatore dell'offset,
+sensori 16/10), 2 M passi, seed 42 e 7:
+*1 s ridotta* = ritardi 1..10 e 15, 20, ..., 50 (132 ingressi); *0,2 s* = ritardi 1..10 (76).
+
+Le reti con storia imparano molto prima (ricompensa 320-470 a 200 k passi, le due con
+seed 7 gia al 67-83% di successi; senza storia ~126 a 500 k). Confronto `confronta.py --durata 60`, 40 semi:
+
+| Rete | nominale | disturbi | sensori 16/10 | offset 4° | inversione | aggancio | totale (successo / su) | inversioni/s nom. |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `modelli_asta20_storia1s_20s` (firmware, rete 0) | 40/40 | 40/40 | 39/40 | 31/40 | 40/40 | 40/40 | 230 / 240 | 16,8 |
+| `modelli_asta20_storia1s_20s_s7` (firmware, rete 1) | 40/40 | 39/40 | 39/40 | 31/39 | 39/40 | 40/40 | 228 / 239 | 35,2 |
+| `modelli_asta20_storia02_20s_s7` | 40/40 | 40/40 | 37/40 | 34/40 | 40/40 | 40/40 | 231 / 240 | 40,8 |
+| `modelli_asta20_storia02_20s` | 40/40 | 37/40 | 38/40 | 27/40 | 37/40 | 40/40 | 219 / 240 | 21,8 |
+| rif. `modelli_asta20_20s` (senza storia) | 38/40 | 31/40 | 27/40 | 18/40 | 31/40 | 40/40 | 185 / 240 | 11,5 |
+| rif. 0,16 m `modelli_60s_1200k` | 40/40 | 39/40 | 40/40 | 28/38 | 39/40 | 40/40 | 226 / 238 | 19,8 |
+
+Salita mediana con disturbi 9,5-10,1 s (11,2 s senza storia).
+
+- Codice: `storia.py` (mixin sopra l'ambiente nominale e quello disturbato, attivo solo
+  con `[storia].ritardi`), `crea_ambiente`, firma con `observation_size`, `storia.py` tra
+  i file del contratto; `esporta_onnx.py` per n ingressi (tolleranza della verifica
+  PyTorch/ONNX scalata con la radice di n/6: invariata per 6 ingressi);
+  `esporta_firmware.py` scrive `CFG_STORIA_*` e rigenera `X-CUBE-AI/App` con `stedgeai`
+  se gli ingressi cambiano; `hil.py` confronta i sei ingressi attuali.
+- Reti esistenti: con il codice nuovo stesse ricompense e durate su nominale e disturbato
+  (`modelli_asta20_20s`, 4+4 episodi di `confronta.py` identici), ONNX esportato identico
+  byte per byte; compare l'avviso "codice cambiato".
+- `python -m unittest test_storia test_versione test_disturbi test_stima test_configurazione
+  test_periodo`: 47 test, tutti OK tranne `test_guadagni_equivalenti` (manca `scipy.optimize`
+  nel venv, indipendente da queste modifiche). `test_storia`: ingressi e azioni ai ritardi
+  giusti, reset, nessun effetto su fisica e numeri casuali.
+- `stedgeai generate` (X-CUBE-AI 10.1.0) rigenera la rete a 6 ingressi identica a quella
+  del progetto (cambiano solo le firme del modello).
+- Firmware `Controllo_SwingUp_Asta20_Storia` (copia di `Controllo_SwingUp_Asta20`, che resta
+  intatto): reti 0-1 qui sopra, 132-128-128-1, 33 931 MACC. gcc 12.3 di CubeIDE: 0 warning
+  nel codice del progetto, 307 KB di flash (anche `HIL_MODE 1`). `test_candidati` OK,
+  `test_controllo` OK (anche storia: ritardi, azioni, riavvio), `test_stima` OK (sostituto
+  numpy di `place_poles`), `test_hil` 3/3 swing-up con la rete a 132 ingressi.
+- Non provato: scheda e banco; tempo di inferenza reale (`rete_durata_ms`).
+
+Dati: `risultati/confronto_asta20_storia*.json`, log in `log_asta/`.
+
+---
+
 # Asta spostata nel mozzo: braccio corto 0,30-0,35 m e 0,20 m — 21 ottobre 2026
 
 Stessa asta (0,98 m, acciaio 5 mm) con un braccio corto più lungo: XML
