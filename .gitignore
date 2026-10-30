@@ -5,3 +5,6 @@ export*
 modelli*
 esperienze*.pkl
 .metadata/
+
+# Guida locale ROS/UART (non versionata)
+guida_ros_uart/
