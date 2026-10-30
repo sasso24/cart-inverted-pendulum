@@ -11,7 +11,7 @@ from configurazione import configurazione_ambiente
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=ROOT / "modelli_swingup" / "migliore.zip")
+    parser.add_argument("--model", type=Path, default=ROOT / "modelli_asta20_basevecchia_storia1s_20s" / "migliore.zip")
     parser.add_argument("--episodes", type=int, default=20)
     parser.add_argument("--output", type=Path, default=ROOT / "risultati" / "valutazione.json")
     profile = parser.add_mutually_exclusive_group()

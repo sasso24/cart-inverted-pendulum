@@ -7,8 +7,8 @@ W0[128x6], b0, W1[128x128], b1, W2[1x128], b2, piu un float di riempimento.
 L'ordine e stato ricavato e verificato decodificando i pesi della rete
 precedente (identici bit per bit al checkpoint esportato il 29/09).
 
-    python aggiorna_pesi_xcubeai.py --model modelli_disturbi/migliore.zip \
-        --params ../Prova_controllo/X-CUBE-AI/App/network_data_params.c
+    python aggiorna_pesi_xcubeai.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip \
+        --params ../Controllo_SwingUp_Asta20_Storia_BaseVecchia/X-CUBE-AI/App/network_data_params.c
 
 Per rigenerare tutto con gli strumenti ST si puo invece importare
 export_stm32/pendolo_actor.onnx in STM32CubeMX (X-CUBE-AI).
@@ -61,7 +61,7 @@ def scrivi_array(testo, pesi):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip')
     parser.add_argument('--params', type=Path, default=ROOT.parent / 'Prova_controllo'
                         / 'X-CUBE-AI/App/network_data_params.c')
     args = parser.parse_args(argv)

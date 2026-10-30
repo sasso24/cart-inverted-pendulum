@@ -1,6 +1,0 @@
-modelli_60s_1200k/migliore.zip | nominale       | 40/40 (su entro 20 s e fino alla fine 40) | inversioni 19.8/s
-modelli_60s_1200k/migliore.zip | disturbi       | 39/40 (su entro 20 s e fino alla fine 40) | inversioni 8.0/s
-modelli_60s_1200k/migliore.zip | sensori_16_10  | 40/40 (su entro 20 s e fino alla fine 40) | inversioni 8.0/s
-modelli_60s_1200k/migliore.zip | offset_4       | 28/40 (su entro 20 s e fino alla fine 38) | inversioni 7.6/s
-modelli_60s_1200k/migliore.zip | inversione     | 39/40 (su entro 20 s e fino alla fine 40) | inversioni 8.0/s
-modelli_60s_1200k/migliore.zip | aggancio       | 40/40 (su entro 20 s e fino alla fine 40) | inversioni 8.5/s

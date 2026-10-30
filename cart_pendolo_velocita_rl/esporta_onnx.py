@@ -48,7 +48,7 @@ def strati_attore(model):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip')
     parser.add_argument('--output', type=Path, default=ROOT / 'export_stm32')
     args = parser.parse_args(argv)
     check_contract(args.model.parent)

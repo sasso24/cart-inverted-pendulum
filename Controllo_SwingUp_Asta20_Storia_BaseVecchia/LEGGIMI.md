@@ -1,18 +1,17 @@
 # Controllo_SwingUp_Asta20_Storia_BaseVecchia — swing-up con asta 0,78 / 0,20 m e storia degli ingressi
 
-Copia di `Controllo_SwingUp_Asta20_Storia` (24/10) con una **rete nuova addestrata da zero**
-sulla configurazione della rete del 23/10 (XML con perno 0,01 N·m·s, `STIMA_K_D` 0,403, storia
-di 1 s), ma con il perno del pendolo **randomizzato a ogni episodio su un intervallo largo**
-(vedi "La rete" sotto). `config_controllo.h` è uguale a quello di `Controllo_SwingUp_Asta20_Storia`;
-cambiano `reti_candidate.c` e i pesi in `X-CUBE-AI/App`.
+Firmware consegnato (24/10): rete addestrata da zero (XML con perno 0,01 N·m·s,
+`STIMA_K_D` 0,403, storia di 1 s) con il perno del pendolo **randomizzato a ogni episodio su
+un intervallo largo** (vedi "La rete" sotto). Asta **0,78 m / 0,20 m** dal centro del perno.
+I progetti firmware precedenti, citati sotto per confronto (`Prova_controllo`,
+`Controllo_SwingUp`, `Controllo_SwingUp_Asta20`, `Controllo_SwingUp_Asta20_Storia`, ...), sono
+nel ramo `archivio-completo`.
 
-Origine: copia di `Controllo_SwingUp_Asta20`: stessa asta spostata
-(**0,78 m / 0,20 m** dal centro del perno), stesso hardware, homing, stimatore e
-protocollo HIL. Cambia la rete: oltre ai sei ingressi attuali riceve la
+La rete: oltre ai sei ingressi attuali riceve la
 **storia dell'ultimo secondo** — i sei ingressi e l'azione dei periodi passati —
 e quindi ha **132 ingressi** invece di 6 (132-128-128-1).
 
-Perché l'asta è a 20 cm e non a 30-35: vedi il `LEGGIMI.md` di `Controllo_SwingUp_Asta20`.
+Perché l'asta è a 20 cm e non a 30-35: vedi `cart_pendolo_velocita_rl/TEST_ESEGUITI.md`.
 **Prima di caricarlo l'asta deve essere a 20 cm dal centro del perno al capo corto.**
 
 ## La storia degli ingressi (23/10)
@@ -42,7 +41,8 @@ Il tempo di inferenza reale si legge in `rete_durata_ms` (deve restare molto sot
 3. *Project → Build Project*: 0 errori. Poi *Run* con la configurazione
    `Controllo_SwingUp_Asta20_Storia_BaseVecchia Debug`.
 
-La cartella `Debug/` non è copiata: la crea CubeIDE al primo Build.
+La cartella `Debug/` contiene la build provata sul banco il 30/10 (`.elf` pronto da caricare);
+CubeIDE la ricrea a ogni Build.
 **Non rigenerare il codice da CubeMX**: il `.ioc` descrive ancora la rete X-CUBE-AI a 6
 ingressi e la rigenerazione rimetterebbe `X-CUBE-AI/App` a 6 ingressi (il Build si ferma
 con `#error ... CFG_STORIA_INGRESSI`). In quel caso rieseguire `esporta_firmware.py` (sotto).
@@ -93,9 +93,8 @@ Dettagli in `cart_pendolo_velocita_rl/TEST_ESEGUITI.md`.
 **Prova consigliata**: almeno 3 swing-up; annotare se aggancia, quanto
 resta su, `stima.offset` (rad) in equilibrio, `rete_durata_ms` e `controllo_errore`
 (4 = limite di corsa, 5 = periodo scaduto, 9 = salto dell'encoder, 11 = avvio rifiutato).
-Confronto utile: stesse prove con `Controllo_SwingUp_Asta20_Storia` (rete del 23/10).
 
-| | Prova_controllo | Controllo_SwingUp / _Asta20 / _Asta20_Storia |
+| | Prima versione (`Prova_controllo`, ramo `archivio-completo`) | Questo firmware |
 |---|---|---|
 | Partenza | pendolo in alto, tenuto a mano | appeso, fermo |
 | Costanti di rete/motore/stimatore | `#define` sparse in `main.c` e `stima.h` | `Core/Inc/config_controllo.h`, **generato** da `esporta_firmware.py` |
@@ -127,13 +126,12 @@ Le soglie si cambiano in `config.toml` → `[firmware]` e si riesportano con
 Dalla cartella `cart_pendolo_velocita_rl`, dopo un addestramento con `[storia]`:
 
 ```sh
-python esporta_firmware.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip \
-    --progetto ../Controllo_SwingUp_Asta20_Storia_BaseVecchia
+python esporta_firmware.py      # default: modelli_asta20_basevecchia_storia1s_20s/migliore.zip
+python esporta_firmware.py --model modelli_riaddestramento/migliore.zip   # dopo un nuovo addestramento
 ```
 
-**Serve sempre `--progetto ../Controllo_SwingUp_Asta20_Storia_BaseVecchia`**: senza, lo script
-scrive in `Controllo_SwingUp_Asta20_Storia` (`[firmware].nome_progetto` della rete), quello della rete del 23/10.
-Scrive `config_controllo.h` (anche `CFG_STORIA_*`), `reti_candidate.c` e i pesi. Se il
+Il progetto di destinazione è `[firmware].nome_progetto` della rete (questo progetto);
+`--progetto` permette di sceglierne un altro. Scrive `config_controllo.h` (anche `CFG_STORIA_*`), `reti_candidate.c` e i pesi. Se il
 numero di ingressi della rete è diverso da quello del codice X-CUBE-AI del progetto
 (`AI_NETWORK_IN_1_SIZE` in `X-CUBE-AI/App/network.h`), esporta l'ONNX e **rigenera
 `X-CUBE-AI/App`** con `stedgeai` (X-CUBE-AI 10.1.0 in `~/STM32Cube`, stesse opzioni
@@ -148,11 +146,11 @@ Dalla radice del repository, con l'ambiente Python del progetto RL:
 python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_controllo.py   # USER CODE reale con HAL simulata, anche la storia
 python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_stima.py       # stima.c = stima.py
 python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_hil.py         # protocollo HIL con la rete del firmware (132 ingressi)
-python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_candidati.py   # pesi e guadagni delle 2 reti = checkpoint
+python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_candidati.py   # pesi e guadagni della rete = checkpoint
 ```
 
 `test_stima.py` usa `stima.guadagni_con_offset`, che richiede scipy
-(non installato nell'ambiente `cart_pendolo_stepper_rl/.venv`).
+(in `cart_pendolo_velocita_rl/requirements.txt`).
 
 La prova HIL sulla scheda vera è identica a quella di `HIL.md`
 (`HIL_MODE 1`, poi `./HIL.command --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip`).

@@ -1,10 +1,14 @@
-cart_pendolo_stepper_rl/.venv
+.venv/
 __pycache__/
 .DS_Store
-export*
-modelli*
-esperienze*.pkl
 .metadata/
+esperienze*.pkl
 
-# Guida locale ROS/UART (non versionata)
-guida_ros_uart/
+# Reti addestrate ed esportazioni: escluse tranne la rete del firmware consegnato
+modelli*
+export*
+!/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/
+/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/ultimo.zip
+!/cart_pendolo_velocita_rl/export_modelli_asta20_basevecchia_storia1s_20s/
+!/cart_pendolo_velocita_rl/export_modelli_asta20_basevecchia_storia1s_20s/export_report.json
+/cart_pendolo_velocita_rl/export_modelli_asta20_basevecchia_storia1s_20s/validation_*.csv

@@ -13,7 +13,8 @@ RITARDI = (1, 2, 3, 5, 10, 25)
 
 class StoriaTest(unittest.TestCase):
     def setUp(self):
-        self.cfg = Configurazione.carica(ROOT / 'config.toml')
+        # config.toml ha gia una storia: qui serve la base senza ritardi.
+        self.cfg = replace(Configurazione.carica(ROOT / 'config.toml'), storia=ParametriStoria())
         self.cfg_storia = replace(self.cfg, storia=ParametriStoria(RITARDI))
 
     def _percorso(self, env, passi=60, seed=3):

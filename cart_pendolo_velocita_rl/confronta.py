@@ -12,8 +12,8 @@ ma le condizioni di prova sono comuni:
   aggancio         partenza da stato casuale (angolo su tutto il giro, omega fino a
                    4 rad/s, carrello in moto fino a 0,3 m/s), disturbi del 14/10
 
-    python confronta.py --model modelli_swingup/migliore.zip modelli_10ms/migliore.zip
-    python confronta.py --model modelli_swingup/migliore.zip --stimatore-offset -1
+    python confronta.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip altra_rete/migliore.zip
+    python confronta.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip --stimatore-offset -1
         (rete addestrata senza, provata con lo stimatore dell'offset come sul firmware
          esportato con esporta_firmware.py --stimatore-offset -1)
 """

@@ -14,7 +14,7 @@ from disturbi import ParametriDisturbi, crea_ambiente
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=ROOT / "modelli_swingup" / "migliore.zip")
+    parser.add_argument("--model", type=Path, default=ROOT / "modelli_asta20_basevecchia_storia1s_20s" / "migliore.zip")
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--manual", action="store_true", help="Apri senza una rete addestrata; usa le frecce")
     profile = parser.add_mutually_exclusive_group()

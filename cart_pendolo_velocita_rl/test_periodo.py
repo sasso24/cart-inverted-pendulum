@@ -100,7 +100,7 @@ class OffsetTest(unittest.TestCase):
     def test_guadagni_e_config(self):
         p = stima.ParametriStimatore.carica()
         st = Configurazione.carica(ROOT / 'config.toml').stimatore
-        g = stima.guadagni_con_offset(p, 0.02)
+        g = stima.guadagni_con_offset(st, 0.02)  # con i k di config.toml (asta 20)
         for nome in ('l_theta', 'l_omega', 'l_b'):
             self.assertAlmostEqual(g[nome], getattr(st, nome), places=5)
         g10 = stima.guadagni_con_offset(p, 0.01)

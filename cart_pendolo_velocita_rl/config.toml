@@ -1,3 +1,4 @@
+# 24/10: configurazione di modelli_asta20_storia1s_20s (XML, stimatore, baseline vecchi) + perno randomizzato largo. Da zero.
 # =============================================================================
 #  CONFIGURAZIONE UNICA del pendolo inverso (addestramento SAC + firmware)
 # =============================================================================
@@ -10,7 +11,7 @@
 # Angoli: 0 = pendolo in alto, -180 (= +180) = pendolo appeso in basso.
 
 [modello]
-file_xml = "cart_pendolo.xml"
+file_xml = "cart_pendolo_asta20.xml"   # asta 0.78 / 0.2 m (stessa asta, spostata)
 
 # -----------------------------------------------------------------------------
 [episodio]
@@ -20,7 +21,7 @@ dispersione_x_m = 0.05         # posizione iniziale casuale del carrello (+/-)
 dispersione_angolo_rad = 0.05  # (+/-) intorno all'angolo iniziale
 dispersione_omega_rad_s = 0.1
 frazione_partenza_alto = 0.2   # solo addestramento: quota di episodi che partono in alto
-frazione_partenza_casuale = 0.3 # solo addestramento: quota da stato casuale su tutto il giro
+frazione_partenza_casuale = 0.0 # solo addestramento: quota da stato casuale su tutto il giro
 casuale_x_m = 0.25             #   (angolo uniforme, carrello entro +/-0,25 m,
 casuale_velocita_m_s = 0.3     #    carrello gia in moto fino a 0,3 m/s,
 casuale_omega_rad_s = 4.0      #    pendolo che ruota fino a 4 rad/s)
@@ -97,6 +98,14 @@ rumore_posizione_m = [0.005, 0.010]   # 1 sigma per lettura, estratta per episod
 rumore_angolo_gradi = [0.5, 1.0]
 offset_angolo_rad = 0.00872664626     # offset base (+/-0.5 gradi a intensita 1)
 encoder_conteggi_giro = 2400
+# Perno del pendolo randomizzato (24/10), con la baseline delle reti del 21-23/10:
+# XML, stimatore (k_d 0.403) e baseline restano quelli vecchi (damping 0.01, nessun attrito
+# coulombiano), ma ogni episodio estrae un perno diverso su un intervallo largo, che comprende
+# sia un cuscinetto che frena poco sia la stima a memoria del banco (0.0095 + 0.006 N*m).
+smorzamento_perno_min_nms = 0.0003    # viscoso, log-uniforme in [min, max] N*m*s/rad
+smorzamento_perno_max_nms = 0.015
+attrito_perno_max_nm = 0.006          # coulombiano (frictionloss), uniforme in [0, max]
+resistenza_aria_max_nms2 = 0.00066    # coppia -c*omega*|omega|, c in [0, max]
 
 # -----------------------------------------------------------------------------
 [sensori]
@@ -125,27 +134,33 @@ rapporto_trasmissione = 1.0
 
 # -----------------------------------------------------------------------------
 [stimatore]
-# Ricalcolare k_g, k_a, k_d se cambia l'XML (vedi stimatore.toml).
-k_g = 17.1317
-k_a = 1.74635
-k_d = 0.35034
+# k_g, k_a, k_d da stima.coefficienti_da_modello(cart_pendolo_asta20.xml).
+k_g = 17.3295
+k_a = 1.76651
+k_d = 0.403267
 # Stimatore a tre stati: angolo, velocita angolare e OFFSET dell'encoder (16/10).
-# Guadagni a 20 ms da stima.guadagni_con_offset(parametri, 0.02, -1.0): stessi due
+# Guadagni a 20 ms da stima.guadagni_con_offset(parametri, 0.02, -1.0) con i k di questa asta: stessi due
 # poli dello stimatore storico (0.2 / 1.0 a 20 ms) + polo dell'offset a -1/s.
-# A 10 ms: l_theta 0.137959, l_omega 0.630059, l_b -0.023486, l_x 0.025321.
 # l_b = 0 torna allo stimatore a due stati (l_theta 0.2, l_omega 1.0).
-l_theta = 0.260051
-l_omega = 1.187223
-l_b = -0.044210
+l_theta = 0.259944
+l_omega = 1.187222
+l_b = -0.044103
 b_max_rad = 0.261799          # offset stimato limitato a +/-15 gradi
 l_x = 0.05
 
 # -----------------------------------------------------------------------------
+[storia]
+# Ingressi passati (storia.py): per ogni ritardo k (in periodi di controllo) la rete
+# riceve i sei ingressi di k periodi fa e l azione decisa allora.
+# 1 s ridotta: ogni 20 ms fino a 0,2 s, poi ogni 100 ms fino a 1 s (132 ingressi). [] = solo i sei ingressi attuali.
+ritardi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+
+# -----------------------------------------------------------------------------
 [addestramento]
-cartella = "modelli_offset_20ms"
-passi = 1500000               # 3000000 a 10 ms (stessi secondi simulati)
+cartella = "modelli_riaddestramento"   # la rete consegnata (stessa configurazione) e in modelli_asta20_basevecchia_storia1s_20s
+passi = 2500000
 seed = 42
-valuta_ogni = 20000           # 40000 a 10 ms
+valuta_ogni = 20000
 episodi_selezione = 6
 usa_disturbi = true
 strati = [128, 128]           # [128, 128] = compatibile col progetto X-CUBE-AI esistente
@@ -162,7 +177,7 @@ ent_coef = "auto_0.1"
 # -----------------------------------------------------------------------------
 [firmware]
 # Usati da esporta_firmware.py per scrivere Core/Inc/config_controllo.h.
-nome_progetto = "Controllo_SwingUp"
+nome_progetto = "Controllo_SwingUp_Asta20_Storia_BaseVecchia"
 # Partenza con B1, in base all'angolo letto dall'encoder:
 #  - entro angolo_ricalibrazione_gradi da -180 -> pendolo appeso: se fermo da
 #    tempo_quiete_ms l'angolo torna esattamente a -180 (ricalibrazione), poi swing-up;

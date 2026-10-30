@@ -23,6 +23,7 @@ PyOpenGL==3.1.10
 pyparsing==3.3.2
 pyserial==3.5
 python-dateutil==2.9.0.post0
+scipy==1.18.1
 setuptools==84.0.0
 six==1.17.0
 stable_baselines3==2.9.0

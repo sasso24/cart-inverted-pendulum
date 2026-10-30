@@ -1,6 +1,0 @@
-modelli_asta20_60s_s7/migliore.zip | nominale       | 13/40 (su entro 20 s e fino alla fine 40) | inversioni 20.2/s
-modelli_asta20_60s_s7/migliore.zip | disturbi       | 11/40 (su entro 20 s e fino alla fine 34) | inversioni 9.8/s
-modelli_asta20_60s_s7/migliore.zip | sensori_16_10  | 11/40 (su entro 20 s e fino alla fine 36) | inversioni 9.5/s
-modelli_asta20_60s_s7/migliore.zip | offset_4       |  0/40 (su entro 20 s e fino alla fine 31) | inversioni 8.3/s
-modelli_asta20_60s_s7/migliore.zip | inversione     | 11/40 (su entro 20 s e fino alla fine 34) | inversioni 9.8/s
-modelli_asta20_60s_s7/migliore.zip | aggancio       | 35/40 (su entro 20 s e fino alla fine 35) | inversioni 11.3/s

@@ -176,8 +176,8 @@ def main():
     parser.add_argument('--episodi', type=int, default=5)
     parser.add_argument('--secondi', type=float, default=20.)
     parser.add_argument('--seed', type=int, default=7000)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_disturbi/migliore.zip',
-                        help='Rete caricata sulla scheda (swing-up: modelli_swingup/migliore.zip)')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip',
+                        help='Rete caricata sulla scheda')
     parser.add_argument('--disturbi', type=Path,
                         help='Profilo TOML; default quello salvato col modello (o disturbi.toml)')
     parser.add_argument('--intensita', type=float, help='Sovrascrive intensita del profilo')

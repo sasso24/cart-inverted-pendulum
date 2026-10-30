@@ -5,7 +5,7 @@ config.toml; le opzioni da riga di comando servono solo a sovrascriverne pochi:
 
     python addestra.py                        # usa config.toml
     python addestra.py --config altro.toml --output modelli_prova --steps 200000
-    python addestra.py --resume --output modelli_swingup --steps 300000
+    python addestra.py --resume --output modelli_riaddestramento --steps 300000
 """
 import hashlib
 from dataclasses import asdict, replace

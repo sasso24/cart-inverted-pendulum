@@ -252,7 +252,7 @@ def con_finestra(prova):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--xml', type=Path, default=ROOT / 'cart_pendolo_asta20_perno.xml')
+    parser.add_argument('--xml', type=Path, default=ROOT / 'cart_pendolo_asta20.xml')
     parser.add_argument('--smorzamento', type=float, default=0.002, help='Viscoso, N*m*s/rad')
     parser.add_argument('--attrito', type=float, default=0.001, help='Coulombiano, N*m')
     parser.add_argument('--aria', type=float, default=0., help='Coppia -c*omega*|omega|, c in N*m*s^2')

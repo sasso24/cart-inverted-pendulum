@@ -1,4 +1,4 @@
-"""Porta una rete addestrata nel progetto STM32 (default ../Controllo_SwingUp).
+"""Porta una rete addestrata nel progetto STM32 (default ../Controllo_SwingUp_Asta20_Storia_BaseVecchia).
 
 Un solo comando, sempre dalla configurazione SALVATA col modello:
   1. Core/Inc/config_controllo.h: motore, rampa, scale degli ingressi, limite
@@ -8,10 +8,9 @@ Un solo comando, sempre dalla configurazione SALVATA col modello:
      per esempio con la storia, X-CUBE-AI/App viene rigenerato con stedgeai);
   3. export_<cartella>/pendolo_actor.onnx con la verifica PyTorch/ONNX.
 
-    python esporta_firmware.py --model modelli_swingup/migliore.zip
-    python esporta_firmware.py --model modelli_swingup/migliore.zip --progetto ../Controllo_SwingUp
-    python esporta_firmware.py --model modelli_swingup/migliore.zip --stimatore-offset -1 \
-        --candidato modelli_60s_1200k/migliore.zip --candidato modelli_swingup/migliore.zip
+    python esporta_firmware.py
+    python esporta_firmware.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip --progetto ../Controllo_SwingUp_Asta20_Storia_BaseVecchia
+    python esporta_firmware.py --model a/migliore.zip --candidato b/migliore.zip
         (piu reti nello stesso firmware, scelte al banco con rete_scelta)
 
 Dopo: in STM32CubeIDE Project > Build Project e caricare sulla scheda.
@@ -241,7 +240,7 @@ def genera_xcubeai(onnx, progetto):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_swingup/migliore.zip',
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip',
                         help='Rete 0 (quella caricata all accensione)')
     parser.add_argument('--progetto', type=Path,
                         help='Cartella del progetto STM32 (default ../<[firmware].nome_progetto>)')

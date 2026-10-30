@@ -20,7 +20,7 @@ from configurazione import configurazione_ambiente
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_swingup/migliore.zip')
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati')
     profile = parser.add_mutually_exclusive_group()
     profile.add_argument('--disturbi', type=Path)

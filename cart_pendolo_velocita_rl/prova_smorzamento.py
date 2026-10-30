@@ -10,7 +10,7 @@ quello salvato con la rete (come sul firmware).
   nominale  stato vero, nessun disturbo ne stimatore
   disturbi  profilo [disturbi] e [sensori] della rete, stimatore della rete
 
-    python prova_smorzamento.py --model modelli_asta20_perno_20s/migliore.zip
+    python prova_smorzamento.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip
     python prova_smorzamento.py --model a/migliore.zip b/migliore.zip --smorzamenti 0.01 0.001 --attrito 0.001
 
 Per ogni smorzamento: successi, passaggi sopra la verticale (entra nella meta alta
