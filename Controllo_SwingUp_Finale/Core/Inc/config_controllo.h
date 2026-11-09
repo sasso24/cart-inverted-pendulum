@@ -1,5 +1,5 @@
 /* GENERATO da cart_pendolo_velocita_rl/esporta_firmware.py: NON modificare a mano.
- * Rete: modelli_asta20_basevecchia_storia1s_20s/migliore.zip (2026-10-24)
+ * Rete: modelli_finale/migliore.zip (2026-10-24)
  * sha256 8e43efb19a1bd596c6ca687e99a9dd3f6254e3286b84dc7d5a8aeff56aaa40e2
  * Per cambiare un valore: config.toml -> nuovo addestramento -> esporta_firmware.py.
  */

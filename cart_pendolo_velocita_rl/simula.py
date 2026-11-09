@@ -26,7 +26,7 @@ import numpy as np
 from ambiente import (CONFIG_DEFAULT, ROOT, Configurazione, ParametriDisturbi, con_offset,
                       configurazione_modello, crea_ambiente)
 
-RETE = ROOT / 'modelli_asta20_basevecchia_storia1s_20s' / 'migliore.zip'
+RETE = ROOT / 'modelli_finale' / 'migliore.zip'
 
 
 def carica_rete(modello):

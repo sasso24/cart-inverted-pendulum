@@ -38,7 +38,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-/* Swing-up con storia degli ingressi (Controllo_SwingUp_Asta20_Storia_BaseVecchia, asta 0,78 / 0,20 m). Tutti i numeri legati all'addestramento
+/* Swing-up con storia degli ingressi (Controllo_SwingUp_Finale, asta 0,78 / 0,20 m). Tutti i numeri legati all'addestramento
  * (motore, rampa, scale degli ingressi, limite di corsa, stimatore, controlli
  * dell'encoder) sono in Core/Inc/config_controllo.h, scritto da
  * cart_pendolo_velocita_rl/esporta_firmware.py dalla configurazione salvata

@@ -29,7 +29,7 @@ Le reti senza storia non arrivano in alto entro 20 s con perni molto frenati (me
 episodio su cinque in addestramento ha viscoso ≥ 0,007).
 
 Firmware (copie, i progetti esistenti non cambiano): `Controllo_SwingUp_Asta20_BaseVecchia`
-(rete 1 = s7 `migliore`, 2 = s3 `ultimo`, 0 = copia della 1) e `Controllo_SwingUp_Asta20_Storia_BaseVecchia`
+(rete 1 = s7 `migliore`, 2 = s3 `ultimo`, 0 = copia della 1) e `Controllo_SwingUp_Finale`
 (una rete). Test `test_candidati`, `test_controllo`, `test_hil` OK (HIL senza storia: 2 swing-up su 3
 nei semi del test, con perno estratto a caso; con storia 3/3). Verifica ONNX di riferimento fallita per
 1,4e-5 (tolleranza 1e-5) su una rete senza storia: riguarda solo il file ONNX.

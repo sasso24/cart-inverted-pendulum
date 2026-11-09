@@ -1,4 +1,4 @@
-# Controllo_SwingUp_Asta20_Storia_BaseVecchia — swing-up con asta 0,78 / 0,20 m e storia degli ingressi
+# Controllo_SwingUp_Finale — swing-up con asta 0,78 / 0,20 m e storia degli ingressi
 
 Firmware consegnato (24/10): rete addestrata da zero (XML con perno 0,01 N·m·s,
 `STIMA_K_D` 0,403, storia di 1 s) con il perno del pendolo **randomizzato a ogni episodio su
@@ -36,10 +36,10 @@ Il tempo di inferenza reale si legge in `rete_durata_ms` (deve restare molto sot
 ## Importarlo in STM32CubeIDE
 
 1. *File → Import → General → Existing Projects into Workspace*.
-2. *Select root directory*: la cartella `Controllo_SwingUp_Asta20_Storia_BaseVecchia`. Spuntare il
+2. *Select root directory*: la cartella `Controllo_SwingUp_Finale`. Spuntare il
    progetto e premere *Finish* (non selezionare "Copy projects into workspace").
 3. *Project → Build Project*: 0 errori. Poi *Run* con la configurazione
-   `Controllo_SwingUp_Asta20_Storia_BaseVecchia Debug`.
+   `Controllo_SwingUp_Finale Debug`.
 
 In `Debug/` c'è solo l'eseguibile provato sul banco il 30/10 (`.elf` pronto da caricare);
 il resto della build lo ricrea CubeIDE a ogni Build.
@@ -71,7 +71,7 @@ vicino a B1 (o all'alimentazione del driver) nelle prime prove.
 
 ## La rete (24/10)
 
-Rete unica (`rete_scelta` = 0): `modelli_asta20_basevecchia_storia1s_20s/migliore.zip` (seed 42,
+Rete unica (`rete_scelta` = 0): `modelli_finale/migliore.zip` (seed 42,
 episodi 20 s, checkpoint a 1,78 M passi su 2,5 M), da
 `cart_pendolo_velocita_rl/config.toml`: perno viscoso
 log-uniforme 0,0003-0,015 N·m·s, attrito coulombiano 0-0,006 N·m (comprende la stima a memoria
@@ -126,7 +126,7 @@ Le soglie si cambiano in `config.toml` → `[firmware]` e si riesportano con
 Dalla cartella `cart_pendolo_velocita_rl`, dopo un addestramento con `[storia]`:
 
 ```sh
-python esporta_firmware.py      # default: modelli_asta20_basevecchia_storia1s_20s/migliore.zip
+python esporta_firmware.py      # default: modelli_finale/migliore.zip
 python esporta_firmware.py --model modelli_riaddestramento/migliore.zip   # dopo un nuovo addestramento
 ```
 

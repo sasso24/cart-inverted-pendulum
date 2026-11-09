@@ -1,6 +1,6 @@
 /* GENERATO da cart_pendolo_velocita_rl/esporta_firmware.py: NON modificare a mano.
  * Reti selezionabili con rete_scelta (main.c), tutte con config_controllo.h:
- *   0: modelli_asta20_basevecchia_storia1s_20s/migliore.zip
+ *   0: modelli_finale/migliore.zip
  */
 #include "reti_candidate.h"
 #include "network_data.h"
@@ -14,5 +14,5 @@ const GuadagniStima reti_candidate_stima[RETI_CANDIDATE_N] = {
 };
 
 const char *const reti_candidate_nomi[RETI_CANDIDATE_N] = {
-  "modelli_asta20_basevecchia_storia1s_20s/migliore.zip",
+  "modelli_finale/migliore.zip",
 };

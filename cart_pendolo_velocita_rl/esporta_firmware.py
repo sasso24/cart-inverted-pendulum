@@ -1,4 +1,4 @@
-"""Porta una rete addestrata nel progetto STM32 (default ../Controllo_SwingUp_Asta20_Storia_BaseVecchia).
+"""Porta una rete addestrata nel progetto STM32 (default ../Controllo_SwingUp_Finale).
 
 Un solo comando, sempre dalla configurazione SALVATA col modello:
   1. Core/Inc/config_controllo.h: motore, rampa, scale degli ingressi, limite
@@ -9,7 +9,7 @@ Un solo comando, sempre dalla configurazione SALVATA col modello:
   3. export_<cartella>/pendolo_actor.onnx con la verifica PyTorch/ONNX.
 
     python esporta_firmware.py
-    python esporta_firmware.py --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip --progetto ../Controllo_SwingUp_Asta20_Storia_BaseVecchia
+    python esporta_firmware.py --model modelli_finale/migliore.zip --progetto ../Controllo_SwingUp_Finale
     python esporta_firmware.py --model a/migliore.zip --candidato b/migliore.zip
         (piu reti nello stesso firmware, scelte al banco con rete_scelta)
     python esporta_firmware.py --solo-onnx     (solo ONNX e verifica, firmware invariato)
@@ -468,7 +468,7 @@ def genera_xcubeai(onnx, progetto):
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip',
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_finale/migliore.zip',
                         help='Rete 0 (quella caricata all accensione)')
     parser.add_argument('--progetto', type=Path,
                         help='Cartella del progetto STM32 (default ../<[firmware].nome_progetto>)')

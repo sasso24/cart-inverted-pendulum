@@ -5,8 +5,8 @@ neurale addestrata in simulazione (SAC + MuJoCo) ed eseguita su una NUCLEO-F446R
 
 | Cartella | Contenuto |
 |---|---|
-| [`cart_pendolo_velocita_rl/`](cart_pendolo_velocita_rl/) | simulazione, addestramento, valutazione ed esportazione nel firmware; rete consegnata in `modelli_asta20_basevecchia_storia1s_20s/` |
-| [`Controllo_SwingUp_Asta20_Storia_BaseVecchia/`](Controllo_SwingUp_Asta20_Storia_BaseVecchia/LEGGIMI.md) | progetto STM32CubeIDE del firmware: encoder, stimatore dello stato, rete (132 ingressi), comando dello stepper, homing, protocollo HIL |
+| [`cart_pendolo_velocita_rl/`](cart_pendolo_velocita_rl/) | simulazione, addestramento, valutazione ed esportazione nel firmware; rete consegnata in `modelli_finale/` |
+| [`Controllo_SwingUp_Finale/`](Controllo_SwingUp_Finale/LEGGIMI.md) | progetto STM32CubeIDE del firmware: encoder, stimatore dello stato, rete (132 ingressi), comando dello stepper, homing, protocollo HIL |
 
 Rami: `main` è la versione consegnata; `archivio-completo` contiene tutte le versioni
 precedenti di firmware e reti, le configurazioni delle prove, i risultati e la variante con
@@ -17,7 +17,7 @@ motion capture/ROS.
 Asta a 20 cm dal centro del perno al capo corto.
 
 1. STM32CubeIDE → *File → Import → Existing Projects into Workspace* →
-   `Controllo_SwingUp_Asta20_Storia_BaseVecchia`.
+   `Controllo_SwingUp_Finale`.
 2. *Project → Build Project*, poi *Run*. Non rigenerare il codice da CubeMX (vedi il `LEGGIMI.md` del firmware).
 3. Pendolo appeso e fermo, premere **B1**: swing-up ed equilibrio. B1 ferma tutto.
 
@@ -49,7 +49,7 @@ Poi in STM32CubeIDE: *Project → Build Project* e *Run*.
 | `simula.py` | simulazione e prove: `finestra` (default), `valuta`, `grafici`, `confronta`, `smorzamento`, `perno` (`python simula.py -h`) |
 | `esporta_firmware.py` | `config_controllo.h`, pesi X-CUBE-AI, ONNX con verifica PyTorch/ONNX |
 | `hil.py` | lato PC della prova hardware-in-the-loop (vedi il `LEGGIMI.md` del firmware) |
-| `modelli_asta20_basevecchia_storia1s_20s/` | rete consegnata (`migliore.zip`), configurazione salvata (`config.json`), curva di addestramento (`progresso.csv`) |
+| `modelli_finale/` | rete consegnata (in `TEST_ESEGUITI.md`: `modelli_asta20_basevecchia_storia1s_20s`; `migliore.zip`), configurazione salvata (`config.json`), curva di addestramento (`progresso.csv`) |
 | `TEST_ESEGUITI.md` | diario di tutte le prove (anche delle reti precedenti) |
 
 ### Pipeline
@@ -59,7 +59,7 @@ config.toml ──> addestra.py ──> modelli_*/migliore.zip + config.json
                                      │
                                      ├─> simula.py (finestra, valuta, grafici, confronta, smorzamento)
                                      │
-                                     └─> esporta_firmware.py ──> ../Controllo_SwingUp_Asta20_Storia_BaseVecchia
+                                     └─> esporta_firmware.py ──> ../Controllo_SwingUp_Finale
                                             ├─ Core/Inc/config_controllo.h   (costanti di motore, stimatore, storia, avvio)
                                             ├─ Core/Src/reti_candidate.c     (pesi e guadagni dello stimatore)
                                             ├─ X-CUBE-AI/App/                (pesi; rigenerato con stedgeai se cambiano gli ingressi)

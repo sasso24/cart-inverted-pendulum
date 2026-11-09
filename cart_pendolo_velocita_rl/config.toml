@@ -157,7 +157,7 @@ ritardi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 
 # -----------------------------------------------------------------------------
 [addestramento]
-cartella = "modelli_riaddestramento"   # la rete consegnata (stessa configurazione) e in modelli_asta20_basevecchia_storia1s_20s
+cartella = "modelli_riaddestramento"   # la rete consegnata (stessa configurazione) e in modelli_finale
 passi = 2500000
 seed = 42
 valuta_ogni = 20000
@@ -177,7 +177,7 @@ ent_coef = "auto_0.1"
 # -----------------------------------------------------------------------------
 [firmware]
 # Usati da esporta_firmware.py per scrivere Core/Inc/config_controllo.h.
-nome_progetto = "Controllo_SwingUp_Asta20_Storia_BaseVecchia"
+nome_progetto = "Controllo_SwingUp_Finale"
 # Partenza con B1, in base all'angolo letto dall'encoder:
 #  - entro angolo_ricalibrazione_gradi da -180 -> pendolo appeso: se fermo da
 #    tempo_quiete_ms l'angolo torna esattamente a -180 (ricalibrazione), poi swing-up;

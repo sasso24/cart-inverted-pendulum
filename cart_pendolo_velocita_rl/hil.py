@@ -176,7 +176,7 @@ def main():
     parser.add_argument('--episodi', type=int, default=5)
     parser.add_argument('--secondi', type=float, default=20.)
     parser.add_argument('--seed', type=int, default=7000)
-    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip',
+    parser.add_argument('--model', type=Path, default=ROOT / 'modelli_finale/migliore.zip',
                         help='Rete caricata sulla scheda')
     parser.add_argument('--disturbi', type=Path,
                         help='TOML con [disturbi]; default quello salvato col modello')

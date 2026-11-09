@@ -94,7 +94,7 @@
       "ent_coef": "auto_0.1"
     },
     "firmware": {
-      "nome_progetto": "Controllo_SwingUp_Asta20_Storia_BaseVecchia",
+      "nome_progetto": "Controllo_SwingUp_Finale",
       "ricalibra_theta_all_avvio": true,
       "angolo_ricalibrazione_gradi": 20.0,
       "tempo_quiete_ms": 1000,

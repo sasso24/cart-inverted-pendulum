@@ -12,12 +12,13 @@ log_asta/
 # Reti addestrate ed esportazioni: escluse tranne la rete del firmware consegnato
 modelli*
 export*
-!/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/
-/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/*
-!/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/migliore.zip
-!/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/config.json
-!/cart_pendolo_velocita_rl/modelli_asta20_basevecchia_storia1s_20s/progresso.csv
+!/cart_pendolo_velocita_rl/modelli_finale/
+/cart_pendolo_velocita_rl/modelli_finale/*
+!/cart_pendolo_velocita_rl/modelli_finale/migliore.zip
+!/cart_pendolo_velocita_rl/modelli_finale/config.json
+!/cart_pendolo_velocita_rl/modelli_finale/progresso.csv
 
 # Build STM32CubeIDE: si tiene solo l'eseguibile provato sul banco
-/Controllo_SwingUp_Asta20_Storia_BaseVecchia/Debug/*
-!/Controllo_SwingUp_Asta20_Storia_BaseVecchia/Debug/*.elf
+/Controllo_SwingUp_Finale/Debug/*
+!/Controllo_SwingUp_Finale/Debug/*.elf
+
