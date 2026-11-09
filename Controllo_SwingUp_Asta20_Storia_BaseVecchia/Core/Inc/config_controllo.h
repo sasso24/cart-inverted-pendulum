@@ -12,14 +12,14 @@
 /* Periodo della rete ([episodio].periodo_controllo_s): letture, stimatore, inferenza. */
 #define CFG_PERIODO_CONTROLLO_MS  20U
 
-/* Motore: stessi valori di [stepper] (stepper.py). */
+/* Motore: stessi valori di [stepper] (ambiente.py). */
 #define CFG_MICROSTEP             32
 #define CFG_FREQ_MIN_HZ           3200.0f
 #define CFG_FREQ_MAX_HZ           32000.0f
 #define CFG_RAMPA_HZ_S            1600000.0f
 #define CFG_ZONA_MORTA            0.0f
 #define CFG_METRI_PER_STEP        1.5e-05f
-/* Inversione: periodi di rampa (2 ms) con frequenza ferma a zero (stepper.py). */
+/* Inversione: periodi di rampa (2 ms) con frequenza ferma a zero (ambiente.py). */
 #define CFG_TICK_FERMO_INVERSIONE 1U
 
 /* Scale dei sei ingressi della rete (come l ambiente Python). */
@@ -50,7 +50,7 @@
 #define STIMA_L_B      (-0.044103f)
 #define STIMA_B_MAX_RAD 0.261799f
 
-/* Storia degli ingressi ([storia], storia.py): per ogni ritardo (in periodi)
+/* Storia degli ingressi ([storia], ambiente.py): per ogni ritardo (in periodi)
  * i sei ingressi di allora e l azione decisa, dopo i sei ingressi attuali. */
 #define CFG_STORIA_N              18U
 #define CFG_STORIA_INGRESSI       132U

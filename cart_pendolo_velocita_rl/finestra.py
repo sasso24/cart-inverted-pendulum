@@ -1,4 +1,8 @@
-"""Viewer essenziale: input e grafica sullo stesso thread principale macOS."""
+"""Finestre MuJoCo: input e grafica sullo stesso thread principale macOS.
+
+run: pendolo con la rete SAC o in manuale (simula.py).
+run_perno: pendolo libero per la prova del perno (simula.py perno).
+"""
 import math
 import time
 
@@ -240,6 +244,130 @@ def run(env, agent, seed=None):
                                viewport, text, "", context)
             glfw.swap_buffers(window)
             time.sleep(0.001)
+    finally:
+        if context is not None:
+            context.free()
+        if window is not None:
+            glfw.destroy_window(window)
+        glfw.terminate()
+
+
+# Primo valore salendo da zero con i tasti della prova del perno.
+MINIMI = {'smorzamento': 1e-4, 'attrito': 1e-4, 'aria': 1e-5}
+
+
+def run_perno(prova):
+    """Finestra di simula.py perno: pendolo libero, perno regolabile da tastiera."""
+    if not glfw.init():
+        raise RuntimeError('Impossibile inizializzare la finestra grafica.')
+    window = context = None
+    try:
+        window = glfw.create_window(1100, 760, 'Prova del perno - pendolo libero', None, None)
+        if not window:
+            raise RuntimeError('Impossibile creare la finestra grafica.')
+        glfw.make_context_current(window)
+        glfw.swap_interval(1)
+        scene = mujoco.MjvScene(prova.model, maxgeom=1000)
+        context = mujoco.MjrContext(prova.model, mujoco.mjtFontScale.mjFONTSCALE_150)
+        camera = mujoco.MjvCamera()
+        camera.azimuth, camera.elevation, camera.distance = 270, -8, 3.2
+        camera.lookat[:] = [0, 0, 1.0]
+        options = mujoco.MjvOption()
+        stato = {'pausa': False}
+
+        def cambia(nome, fattore):
+            valore = getattr(prova, nome)
+            if fattore > 1:
+                valore = MINIMI[nome] if valore == 0 else valore*fattore
+            else:
+                valore = 0. if valore*fattore < MINIMI[nome] else valore*fattore
+            setattr(prova, nome, valore)
+            prova.applica()
+            print('Cambiato (R per ripartire con questi valori): ' + prova.parametri(), flush=True)
+
+        def riparti():
+            print('Prova finita: ' + prova.riepilogo(), flush=True)
+            prova.riparti()
+            print('Riparto: ' + prova.parametri(), flush=True)
+
+        def on_key(win, key, scancode, action, mods):
+            if action not in (glfw.PRESS, glfw.REPEAT):
+                return
+            tasti = {glfw.KEY_Q: ('smorzamento', 1.25), glfw.KEY_A: ('smorzamento', 0.8),
+                     glfw.KEY_W: ('attrito', 1.25), glfw.KEY_S: ('attrito', 0.8),
+                     glfw.KEY_E: ('aria', 1.25), glfw.KEY_D: ('aria', 0.8)}
+            if key == glfw.KEY_ESCAPE:
+                glfw.set_window_should_close(win, True)
+            elif key in tasti:
+                cambia(*tasti[key])
+            elif key == glfw.KEY_Z:
+                prova.smorzamento = prova.attrito = prova.aria = 0.
+                prova.applica()
+                print('Cambiato (R per ripartire con questi valori): ' + prova.parametri(), flush=True)
+            elif key in (glfw.KEY_UP, glfw.KEY_DOWN):
+                prova.angolo = min(180., max(10., prova.angolo + (10. if key == glfw.KEY_UP else -10.)))
+                riparti()
+            elif key == glfw.KEY_R:
+                riparti()
+            elif key == glfw.KEY_SPACE:
+                stato['pausa'] = not stato['pausa']
+
+        def on_scroll(win, xoffset, yoffset):
+            camera.distance = min(20., max(0.5, camera.distance*math.exp(-0.1*yoffset)))
+
+        precedente = [None]
+
+        def on_cursor(win, x, y):
+            if precedente[0] is not None and glfw.get_mouse_button(win, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+                camera.azimuth -= 0.25*(x - precedente[0][0])
+                camera.elevation = min(89., max(-89., camera.elevation - 0.25*(y - precedente[0][1])))
+            precedente[0] = (x, y)
+
+        glfw.set_key_callback(window, on_key)
+        glfw.set_scroll_callback(window, on_scroll)
+        glfw.set_cursor_pos_callback(window, on_cursor)
+        print('Parto: ' + prova.parametri(), flush=True)
+        ultimo, accumulo, fermo_stampato = time.monotonic(), 0., False
+        while not glfw.window_should_close(window):
+            glfw.poll_events()
+            adesso = time.monotonic()
+            trascorso, ultimo = min(adesso - ultimo, 0.1), adesso
+            if not stato['pausa']:
+                accumulo += trascorso
+                while accumulo >= prova.model.opt.timestep:
+                    prova.passo()
+                    accumulo -= prova.model.opt.timestep
+            if prova.fermo_t is not None and not fermo_stampato:
+                print('Fermo: ' + prova.riepilogo(), flush=True)
+                fermo_stampato = True
+            elif prova.fermo_t is None:
+                fermo_stampato = False
+            mujoco.mj_forward(prova.model, prova.data)
+            larghezza, altezza = glfw.get_framebuffer_size(window)
+            if larghezza == 0 or altezza == 0:
+                time.sleep(0.02)
+                continue
+            viewport = mujoco.MjrRect(0, 0, larghezza, altezza)
+            mujoco.mjv_updateScene(prova.model, prova.data, options, None, camera,
+                                   mujoco.mjtCatBit.mjCAT_ALL, scene)
+            mujoco.mjr_render(viewport, scene, context)
+            periodo = prova.periodo()
+            calo, rapporto = prova.calo()
+            testo = (prova.parametri() + '\n'
+                     + f't {prova.data.time:.1f} s | angolo da appeso {prova.angolo_da_appeso:+.1f} gradi | '
+                     + f'oscillazioni complete {(len(prova.picchi) - 1)/2:.1f}'
+                     + (f' | periodo {periodo:.3f} s' if periodo else '') + '\n'
+                     + f'ultima ampiezza {prova.picchi[-1][1]:.1f} gradi'
+                     + (f' | calo per semi-oscillazione {calo:.2f} gradi (rapporto {rapporto:.3f})'
+                        if calo is not None and rapporto is not None else '') + '\n'
+                     + prova.soglie_testo() + '\n'
+                     + 'Q/A smorzamento  W/S attrito  E/D aria  Z zero  Su/Giu angolo  R riparti  '
+                     + 'Spazio pausa  Esc' + ('\nIN PAUSA' if stato['pausa'] else ''))
+            mujoco.mjr_overlay(mujoco.mjtFont.mjFONT_NORMAL, mujoco.mjtGridPos.mjGRID_TOPLEFT,
+                               viewport, testo, '', context)
+            glfw.swap_buffers(window)
+            time.sleep(0.001)
+        print('Ultima prova: ' + prova.riepilogo(), flush=True)
     finally:
         if context is not None:
             context.free()

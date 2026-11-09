@@ -26,8 +26,8 @@ Gli stessi ritardi sono in `config_controllo.h` (`CFG_STORIA_RITARDI`, generato 
 `esporta_firmware.py`). Nel firmware (`main.c`, `Storia_*`): un anello di 50 periodi;
 dopo ogni inferenza gli ingressi e l'azione di adesso diventano il ritardo 1. A ogni
 avvio con B1 (e dopo ogni arresto) la storia riparte riempita con i primi ingressi e
-azione 0, esattamente come all'inizio di un episodio in simulazione (`storia.py`).
-Lo verificano `tests/test_controllo.py` (ritardi, azioni, riavvio) e `tests/test_hil.py`.
+azione 0, esattamente come all'inizio di un episodio in simulazione (`ConStoria` in `ambiente.py`).
+Lo verificano i test su PC `test_controllo.py` (ritardi, azioni, riavvio) e `test_hil.py`.
 
 Costo: 33 931 moltiplicazioni per inferenza (il doppio della rete a 6 ingressi), 131,5 KB
 di pesi per rete, 1 KB di RAM per le attivazioni. Questo firmware ha una sola rete (con due reti: 307 KB di flash su 512).
@@ -41,8 +41,8 @@ Il tempo di inferenza reale si legge in `rete_durata_ms` (deve restare molto sot
 3. *Project → Build Project*: 0 errori. Poi *Run* con la configurazione
    `Controllo_SwingUp_Asta20_Storia_BaseVecchia Debug`.
 
-La cartella `Debug/` contiene la build provata sul banco il 30/10 (`.elf` pronto da caricare);
-CubeIDE la ricrea a ogni Build.
+In `Debug/` c'è solo l'eseguibile provato sul banco il 30/10 (`.elf` pronto da caricare);
+il resto della build lo ricrea CubeIDE a ogni Build.
 **Non rigenerare il codice da CubeMX**: il `.ioc` descrive ancora la rete X-CUBE-AI a 6
 ingressi e la rigenerazione rimetterebbe `X-CUBE-AI/App` a 6 ingressi (il Build si ferma
 con `#error ... CFG_STORIA_INGRESSI`). In quel caso rieseguire `esporta_firmware.py` (sotto).
@@ -73,11 +73,11 @@ vicino a B1 (o all'alimentazione del driver) nelle prime prove.
 
 Rete unica (`rete_scelta` = 0): `modelli_asta20_basevecchia_storia1s_20s/migliore.zip` (seed 42,
 episodi 20 s, checkpoint a 1,78 M passi su 2,5 M), da
-`cart_pendolo_velocita_rl/config_asta20_basevecchia_storia1s_20s.toml`: perno viscoso
+`cart_pendolo_velocita_rl/config.toml`: perno viscoso
 log-uniforme 0,0003-0,015 N·m·s, attrito coulombiano 0-0,006 N·m (comprende la stima a memoria
 del banco, 0,0095 + 0,006), resistenza dell'aria 0-6,6e-4 N·m·s².
 
-`prova_smorzamento.py`, 20 semi per valore, con disturbi:
+`simula.py smorzamento`, 20 semi per valore, con disturbi:
 
 | perno | questa rete | rete del 23/10 (`Controllo_SwingUp_Asta20_Storia`, rete 0) |
 |---|---:|---:|
@@ -102,10 +102,10 @@ resta su, `stima.offset` (rad) in equilibrio, `rete_durata_ms` e `controllo_erro
 | Limite di corsa del controllo | coincide con i finecorsa | centro ± `CFG_LIMITE_CORSA_M` (0,40 m), come in addestramento |
 | Lettura encoder impossibile | accettata | arresto, `controllo_errore = 9` (salto > `CFG_SALTO_ENCODER_MAX` conteggi in un periodo) |
 | Periodo della rete | 20 ms con deriva di 0–2 ms | `CFG_PERIODO_CONTROLLO_MS` (10 ms dalle reti del 16/10, 20 ms prima), senza deriva |
-| Inversione del motore | 2–4 ms fermo, poi ripartenza con salto di frequenza | arresto al fronte STEP, DIR cambiato nell'ISR, rampa ferma a zero per `CFG_TICK_FERMO_INVERSIONE` periodi e poi ripartenza da zero: identica a `stepper.py` (verificato da `tests/test_controllo.py`) |
+| Inversione del motore | 2–4 ms fermo, poi ripartenza con salto di frequenza | arresto al fronte STEP, DIR cambiato nell'ISR, rampa ferma a zero per `CFG_TICK_FERMO_INVERSIONE` periodi e poi ripartenza da zero: identica a `ControlloStepper` in `ambiente.py` (verificato da `test_controllo.py`) |
 | Offset dell'encoder (conteggi persi) | non corretto: la rete vede l'angolo sbagliato | stimato come terzo stato dello stimatore (`STIMA_L_B`, solo nella metà alta, limite ±15°): la rete riceve l'angolo vero stimato. Dal 16/10 anche per la rete del 14/10 (`esporta_firmware.py --stimatore-offset -1`) |
 | Guasti CPU (HardFault…) | STEP continuava | TIM3 fermato subito |
-| Zona morta dell'azione | ignorata | come `stepper.py` |
+| Zona morta dell'azione | ignorata | come `ControlloStepper` (`ambiente.py`) |
 | `ENCODER_SIGN` | — | -1 (impostato sul banco il 16/10) |
 | Ingressi della rete | 6 | 6; qui **132**: i 6 attuali + storia di 1 s (`CFG_STORIA_*`) |
 
@@ -140,19 +140,80 @@ dello stesso firmware devono avere gli stessi ritardi.
 
 ## Test su PC (senza scheda)
 
+I test del firmware sono locali, nella cartella `test/` alla radice (non tracciata da git).
 Dalla radice del repository, con l'ambiente Python del progetto RL:
 
 ```sh
-python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_controllo.py   # USER CODE reale con HAL simulata, anche la storia
-python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_stima.py       # stima.c = stima.py
-python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_hil.py         # protocollo HIL con la rete del firmware (132 ingressi)
-python3 Controllo_SwingUp_Asta20_Storia_BaseVecchia/tests/test_candidati.py   # pesi e guadagni della rete = checkpoint
+python test/test_controllo.py   # USER CODE reale con HAL simulata, anche la storia
+python test/test_stima_c.py     # stima.c = StimatoreStato (richiede scipy)
+python test/test_hil.py         # protocollo HIL con la rete del firmware (132 ingressi)
+python test/test_candidati.py   # pesi e guadagni della rete = checkpoint
 ```
 
-`test_stima.py` usa `stima.guadagni_con_offset`, che richiede scipy
-(in `cart_pendolo_velocita_rl/requirements.txt`).
+## Prova hardware-in-the-loop (HIL)
 
-La prova HIL sulla scheda vera è identica a quella di `HIL.md`
-(`HIL_MODE 1`, poi `./HIL.command --model modelli_asta20_basevecchia_storia1s_20s/migliore.zip`).
+La simulazione MuJoCo gira sul Mac; **stimatore (`stima.c`) e rete X-CUBE-AI
+girano sulla STM32**. A ogni periodo della rete il Mac manda alla scheda posizione e angolo
+simulati (con rumore e disturbi salvati con la rete) e le velocità della rampa;
+la scheda risponde con il comando, che pilota la simulazione. In parallelo il
+Mac calcola lo stimatore Python e la rete PyTorch e confronta i risultati passo per passo.
 La scheda rimanda i sei ingressi attuali; `hil.py` confronta quelli e l'azione
 (calcolata con la storia del PC, uguale a quella della scheda).
+
+Verifica: runtime ST e pesi caricati, stimatore in C su Cortex-M4, tempo di
+inferenza reale, protocollo. **Non** verifica motore, driver, encoder e meccanica.
+In modalità HIL il firmware non fa homing, non legge l'encoder e non comanda mai
+il motore. Per sicurezza tieni comunque **spenta l'alimentazione del driver**.
+
+1. In `Core/Src/main.c` scrivere `#define HIL_MODE 1`, *Project → Build Project* (0 errori),
+   caricare con *Run*. Il LED verde LD2 resta spento finché il Mac non manda dati, poi
+   lampeggia a ogni pacchetto.
+2. Chiudere ogni monitor seriale aperto sulla scheda. Dalla cartella `cart_pendolo_velocita_rl`:
+
+   ```sh
+   ./Avvia.command hil.py --ping                       # verifica la connessione
+   ./Avvia.command hil.py                              # 5 episodi da 20 s
+   ./Avvia.command hil.py --episodi 10 --secondi 60    # prova più lunga
+   ./Avvia.command hil.py --intensita 1                # disturbi al massimo
+   ```
+
+   La porta viene trovata da sola; altrimenti `ls /dev/cu.usbmodem*` e `--porta /dev/cu.usbmodemXXXX`.
+   A 115200 baud ogni passo richiede circa 12–15 ms: un episodio da 20 s dura 20–30 s reali.
+3. Rimettere `#define HIL_MODE 0`, ricompilare e ricaricare **prima** di riaccendere il driver.
+
+Per ogni episodio viene stampato, per esempio:
+
+```
+Episodio 1/5 seed 7000: OK | stabile 20.0 s | angolo max 2.5 deg | diff obs 1.0e-07 | diff azione 2.4e-07 | rete 450 us (max 470)
+```
+
+- **OK / CADUTO**: il pendolo, comandato dalla scheda, resta in equilibrio?
+- **diff obs**: ingressi della rete calcolati dalla scheda contro lo stimatore Python
+  (atteso < 1e-4: differenze di arrotondamento float32).
+- **diff azione**: uscita X-CUBE-AI contro PyTorch sugli stessi ingressi
+  (atteso < 1e-4; valori grandi = pesi non aggiornati o rete sbagliata).
+- **rete**: tempo di `ai_network_run` misurato sulla scheda (molto sotto il periodo di controllo).
+
+I risultati vanno in `cart_pendolo_velocita_rl/risultati/hil/`: `hil_<data>.csv` (ogni passo)
+e `hil_<data>.json` (riepilogo).
+
+| Messaggio | Causa probabile |
+|---|---|
+| `Nessuna scheda trovata` | Cavo solo di alimentazione, o porta diversa: usa `--porta` |
+| `Resource busy` / porta occupata | Un monitor seriale (CubeIDE, screen, CoolTerm) è aperto |
+| `La scheda non risponde` | Firmware con `HIL_MODE 0`, oppure scheda in pausa nel debugger: premi Resume o il tasto nero RESET |
+| `Errore della scheda 2` | Rete X-CUBE-AI non inizializzata o inferenza fallita |
+| `diff azione` grande | Pesi in `network_data_params.c` diversi dalla rete `--model` |
+
+Protocollo: USART2 (ST-LINK VCP), 115200 8N1, little-endian. Ogni pacchetto
+`A5 5A | corpo | checksum`, con checksum = complemento a due della somma dei byte del corpo.
+
+- PC → scheda, 58 byte: `comando u8` (0 inizio episodio, 1 passo, 2 ping),
+  `n u8`, `seq u32`, `v[10] f32` (m/s, una per ogni 2 ms), `x f32` (m),
+  `theta f32` (rad), `applied_hz f32`.
+- Scheda → PC, 60 byte: `seq u32`, `errore u32`, `azione f32`,
+  `richiesta_hz f32`, `osservazione[6] f32`, `stima x, theta, omega f32`,
+  `rete_us u32`, `totale_us u32`.
+
+Una richiesta con lo stesso `seq` della precedente non viene rieseguita: la
+scheda rimanda la risposta precedente (ritrasmissione dopo un timeout).

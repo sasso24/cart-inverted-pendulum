@@ -211,7 +211,7 @@ static float ultimo_theta_rad = PI_F;
 Stima stima;                         /* osservabile dal debugger */
 
 #if CFG_STORIA_N > 0
-/* Storia degli ingressi (storia.py): per ogni ritardo k la rete riceve i sei
+/* Storia degli ingressi (ConStoria in ambiente.py): per ogni ritardo k la rete riceve i sei
  * ingressi di k periodi fa e l'azione decisa allora. Anello di CFG_STORIA_MAX
  * periodi: storia_testa = periodo precedente (ritardo 1). Ad ogni avvio la storia
  * e' riempita con i primi ingressi e azione 0, come all'inizio di un episodio. */
@@ -872,7 +872,7 @@ void Controllo_MotorTick(void)
     ultimo_motore_ms = now;
 
     /* Un solo passo da 2 ms; nessun salto di accelerazione dopo un ritardo.
-     * Stessa logica di ControlloStepper.avanza (stepper.py). */
+     * Stessa logica di ControlloStepper.avanza (ambiente.py). */
     float delta_max = STEPPER_ACCELERATION_HZ_PER_S * MOTOR_PERIOD_MS / 1000.0f;
     float delta = frequenza_richiesta_hz - frequenza_rampa_hz;
     float nuova = frequenza_rampa_hz + fmaxf(-delta_max, fminf(delta, delta_max));
@@ -914,7 +914,7 @@ void Controllo_MotorTick(void)
     {
         /* Motore fermo nel verso opposto (partenza, o richiesta cambiata durante
          * l'arresto): nuovo DIR e attesa del tempo di setup del driver (>= 5 us)
-         * prima del primo impulso, nello stesso periodo come in stepper.py. */
+         * prima del primo impulso, nello stesso periodo come in ambiente.py. */
         Stepper_SetDirection(dir);
         for (volatile uint32_t k = 0; k < DIR_SETUP_CICLI; ++k)
         {
@@ -975,7 +975,7 @@ static void Storia_Aggiungi(const volatile float obs[6], float azione)
     storia_passato[storia_testa][6] = azione;
 }
 
-/* Ingressi 6.. della rete: [obs(t-k), u(t-k)] per ogni ritardo k, nell'ordine di storia.py. */
+/* Ingressi 6.. della rete: [obs(t-k), u(t-k)] per ogni ritardo k, nell'ordine di ConStoria (ambiente.py). */
 static void Storia_Ingressi(ai_float *input)
 {
     for (uint32_t j = 0; j < CFG_STORIA_N; ++j)
@@ -987,7 +987,7 @@ static void Storia_Ingressi(ai_float *input)
 }
 #endif
 
-/* Uscita della rete [-1,1] -> frequenza STEP firmata, come stepper.py
+/* Uscita della rete [-1,1] -> frequenza STEP firmata, come ControlloStepper (ambiente.py)
  * (ControlloStepper.azione_a_hz), zona morta compresa. */
 static float Rete_AzioneInHz(float action)
 {
@@ -1152,7 +1152,7 @@ static void Rete_Process(void)
 
 #if HIL_MODE
 /* ------------------------------------------------------------------------
- * Hardware-in-the-loop (vedi HIL.md). Protocollo su USART2, little-endian:
+ * Hardware-in-the-loop (vedi LEGGIMI.md). Protocollo su USART2, little-endian:
  *   PC -> scheda: A5 5A | HilRichiesta (58 byte) | checksum
  *   scheda -> PC: A5 5A | HilRisposta  (60 byte) | checksum
  * checksum = complemento a due della somma dei byte del corpo.
@@ -1272,7 +1272,7 @@ static void Hil_Elabora(const HilRichiesta *r, HilRisposta *out)
         input[i] = rete_osservazione[i];
     }
 #if CFG_STORIA_N > 0
-    /* Inizio episodio (comando 0): storia dai primi ingressi, come storia.py. */
+    /* Inizio episodio (comando 0): storia dai primi ingressi, come ConStoria (ambiente.py). */
     if (r->comando == 0U)
         Storia_Reset(rete_osservazione);
     Storia_Ingressi(input);

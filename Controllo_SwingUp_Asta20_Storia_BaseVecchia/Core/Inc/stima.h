@@ -1,5 +1,5 @@
 /* Stimatore dello stato del pendolo: porting 1:1 di
- * cart_pendolo_velocita_rl/stima.py (costanti da config_controllo.h).
+ * cart_pendolo_velocita_rl/ambiente.py (StimatoreStato) (costanti da config_controllo.h).
  *
  * Predizione (500 Hz, ogni passo della rampa, velocita' applicata v):
  *   a      = (v - v_precedente) / dt

@@ -3,10 +3,10 @@
 #  CONFIGURAZIONE UNICA del pendolo inverso (addestramento SAC + firmware)
 # =============================================================================
 # Tutto si cambia da qui. Uso:
-#     python addestra.py                       (o ./Addestra.command)
+#     python addestra.py                       (o ./Avvia.command, scelta 3)
 #     python addestra.py --config altra.toml --output modelli_prova
 # Ogni addestramento copia questa configurazione in <cartella>/config.json:
-# simula, valuta, grafici, hil ed esporta_firmware usano quella copia, quindi
+# simula, hil ed esporta_firmware usano quella copia, quindi
 # cambiare questo file non altera le reti gia addestrate.
 # Angoli: 0 = pendolo in alto, -180 (= +180) = pendolo appeso in basso.
 
@@ -134,12 +134,12 @@ rapporto_trasmissione = 1.0
 
 # -----------------------------------------------------------------------------
 [stimatore]
-# k_g, k_a, k_d da stima.coefficienti_da_modello(cart_pendolo_asta20.xml).
+# k_g, k_a, k_d da ambiente.coefficienti_da_modello(cart_pendolo_asta20.xml).
 k_g = 17.3295
 k_a = 1.76651
 k_d = 0.403267
 # Stimatore a tre stati: angolo, velocita angolare e OFFSET dell'encoder (16/10).
-# Guadagni a 20 ms da stima.guadagni_con_offset(parametri, 0.02, -1.0) con i k di questa asta: stessi due
+# Guadagni a 20 ms da ambiente.guadagni_con_offset(parametri, 0.02, -1.0) con i k di questa asta: stessi due
 # poli dello stimatore storico (0.2 / 1.0 a 20 ms) + polo dell'offset a -1/s.
 # l_b = 0 torna allo stimatore a due stati (l_theta 0.2, l_omega 1.0).
 l_theta = 0.259944
@@ -150,7 +150,7 @@ l_x = 0.05
 
 # -----------------------------------------------------------------------------
 [storia]
-# Ingressi passati (storia.py): per ogni ritardo k (in periodi di controllo) la rete
+# Ingressi passati (ConStoria in ambiente.py): per ogni ritardo k (in periodi di controllo) la rete
 # riceve i sei ingressi di k periodi fa e l azione decisa allora.
 # 1 s ridotta: ogni 20 ms fino a 0,2 s, poi ogni 100 ms fino a 1 s (132 ingressi). [] = solo i sei ingressi attuali.
 ritardi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50]

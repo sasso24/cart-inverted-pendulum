@@ -1,4 +1,4 @@
-/* Porting di cart_pendolo_velocita_rl/stima.py: stesso ordine delle operazioni.
+/* Porting di cart_pendolo_velocita_rl/ambiente.py (StimatoreStato): stesso ordine delle operazioni.
  * Nessuna dipendenza da HAL: compilabile e testabile anche su host.
  */
 #include "stima.h"
@@ -49,7 +49,7 @@ void Stima_Correggi(Stima *s, float x_misurata, float theta_misurato)
     float r = Stima_Wrap(theta_misurato - s->theta - s->offset);
     if (stima_l_b != 0.0f)
     {
-        /* Solo nella meta' alta (vedi stima.py). */
+        /* Solo nella meta' alta (vedi StimatoreStato in ambiente.py). */
         float peso = fmaxf(cosf(s->theta), 0.0f);
         s->offset = fmaxf(-STIMA_B_MAX_RAD,
                           fminf(STIMA_B_MAX_RAD, s->offset + stima_l_b * peso * r));

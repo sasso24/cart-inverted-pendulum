@@ -19,40 +19,21 @@ import torch
 from stable_baselines3 import SAC
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor
-from ambiente import ROOT
-from configurazione import CONFIG_DEFAULT, Configurazione, configurazione_modello
-from disturbi import ParametriDisturbi, crea_ambiente
-from stepper import ParametriStepper
+from ambiente import (CONFIG_DEFAULT, ROOT, Configurazione, ParametriDisturbi,
+                      configurazione_modello, crea_ambiente)
 
-CODICE = ('ambiente.py', 'stepper.py', 'disturbi.py', 'stima.py', 'configurazione.py', 'storia.py')
+CODICE = ('ambiente.py',)
 
 
 def _sha(name):
     return hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
 
 
-def contract(disturbi=None):
-    """Firma storica (checkpoint fino al 9 ottobre): modello, codice e parametri."""
-    names = ('cart_pendolo.xml', 'ambiente.py', 'stepper.py', 'stepper.toml')
-    result = {"sha256": {name: _sha(name) for name in names},
-              "stepper": asdict(ParametriStepper.carica()), "observation_size": 6,
-              "action": "signed_normalized_step_frequency", "control_hz": 50}
-    if disturbi is not None:
-        for name in ('disturbi.py', 'stima.py', 'stimatore.toml'):
-            result['sha256'][name] = _sha(name)
-        result['disturbi'] = json.loads(json.dumps(asdict(disturbi)))
-    return result
-
-
 def firma(cfg):
-    """Firma dei nuovi checkpoint: configurazione completa + impronte di XML e codice."""
+    """Firma dei checkpoint: configurazione completa + impronte di XML e codice."""
     return {'observation_size': cfg.storia.ingressi, 'action': 'signed_normalized_step_frequency',
             'control_hz': round(1. / cfg.episodio.periodo_controllo_s, 6), 'xml_sha256': _sha(cfg.modello.file_xml),
             'codice_sha256': {name: _sha(name) for name in CODICE}}
-
-
-def profilo_salvato(folder):
-    return configurazione_modello(folder).disturbi
 
 
 def check_contract(folder, rigoroso=False):
@@ -65,24 +46,12 @@ def check_contract(folder, rigoroso=False):
     path = folder / 'config.json'
     if not path.exists():
         raise ValueError('Checkpoint senza config.json: addestrare in una nuova cartella.')
-    saved = json.loads(path.read_text())
-    if 'configurazione' in saved:
-        cfg = configurazione_modello(folder)
-        attuale, salvata = firma(cfg), saved.get('firma', {})
-        if salvata.get('xml_sha256') != attuale['xml_sha256']:
-            raise ValueError(f'{cfg.modello.file_xml} e cambiato dopo l addestramento: '
-                             'addestrare in una nuova cartella.')
-        diversi = [n for n in CODICE if salvata.get('codice_sha256', {}).get(n) != attuale['codice_sha256'][n]]
-    else:
-        attuale = contract(profilo_salvato(folder))
-        salvata = saved.get('environment', {})
-        fisici = [n for n in attuale['sha256'] if not n.endswith('.py')]
-        if ({k: v for k, v in salvata.items() if k != 'sha256'}
-                != {k: v for k, v in attuale.items() if k != 'sha256'}
-                or any(salvata.get('sha256', {}).get(n) != attuale['sha256'][n] for n in fisici)):
-            raise ValueError('Checkpoint incompatibile con ambiente/parametri. Addestrare in una nuova cartella.')
-        diversi = [n for n in attuale['sha256'] if n.endswith('.py')
-                   and salvata.get('sha256', {}).get(n) != attuale['sha256'][n]]
+    cfg = configurazione_modello(folder)
+    attuale, salvata = firma(cfg), json.loads(path.read_text()).get('firma', {})
+    if salvata.get('xml_sha256') != attuale['xml_sha256']:
+        raise ValueError(f'{cfg.modello.file_xml} e cambiato dopo l addestramento: '
+                         'addestrare in una nuova cartella.')
+    diversi = [n for n in CODICE if salvata.get('codice_sha256', {}).get(n) != attuale['codice_sha256'][n]]
     if diversi:
         messaggio = (f'Codice cambiato dopo l addestramento di {folder.name}: {", ".join(diversi)}. '
                      'Con i parametri di default il comportamento storico e conservato.')
@@ -154,7 +123,7 @@ class Progress(BaseCallback):
         # disturbato, poi la durata stabile peggiore, poi la ricompensa. Con la
         # versione 4 una rete con 0% di successi ma 0,2 s di equilibrio batteva
         # una con il 50%.
-        self.versione = 3 if configurazione is None else 5
+        self.versione = 5
         self.started = time.monotonic()
         self.best = (float("-inf"), float("-inf"))
         if (folder / "best_metrics.json").exists():
@@ -163,8 +132,6 @@ class Progress(BaseCallback):
                 self.best = self._chiave(previous)
 
     def _chiave(self, metrics):
-        if self.versione < 5:
-            return (metrics['selection_score'], metrics['selection_reward'])
         successi = min(metrics['success_rate'], metrics.get('nominal', metrics)['success_rate'])
         return (successi, metrics['selection_score'], metrics['selection_reward'])
 
@@ -233,7 +200,7 @@ def main():
     parser.add_argument('--riempi', type=int, default=2000,
                         help='Con --resume senza buffer: passi raccolti prima di riprendere gli aggiornamenti')
     parser.add_argument('--disturbi', type=Path,
-                        help='Profilo [disturbi] in un TOML separato (sostituisce quello di --config)')
+                        help='TOML con la sezione [disturbi] (sostituisce quella di --config)')
     args = parser.parse_args()
     if args.resume and args.parti_da:
         parser.error("Usa --resume oppure --parti-da, non entrambi.")
@@ -262,10 +229,8 @@ def main():
     if not args.resume and any(output.iterdir()):
         parser.error(f"{output} contiene gia un addestramento: usa --resume oppure --output con una nuova cartella.")
     disturbi = cfg.disturbi_addestramento
-    legacy = args.resume and 'configurazione' not in json.loads((output / 'config.json').read_text())
-    cfg_env = None if legacy else cfg
     torch.set_num_threads(1)
-    env = Monitor(crea_ambiente(disturbi, configurazione=cfg_env, addestramento=True))
+    env = Monitor(crea_ambiente(disturbi, configurazione=cfg, addestramento=True))
     if args.resume:
         agent = SAC.load(output / "ultimo", env=env, device="cpu")
         buffer = output / "esperienze.pkl"
@@ -304,13 +269,13 @@ def main():
         print('Guasti sensori attivi: ' + ', '.join(f'{k}={v:g}' for k, v in asdict(cfg.sensori).items()), flush=True)
     print(f'Periodo di controllo {env.unwrapped.dt*1000:g} ms ({env.unwrapped.frame_skip} passi fisici), '
           f'gamma {a.gamma:g}', flush=True)
-    if cfg.episodio.frazione_partenza_casuale and not legacy:
+    if cfg.episodio.frazione_partenza_casuale:
         print(f'Partenze casuali: {cfg.episodio.frazione_partenza_casuale:.0%} degli episodi', flush=True)
-    print(("Swing-up: episodi dal basso " if cfg.episodio.swing_up and not legacy
+    print(("Swing-up: episodi dal basso " if cfg.episodio.swing_up
            else "Equilibrio: episodi dall'alto ") + f"-> {output}. Ctrl+C salva ed esce.", flush=True)
     try:
         agent.learn(total_timesteps=steps,
-                    callback=Progress(output, eval_every, disturbi, cfg_env, a.episodi_selezione,
+                    callback=Progress(output, eval_every, disturbi, cfg, a.episodi_selezione,
                                       args.salva_buffer_ogni),
                     reset_num_timesteps=not args.resume)
     except KeyboardInterrupt:

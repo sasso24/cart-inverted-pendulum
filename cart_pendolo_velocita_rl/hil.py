@@ -1,11 +1,11 @@
 """Hardware-in-the-loop: simulazione MuJoCo sul PC, stimatore e rete sulla STM32.
 
-La scheda deve avere il firmware compilato con HIL_MODE 1 (vedi HIL.md).
+La scheda deve avere il firmware compilato con HIL_MODE 1 (vedi il LEGGIMI.md del firmware).
 A ogni passo (periodo della rete, 20 o 10 ms) il PC manda alla scheda le misure simulate (rumorose,
-con i disturbi di disturbi.toml) e le velocita' applicate dalla rampa; la
+con i disturbi salvati con la rete) e le velocita' applicate dalla rampa; la
 scheda esegue stima.c e la rete X-CUBE-AI e restituisce il comando, che
-pilota la simulazione. In parallelo il PC calcola stima.py e la rete PyTorch
-per confrontare i due risultati passo per passo.
+pilota la simulazione. In parallelo il PC calcola lo stimatore Python e la rete
+PyTorch per confrontare i due risultati passo per passo.
 
     python hil.py                      # porta trovata da sola, 5 episodi da 20 s
     python hil.py --porta /dev/cu.usbmodem1103 --episodi 10 --secondi 60
@@ -179,7 +179,7 @@ def main():
     parser.add_argument('--model', type=Path, default=ROOT / 'modelli_asta20_basevecchia_storia1s_20s/migliore.zip',
                         help='Rete caricata sulla scheda')
     parser.add_argument('--disturbi', type=Path,
-                        help='Profilo TOML; default quello salvato col modello (o disturbi.toml)')
+                        help='TOML con [disturbi]; default quello salvato col modello')
     parser.add_argument('--intensita', type=float, help='Sovrascrive intensita del profilo')
     parser.add_argument('--output', type=Path, default=ROOT / 'risultati/hil')
     parser.add_argument('--ping', action='store_true', help='Verifica solo la connessione')
@@ -197,28 +197,19 @@ def main():
         if args.ping:
             return
 
-        import torch
         from dataclasses import replace
-        from stable_baselines3 import SAC
-        from disturbi import ParametriDisturbi, crea_ambiente
-        torch.set_num_threads(1)
-        agent = SAC.load(args.model, device='cpu')
+        from ambiente import ParametriDisturbi, con_offset, crea_ambiente
+        from simula import carica_rete
+        agent, cfg = carica_rete(args.model)
 
         def policy(obs):
             return agent.predict(np.asarray(obs, dtype=np.float32), deterministic=True)[0][0]
 
-        from addestra import profilo_salvato
-        from configurazione import configurazione_ambiente
-        cfg = configurazione_ambiente(args.model.parent)
-        if args.stimatore_offset is not None:
-            from confronta import con_offset
-            if cfg is None:
-                raise SystemExit('--stimatore-offset richiede una rete con config.json completo.')
-            cfg = con_offset(cfg, args.stimatore_offset)
+        cfg = con_offset(cfg, args.stimatore_offset)
         if args.disturbi is not None:
             profilo = ParametriDisturbi.carica(args.disturbi)
         else:
-            profilo = profilo_salvato(args.model.parent) or ParametriDisturbi.carica(ROOT / 'disturbi.toml')
+            profilo = cfg.disturbi or ParametriDisturbi()
         if args.intensita is not None:
             profilo = replace(profilo, intensita=args.intensita)
         if profilo.intensita == 0:
@@ -258,7 +249,7 @@ def main():
             'totale_us_max': max(r['totale_us_max'] for r in risultati),
             'ritrasmissioni': scheda.ritrasmissioni, 'dettagli': risultati,
             'note': ('diff_obs: ingressi della rete calcolati dalla scheda (stima.c, float32) '
-                     'contro stima.py sul PC; diff_azione: uscita X-CUBE-AI contro PyTorch '
+                     'contro lo stimatore Python sul PC; diff_azione: uscita X-CUBE-AI contro PyTorch '
                      'sugli stessi ingressi della scheda.')}
         percorso_json = args.output / f'hil_{stamp}.json'
         percorso_json.write_text(json.dumps(riepilogo, indent=2))
